@@ -1,0 +1,383 @@
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>TBRE</title>
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+  <link rel="icon" href="img\TBRE.ico">
+
+  <link href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+  <link href="css/animate.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+
+</head>
+
+<body>
+  <script src="js/revisar_sesion.js"></script>
+    <div id="wrapper">
+
+      <nav class="navbar-default navbar-static-side" role="navigation">
+          <div class="sidebar-collapse">
+              <ul class="nav metismenu" id="side-menu">
+                  <li class="nav-header">
+                    <div class="dropdown profile-element">
+                        <img alt="image" class="rounded-circle perfil" id="perfil1"/>
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <span class="block m-t-xs font-bold"><script>
+                              document.write(localStorage['nombre'] || 'Sin nombre');
+                              var foto=localStorage['nombre'] || 'Sin nombre';
+                              foto=foto.charAt(0).concat(".png").toLowerCase();
+                              document.getElementById("perfil1").src="img/letras/"+foto;
+                            </script></span>
+                            <span class="text-muted text-xs block"><script>
+                              document.write(localStorage['perfil'] || 'Sin perfil');
+                            </script><b class="caret"></b></span>
+                        </a>
+                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                            <li><a class="dropdown-item" href="perfil.html">Perfil</a></li>
+                            <li class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" onclick="limpiar();">Cerrar sesión</a></li>
+                        </ul>
+                    </div>
+                      <div class="logo-element">
+                          TBRE
+                      </div>
+                  </li>
+                  <li>
+                      <a href="index.php"><i class="fa fa-area-chart"></i> <span class="nav-label">Operación del día</span></a>
+                  </li>
+                  <li>
+                      <a href="#"><i class="fa fa-table"></i> <span class="nav-label">Reportes</span><span class="fa arrow"></span></a>
+                      <ul class="nav nav-second-level">
+                          <li><a href="inventario.php">Inventario</a></li>
+                          <li><a href="barriles_plantel.php">Barriles en plantel</a></li>
+                          <li><a href="llenados.php">Barriles llenados</a></li>
+                          <li><a href="rellenados.php">Barriles rellenados</a></li>
+                          <li><a href="trasiego.php">Barriles trasegados</a></li>
+                          <li><a href="reparacion.php">Barriles reparados</a></li>
+                      </ul>
+                  </li>
+                  <li class="dos">
+                      <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">TBRE</span><span class="fa arrow"></span></a>
+                      <ul class="nav nav-second-level">
+                          <li class="dos"><a href="validar_informacion.php">Validar información</a></li>
+                      </ul>
+                  </li>
+                  <li class="active uno-dos">
+                      <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="label label-primary float-right uno" id="letrero1">0</span></a>
+                      <ul class="nav nav-second-level collapse">
+                          <li><a href="pendientes.html">Pendientes <span class="label label-primary float-right uno" id="letrero2">0</span></a></li>
+                          <li><a href="aceptadas.html">Aceptadas</a></li>
+                          <li class="active"><a href="rechazadas.html">Rechazadas</a></li>
+                          <li><a href="canceladas.html">Canceladas</a></li>
+                      </ul>
+                  </li>
+                  <li class="tres-cuatro">
+                      <a href="#"><i class="fa fa-gear"></i> <span class="nav-label">Administración</span><span class="fa arrow"></span></a>
+                      <ul class="nav nav-second-level">
+                          <li class="tres"><a href="usuarios.html">Usuarios</a></li>
+                          <li class="cuatro"><a href="configuracion.html">Configuración</a></li>
+                      </ul>
+                  </li>
+
+              </ul>
+
+          </div>
+      </nav>
+
+          <div id="page-wrapper" class="gray-bg">
+          <div class="row border-bottom">
+          <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+          <div class="navbar-header">
+              <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+
+          </div>
+              <h2 class="nav navbar-top-links ">Solicitudes rechazadas</h2>
+              <ul class="nav navbar-top-links navbar-right">
+                <li class="dropdown uno">
+                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell"></i>  <span class="label label-primary" id="letrero3">0</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-alerts">
+                        <li>
+                            <a href="pendientes.html" class="dropdown-item">
+                                <div id="letrero4">
+                                    <i class="fa fa-envelope fa-fw" ></i> Tienes 0 solicitudes de cambios
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                  <li>
+                      <a onclick="javascript:limpiar();">
+                          <i class="fa fa-sign-out"></i> Cerrar sesión
+                      </a>
+                  </li>
+              </ul>
+
+          </nav>
+      </div>
+            <div class="row wrapper border-bottom white-bg page-heading">
+              <div class="col-md-12 text-center  d-flex justify-content-center" >
+
+              </div>
+              <div class="col-md-12 d-flex justify-content-center table-responsive text-center ">
+                <div class="table-responsive col-md-12 centro">
+                  <table class="table table-bordered cell-border animated" id="barriles">
+                    <thead>
+                      <tr>
+                        <th>ID Solicitud</th>
+                        <th>Evento</th>
+                        <th>Consecutivo</th>
+                        <th>Fecha de solicitud</th>
+                        <th>Solicitante</th>
+                        <th>Fecha de cancelación</th>
+                        <th>Rechazado por</th>
+                        <th>Estado</th>
+                        <th>Detalles</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="sk-spinner sk-spinner-three-bounce">
+                <div class="sk-bounce1"></div>
+                <div class="sk-bounce2"></div>
+                <div class="sk-bounce3"></div>
+              </div>
+            </div>
+
+
+            <div class="footer">
+                <div>
+                    <strong>Todos los derechos reservados | </strong>SER Licorera 2014
+                </div>
+            </div>
+
+
+            <div id="Dialog" title="Descripción" class="animated">
+              <div>
+                <div class="col-md-12 text-center  d-flex justify-content-center" >
+                  <div class="table-responsive col-md-12 centro" >
+                    <caption>Versión actual</caption>
+                    <table class="table table-bordered table-hover display"  id="viejoBarril">
+                      <thead>
+                        <tr>
+                          <th>Consecutivo</th>
+                          <th>Capacidad</th>
+                          <th>ID Pallet</th>
+                          <th>Uso</th>
+                          <th>Edad</th>
+                          <th>Estado</th>
+                          <th>F. Revisado</th>
+                          <th>F. Relleno</th>
+                          <th>Recepción</th>
+                          <th>Alcohol</th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="sk-spinner sk-spinner-three-bounce">
+                  <div class="sk-bounce1"></div>
+                  <div class="sk-bounce2"></div>
+                  <div class="sk-bounce3"></div>
+                </div>
+                <div class="col-md-12 text-center  d-flex justify-content-center" >
+                  <div class="table-responsive col-md-12 centro" >
+                    <caption>Versión a cambiar</caption>
+                    <table class="table table-bordered table-hover display"  id="nuevoBarril">
+                      <thead>
+                        <tr>
+                          <th>Consecutivo</th>
+                          <th>Capacidad</th>
+                          <th>ID Pallet</th>
+                          <th>Uso</th>
+                          <th>Edad</th>
+                          <th>Estado</th>
+                          <th>F. Revisado</th>
+                          <th>F. Relleno</th>
+                          <th>Recepción</th>
+                          <th>Alcohol</th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+
+                </div>
+                <div class="col-md-12 text-center  d-flex justify-content-center" >
+                  <button class="button5 btn btn-primary cerrar">Cerrar</button>
+                </div>
+              </div>
+            </div>
+
+        </div>
+        </div>
+
+
+    <!-- Mainly scripts -->
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="js/json2html.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="js/inspinia.js"></script>
+    <script src="js/plugins/pace/pace.min.js"></script>
+
+    <script src="js/funciones_generales.js"></script>
+
+    <script>
+    const getApi="get_solicitudes.php";
+    $( function() {
+      var options={
+        open: function() {
+            $(this).closest(".ui-dialog")
+            .find(".ui-dialog-titlebar-close")
+            .removeClass("ui-dialog-titlebar-close")
+            .html("<span class='ui-button-icon-primary ui-icon ui-icon-closethick'></span>");
+        },
+        autoOpen: false,
+        height: 'auto',
+        width: 'auto',
+        modal: true,
+        closeOnEscape: true,
+        show: {
+          effect: "puff",
+          duration: 800
+        },
+        hide: {
+          effect: "drop",
+          duration: 800
+        },
+        maxHeight: 570
+      };
+
+      Dialog = $( "#Dialog" ).dialog(options);
+      $( ".cerrar" ).button().on( "click", function() {
+        Dialog.dialog( "close" );
+    });
+
+
+  } );
+    async function CargarDialogo(idAjuste){
+      try {
+        empezar();
+        var url='RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&idAjuste='+idAjuste+"&opc=1";
+        var result = await conexion("GET",url,"");
+        AgregarDatos('viejoBarril',result);
+        url='RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&idAjuste='+idAjuste+"&opc=2";
+        result = await conexion("GET",url,"");
+        AgregarDatos('nuevoBarril',result);
+        parar();
+      } catch(error) {
+        alert(error);
+      }
+      Dialog.dialog( "open" );
+    }
+    function AgregarDatos(tabla,result){
+      var parsed =JSON.parse(result);
+      var transform = {"tag":"table", "children":[
+        {"tag":"tbody","children":[
+          {"tag":"tr","children":[
+            {"tag":"td","html":"${Consecutivo}"},
+            {"tag":"td","html":"${Capacidad}"},
+            {"tag":"td","html":"${IdPallet}"},
+            {"tag":"td","html":"${Uso}"},
+            {"tag":"td","html":"${Edad}"},
+            {"tag":"td","html":"${Estado}"},
+            {"tag":"td","html":"${Revisado}"},
+            {"tag":"td","html":"${Relleno}"},
+            {"tag":"td","html":"${Recepcion}"},
+            {"tag":"td","html":"${Alcohol}"},
+          ]}
+        ]}
+      ]};
+      $('#'+tabla+' > tbody').html(json2html.transform(parsed,transform));
+    }
+    async function CargarTabla(){
+      try {
+        empezar();
+        const url='RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&estado=3';
+        var result = await conexion("GET",url,"");
+        var parsed =JSON.parse(result);
+        var transform = {"tag":"table", "children":[
+          {"tag":"tbody","children":[
+            {"tag":"tr","children":[
+              {"tag":"td","html":"${IdAjuste}"},
+              {"tag":"td","html":"${Evento}"},
+              {"tag":"td","html":"${Consecutivo}"},
+              {"tag":"td","html":"${FechaSolicitud}"},
+              {"tag":"td","html":"${Solicitante}"},
+              {"tag":"td","html":"${FechaAutorizacion}"},
+              {"tag":"td","html":"${Autorizador}"},
+              {"tag":"td","html":"${Estado}"},
+              {"tag":"td","html":"<button class=\" btn btn-primary b-r-xl\">Ver</button>"},
+            ]}
+          ]}
+        ]};
+        $('#barriles > tbody').html(json2html.transform(parsed,transform));
+        Recargar();
+        parar();
+      } catch(error) {
+        alert(error);
+      }
+    }
+
+    function Recargar(){
+      var table = $('#barriles').DataTable({
+        responsive: false,
+        "bPaginate": false,
+        "paging":   false,
+        "ordering": false,
+        "info":     false,
+        searching: true,
+        "language": {
+          "emptyTable": "No se encontraron solicitudes",
+          searchPlaceholder: "Busca algún dato aquí",
+          search: "",
+        }
+      });
+      $('#barriles tbody').on( 'click', 'tr', function (e) {
+        var data = table.row( this ).data();
+        if( e.toElement.cellIndex==null) {
+          CargarDialogo(data[0]);
+        }
+      });
+    }
+    async function permisos(){
+      var perm=await revisarPermisos(["1","2"]);
+      if(!perm){
+        window.location.replace("index.php");
+      }
+    }
+
+    $(document).ready(function(){
+      permisos();
+      CargarTabla();
+    });
+    </script>
+
+</body>
+
+</html>

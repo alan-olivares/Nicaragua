@@ -27,23 +27,31 @@
         <div class="sidebar-collapse">
             <ul class="nav metismenu" id="side-menu">
                 <li class="nav-header">
-                    <div class="dropdown profile-element">
-                        <img alt="image" class="rounded-circle perfil" id="perfil1"/>
-                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="block m-t-xs font-bold"><script type="text/javascript">
-                              document.write(localStorage['nombre'] || 'Sin nombre');
-                              var foto=localStorage['nombre'] || 'Sin nombre';
-                              foto=foto.charAt(0).concat(".png").toLowerCase();
-                              document.getElementById("perfil1").src="img/letras/"+foto;
-                            </script></span>
-                        </a>
-                    </div>
+                  <div class="dropdown profile-element">
+                    <img alt="image" class="rounded-circle perfil" id="perfil1"/>
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <span class="block m-t-xs font-bold"><script>
+                          document.write(localStorage['nombre'] || 'Sin nombre');
+                          var foto=localStorage['nombre'] || 'Sin nombre';
+                          foto=foto.charAt(0).concat(".png").toLowerCase();
+                          document.getElementById("perfil1").src="img/letras/"+foto;
+                        </script></span>
+                        <span class="text-muted text-xs block"><script>
+                          document.write(localStorage['perfil'] || 'Sin perfil');
+                        </script><b class="caret"></b></span>
+                    </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <li><a class="dropdown-item" href="perfil.html">Perfil</a></li>
+                        <li class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" onclick="limpiar();">Cerrar sesión</a></li>
+                    </ul>
+                </div>
                     <div class="logo-element">
                         TBRE
                     </div>
                 </li>
                 <li>
-                    <a href="index.php"><i class="fa fa-th-large"></i> <span class="nav-label">Operación del día</span></a>
+                    <a href="index.php"><i class="fa fa-area-chart"></i> <span class="nav-label">Operación del día</span></a>
                 </li>
                 <li class="active">
                     <a href="#"><i class="fa fa-table"></i> <span class="nav-label">Reportes</span><span class="fa arrow"></span></a>
@@ -56,7 +64,28 @@
                         <li><a href="reparacion.php">Barriles reparados</a></li>
                     </ul>
                 </li>
-
+                <li class="dos">
+                    <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">TBRE</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li class="dos"><a href="validar_informacion.php">Validar información</a></li>
+                    </ul>
+                </li>
+                <li class="uno-dos">
+                    <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="label label-primary float-right uno" id="letrero1">0</span></a>
+                    <ul class="nav nav-second-level collapse">
+                        <li><a href="pendientes.html">Pendientes <span class="label label-primary float-right uno" id="letrero2">0</span></a></li>
+                        <li><a href="aceptadas.html">Aceptadas</a></li>
+                        <li><a href="rechazadas.html">Rechazadas</a></li>
+                        <li><a href="canceladas.html">Canceladas</a></li>
+                    </ul>
+                </li>
+                <li class="tres-cuatro">
+                    <a href="#"><i class="fa fa-gear"></i> <span class="nav-label">Administración</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li class="tres"><a href="usuarios.html">Usuarios</a></li>
+                        <li class="cuatro"><a href="configuracion.html">Configuración</a></li>
+                    </ul>
+                </li>
             </ul>
 
         </div>
@@ -69,8 +98,22 @@
             <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
 
         </div>
-            <h2 class="nav navbar-top-links navbar-right">Registro de barriles por trasiego</h2>
+            <h2 class="nav navbar-top-links ">Registro de barriles por trasiego</h2>
             <ul class="nav navbar-top-links navbar-right">
+              <li class="dropdown uno">
+                  <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                      <i class="fa fa-bell"></i>  <span class="label label-primary" id="letrero3">0</span>
+                  </a>
+                  <ul class="dropdown-menu dropdown-alerts">
+                      <li>
+                          <a href="pendientes.html" class="dropdown-item">
+                              <div id="letrero4">
+                                  <i class="fa fa-envelope fa-fw" ></i> Tienes 0 solicitudes de cambios
+                              </div>
+                          </a>
+                      </li>
+                  </ul>
+              </li>
                 <li>
                     <a onclick="javascript:limpiar();">
                         <i class="fa fa-sign-out"></i> Cerrar sesión
@@ -88,12 +131,12 @@
                 <input type="date" class="form-control" value="" id="date1" name="date1"></h5>
                 <h5><label class="">Fecha Final:</label>
                 <input type="date" class="form-control" value="" id="date2" name="date2"></h5>
-                <button class="btn btn-primary button3" name="search"><span class="glyphicon glyphicon-search"></span></button>
+                <button class="btn btn-primary button3 " name="search"><span class="glyphicon glyphicon-search"></span></button>
               </form>
               </div>
               <div class="col-md-6 text-center" >
-                <button class="button2 btn btn-primary" onclick="javascript:generate();">PDF</button>
-                <button class="button2 btn btn-primary" onclick="exportTableToCSV('Barriles en Trasiego.csv')">CSV</button>
+                <button class="button2 btn btn-primary b-r-xl" onclick="javascript:generate();">PDF</button>
+                <button class="button2 btn btn-primary b-r-xl" onclick="exportTableToCSV('Barriles en Trasiego.csv')">CSV</button>
               </div>
               <script type="text/javascript">
               document.getElementById("date1").valueAsDate= new Date();
@@ -132,15 +175,11 @@
     <script src="js/plugins/datapicker/bootstrap-datepicker.js"></script>
 
 
-    <!-- Page-Level Scripts -->
+    <script src="js/funciones_generales.js"></script>
     <script>
 
-    function limpiar() {
-      localStorage['sesion_timer']="";
-      window.location.replace("login.php");
-    }
-
         $(document).ready(function(){
+          revisarPermisosInterface();
             $('#tabla1').DataTable({
                 responsive: true,
                 "bPaginate": false,

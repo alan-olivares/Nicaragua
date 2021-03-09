@@ -26,19 +26,48 @@
 .legend{
   visibility: hidden;
 }
-
-.flot-x-axis .flot-tick-label {
-    white-space: nowrap;
-    transform: translate(-9px, 0) rotate(-60deg);
-    text-indent: -100%;
-    transform-origin: top right;
-    text-align: right !important;
+.listaP{
+  visibility: hidden;
+}
+.circulo {
+  width: 10px;
+  height: 10px;
+  border-radius: 50px;
+  line-height: 1.428571429;
+}
+.sk-spinner-three-bounce div{
+  visibility: hidden;
+}
+.azul{
+  background-color: #0C91FF !important;
+  color: white !important;
+}
+#table-wrapper {
+  position:relative;
+}
+#scrollingtable {
+  height:400px;
+  overflow:auto;
+  margin-top:5px;
+  margin-bottom: 20px;
+}
+#table-wrapper table {
+  width:100%;
 
 }
-
+#table-wrapper table thead th .otro{
+  position:absolute;
+  top:0px;
+  z-index:2;
+  height:20px;
+  width:35%;
+  border:1px solid red;
+}
 .centro {
+  margin-top: 30px;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 10px;
 }
 .p-estilo {
   margin: 20px;
@@ -2579,6 +2608,7 @@ margin-left: 15px;
 background: #1ab394;
 color: #ffffff;
 }
+
 .button3 {
   height: 35px;
   width: 35px;
@@ -2589,6 +2619,20 @@ height: 35px;
 width: 115px;
 margin-left: 1px;
 margin-bottom: 2px;
+}
+.button5 {
+height: 35px;
+width: 'auto';
+margin-top: 25px;
+margin-left: 15px;
+}
+.button6 {
+height: 35px;
+width: 115px;
+margin-top: 10px;
+margin-left: 15px;
+background: #1ab394;
+color: #ffffff;
 }
 .logoLogin {
 margin-top: 80px;
@@ -2655,6 +2699,15 @@ div.dt-button-info {
   width: 50px;
   height: 50px;
   padding: 10px 16px;
+  border-radius: 25px;
+  font-size: 18px;
+  line-height: 1.33;
+}
+.btn-circle.btn-lg2 {
+  margin-top: 35px;
+  width: 35px;
+  height: 35px;
+  padding: 5px 8px;
   border-radius: 25px;
   font-size: 18px;
   line-height: 1.33;

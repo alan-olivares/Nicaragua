@@ -27,8 +27,8 @@ include'general_connection.php';
   <script src="js/revisar_sesion.js"></script>
   <div class="row wrapper border-bottom white-bg page-heading" >
     <div class="col-md-12 text-center" >
-      <button class="button2 btn btn-primary" onclick="javascript:generate();">PDF</button>
-      <button class="button2 btn btn-primary" onclick="exportTableToCSV('Reporte Detalle Bodega.csv')">CSV</button>
+      <button class="button2 btn btn-primary b-r-xl" onclick="javascript:generate();">PDF</button>
+      <button class="button2 btn btn-primary b-r-xl" onclick="exportTableToCSV('Reporte Detalle Bodega.csv')">CSV</button>
     </div>
     <div class="table-responsive">
       <h3 style="margin-top:20px;margin-left:10px;" id="edad">Edades</h3>

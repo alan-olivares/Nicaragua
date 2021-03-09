@@ -30,8 +30,8 @@ include'general_connection.php';
   <script src="js/revisar_sesion.js"></script>
   <div class="row wrapper border-bottom white-bg page-heading" >
     <div class="col-md-12 text-center" >
-      <button class="button2 btn btn-primary" onclick="javascript:generate();">PDF</button>
-      <button class="button2 btn btn-primary" onclick="exportTableToCSV(evento+' '+dia+'.csv')">CSV</button>
+      <button class="button2 btn btn-primary b-r-xl" onclick="javascript:generate();">PDF</button>
+      <button class="button2 btn btn-primary b-r-xl" onclick="exportTableToCSV(evento+' '+dia+'.csv')">CSV</button>
     </div>
 
     <div class="table-responsive col-md-12">
@@ -65,7 +65,7 @@ include'general_connection.php';
         inner Join WM_LoteBarrica LB on LB.IdLoteBarica = r.IdLoteBarrica
         left Join PR_Lote L on L.Idlote = LB.IdLote
         inner Join CM_Alcohol Al on Al.IdAlcohol = L.IdAlcohol
-        where lo.fecha between '$hora1' and '$hora2' and r.TipoReg in ($evento) order by SUBSTRING(CONVERT(CHAR(16), lo.fecha, 120),11,16)";
+        where lo.fecha between '$hora1' and '$hora2' and r.TipoReg in ($evento) order by SUBSTRING(CONVERT(CHAR(16), lo.fecha, 120),12,5)";
 
         $stmt = sqlsrv_query( $conn , $tsql);
 
@@ -84,11 +84,6 @@ include'general_connection.php';
         </tr>
         <?php
         }
-
-        /* Free statement and connection resources. */
-        sqlsrv_free_stmt( $stmt);
-        sqlsrv_close( $conn);
-
         ?>
         </tbody>
         <tfoot>
@@ -129,7 +124,7 @@ include'general_connection.php';
             inner join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
             inner join CM_Usuario U on U.IdUsuario = M.IdUsuario
             Where L.TipoOp='I' and L.Fecha between '$hora1' and '$hora2'
-            order by SUBSTRING(CONVERT(CHAR(17), L.fecha, 120),  12, 5)";
+            order by SUBSTRING(CONVERT(CHAR(16), L.fecha, 120),  12, 5)";
 
             $stmt = sqlsrv_query( $conn , $tsql);
 
@@ -145,15 +140,12 @@ include'general_connection.php';
             </tr>
             <?php
             }
-
-            /* Free statement and connection resources. */
-            sqlsrv_free_stmt( $stmt);
-            sqlsrv_close( $conn);
-
             ?>
             </tbody>
         <?php
       }
+      sqlsrv_free_stmt( $stmt);
+      sqlsrv_close( $conn);
         ?>
         </table>
         </div>

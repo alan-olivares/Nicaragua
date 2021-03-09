@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>TBRE</title>
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+  <link rel="icon" href="img\TBRE.ico">
+
+  <link href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+  <link href="css/animate.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <link href="css/plugins/dualListbox/bootstrap-duallistbox.min.css" rel="stylesheet">
+  <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+</head>
+
+<body>
+  <script src="js/revisar_sesion.js"></script>
+    <div id="wrapper">
+
+      <nav class="navbar-default navbar-static-side" role="navigation">
+          <div class="sidebar-collapse">
+              <ul class="nav metismenu" id="side-menu">
+                  <li class="nav-header">
+                    <div class="dropdown profile-element">
+                        <img alt="image" class="rounded-circle perfil" id="perfil1"/>
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <span class="block m-t-xs font-bold"><script>
+                              document.write(localStorage['nombre'] || 'Sin nombre');
+                              var foto=localStorage['nombre'] || 'Sin nombre';
+                              foto=foto.charAt(0).concat(".png").toLowerCase();
+                              document.getElementById("perfil1").src="img/letras/"+foto;
+
+                            </script></span>
+                            <span class="text-muted text-xs block"><script>
+                              document.write(localStorage['perfil'] || 'Sin perfil');
+                            </script><b class="caret"></b></span>
+                        </a>
+                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                            <li><a class="dropdown-item" href="perfil.html">Perfil</a></li>
+                            <li class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" onclick="limpiar();">Cerrar sesión</a></li>
+                        </ul>
+                    </div>
+                      <div class="logo-element">
+                          TBRE
+                      </div>
+                  </li>
+                  <li>
+                      <a href="index.php"><i class="fa fa-area-chart"></i> <span class="nav-label">Operación del día</span></a>
+                  </li>
+                  <li>
+                      <a href="#"><i class="fa fa-table"></i> <span class="nav-label">Reportes</span><span class="fa arrow"></span></a>
+                      <ul class="nav nav-second-level">
+                          <li><a href="inventario.php">Inventario</a></li>
+                          <li><a href="barriles_plantel.php">Barriles en plantel</a></li>
+                          <li><a href="llenados.php">Barriles llenados</a></li>
+                          <li><a href="rellenados.php">Barriles rellenados</a></li>
+                          <li><a href="trasiego.php">Barriles trasegados</a></li>
+                          <li><a href="reparacion.php">Barriles reparados</a></li>
+                      </ul>
+                  </li>
+                  <li class="dos">
+                      <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">TBRE</span><span class="fa arrow"></span></a>
+                      <ul class="nav nav-second-level">
+                          <li class="dos"><a href="validar_informacion.php">Validar información</a></li>
+                      </ul>
+                  </li>
+                  <li class="uno-dos">
+                      <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="label label-primary float-right uno" id="letrero1">0</span></a>
+                      <ul class="nav nav-second-level collapse">
+                          <li><a href="pendientes.html">Pendientes <span class="label label-primary float-right uno" id="letrero2">0</span></a></li>
+                          <li><a href="aceptadas.html">Aceptadas</a></li>
+                          <li><a href="rechazadas.html">Rechazadas</a></li>
+                          <li><a href="canceladas.html">Canceladas</a></li>
+                      </ul>
+                  </li>
+                  <li class="active tres-cuatro">
+                      <a href="#"><i class="fa fa-gear"></i> <span class="nav-label">Administración</span><span class="fa arrow"></span></a>
+                      <ul class="nav nav-second-level">
+                          <li class="active tres"><a href="usuarios.html">Usuarios</a></li>
+                          <li class="cuatro"><a href="configuracion.html">Configuración</a></li>
+                      </ul>
+                  </li>
+
+              </ul>
+
+          </div>
+      </nav>
+
+          <div id="page-wrapper" class="gray-bg">
+          <div class="row border-bottom">
+          <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+          <div class="navbar-header">
+              <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+
+          </div>
+              <h2 class="nav navbar-top-links " style="margin-left:150px;margin-right:50px">Usuarios y Perfiles</h2>
+              <ul class="nav navbar-top-links navbar-right">
+                <li class="dropdown uno">
+                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell"></i>  <span class="label label-primary" id="letrero3">0</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-alerts">
+                        <li>
+                            <a href="pendientes.html" class="dropdown-item">
+                                <div id="letrero4">
+                                    <i class="fa fa-envelope fa-fw" ></i> Tienes 0 solicitudes de cambios
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                  <li>
+                      <a onclick="limpiar();">
+                          <i class="fa fa-sign-out"> Cerrar sesión</i>
+                      </a>
+                  </li>
+              </ul>
+          </nav>
+      </div>
+
+
+      <div class="tabs-container">
+          <ul class="nav nav-tabs d-flex justify-content-center" role="tablist">
+              <li><a class="nav-link active" data-toggle="tab" href="#divUsuario"> Usuarios</a></li>
+              <li><a class="nav-link" data-toggle="tab" href="#divPerfil">Perfiles</a></li>
+          </ul>
+          <div class="tab-content">
+              <div role="tabpanel" id="divUsuario" class="tab-pane active">
+                <div class="row text-center  white-bg  d-flex justify-content-center">
+                  <div class="col-md-4" >
+                    <button class="button5 btn btn-primary b-r-xl" style="margin-bottom:20px;" onclick='agregarUsuario.dialog("open");CargarPerfiles("#perfilU");'>Agregar nuevo usuario</button>
+                  </div>
+                  <div class="table-responsive col-md-12 centro scrollingtable animated" id="scrollingtable">
+                    <table class="table table-bordered table-hover text-nowrap display" id="usuariosTabla">
+                      <thead>
+                        <tr>
+                          <th>Usuario</th>
+                          <th>Nombre</th>
+                          <th>Perfil</th>
+                          <th>Grupo</th>
+                          <th>Acceso</th>
+                          <th>Estado</th>
+                          <th>Detalles</th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>
+                    <div class="sk-spinner sk-spinner-three-bounce">
+                      <div class="sk-bounce1"></div>
+                      <div class="sk-bounce2"></div>
+                      <div class="sk-bounce3"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div role="tabpanel" id="divPerfil" class="tab-pane">
+                <div class="row text-center  white-bg  d-flex justify-content-center">
+                  <div class="col-md-6  text-center  d-flex justify-content-center" >
+                    <div class="col-md-8" >
+                      <h5><label>  Selecciona un perfil:   </label>
+                          <select class="form-control" id="perfiles" onchange="ObtenerPermisosPorPerfil(this);">
+                          </select>
+                      </h5>
+                    </div>
+                    <div class="col-md-1" >
+                      <button class="btn btn-primary btn-circle btn-lg2" onclick='agregarPerfil.dialog("open");' type="button"><i class="fa fa-plus"></i></button>
+                    </div>
+                    <div class="col-md-1" >
+                      <button class="btn btn-danger btn-circle btn-lg2" id="borrar" onclick="BorrarPerfil();" type="button"><i class="fa fa-times"></i></button>
+                    </div>
+                  </div>
+                  <div class="col-md-12 ibox-content listaP">
+                      <h4>
+                          Selecciona los permisos que deseas agregar a este perfil
+                      </h4>
+                      <select class="form-control dual_select" id="permisos" name="duallistbox" multiple>
+                      </select>
+                      <button class="button5 btn btn-primary b-r-xl" style="margin-right:30px;margin-bottom:30px;" id="guardarPer" onclick="GuardarPermisos();">Guardar cambios</button>
+                  </div>
+                </div>
+              </div>
+          </div>
+      </div>
+
+      <div id="agregarPerfil" title="Agregar nuevo perfil" class="animated">
+          <div class="col-md-12 text-center  d-flex justify-content-center" >
+            <div class="col-md-10 text-center " >
+              <h5><label>  Ingresa el nombre del nuevo perfil:   </label>
+                <input type="text" class="form-control" required="true" name="nuevoPerfil" id="nuevoPerfil">
+              </h5>
+            </div>
+          </div>
+          <div class="col-md-12 text-center" >
+            <button class="button2 btn btn-primary cerrar b-r-xl">Cancelar</button>
+            <button class="button2 btn btn-primary b-r-xl" onclick="AgregarPerfil();">Agregar</button>
+          </div>
+
+        </div>
+
+        <div id="agregarUsuario" title="Agregar nuevo usuario" class="animated">
+            <div >
+              <div class="col-md-12 text-center  d-flex justify-content-center" >
+                <div class="col-md-6 text-center  d-flex justify-content-center" >
+                  <h5><label>  Nombre:   </label>
+                    <input type="text" class="form-control" required="true" name="nombreU" id="nombreU">
+                  </h5>
+                </div>
+                <div class="col-md-6 text-center  d-flex justify-content-center" >
+                  <h5><label>  Usuario:   </label>
+                    <input type="text" class="form-control" required="true" name="usuarioU" id="usuarioU">
+                  </h5>
+                </div>
+              </div>
+              <div class="col-md-12 text-center  d-flex justify-content-center" >
+                <div class="col-md-4 text-center  d-flex justify-content-center" >
+                  <h5><label>  Grupo:   </label>
+                    <select class="form-control" id="grupoU">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                    </select>
+                  </h5>
+                </div>
+                <div class="col-md-4 text-center  d-flex justify-content-center" >
+                  <h5><label>  Acceso al sistema:   </label>
+                    <input type="checkbox" id="accesoU" checked="true">
+                  </h5>
+                </div>
+                <div class="col-md-4 text-center  d-flex justify-content-center" >
+                  <h5><label>  Activo/Desactivo:   </label>
+                    <input type="checkbox" id="activoDesactivoU" checked="true">
+                  </h5>
+                </div>
+              </div>
+              <div class="col-md-12 text-center  d-flex justify-content-center" >
+                <div class="col-md-6 text-center  d-flex justify-content-center" >
+                  <h5><label>  Contraseña:   </label>
+                    <input type="password" class="form-control" required="true" name="contrasenaU" id="contrasenaU">
+                  </h5>
+                </div>
+                <div class="col-md-6 text-center  d-flex justify-content-center" >
+                  <h5><label>  Confirmar contraseña:   </label>
+                    <input type="password" class="form-control" required="true" name="contrasenaNU" id="contrasenaNU">
+                  </h5>
+                </div>
+              </div>
+              <div class="col-md-12 text-center  d-flex justify-content-center" >
+                <div class="col-md-6 text-center  d-flex justify-content-center" >
+                  <h5><label>  Perfil:   </label>
+                    <select class="form-control" id="perfilU"></select>
+                  </h5>
+                </div>
+              </div>
+              <div class="col-md-12 text-center  d-flex justify-content-center" >
+                <button class="button2 btn btn-primary cerrar b-r-xl">Cancelar</button>
+                <button class="button2 btn btn-primary b-r-xl" onclick="AgregarUsuario();">Agregar</button>
+              </div>
+            </div>
+
+          </div>
+
+          <div id="editarUsuario" title="Agregar nuevo usuario" class="animated">
+              <div >
+                <div class="col-md-12 text-center  d-flex justify-content-center" >
+                  <div class="col-md-6 text-center  d-flex justify-content-center" >
+                    <h5><label>  Nombre:   </label>
+                      <input type="text" class="form-control" required="true" name="nombreUE" id="nombreUE" disabled>
+                    </h5>
+                  </div>
+                  <div class="col-md-6 text-center  d-flex justify-content-center" >
+                    <h5><label>  Usuario:   </label>
+                      <input type="text" class="form-control" required="true" name="usuarioUE" id="usuarioUE" disabled>
+                    </h5>
+                  </div>
+                </div>
+                <div class="col-md-12 text-center  d-flex justify-content-center" >
+                  <div class="col-md-4 text-center  d-flex justify-content-center" >
+                    <h5><label>  Grupo:   </label>
+                      <select class="form-control" id="grupoUE">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                      </select>
+                    </h5>
+                  </div>
+                  <div class="col-md-4 text-center  d-flex justify-content-center" >
+                    <h5><label>  Acceso al sistema:   </label>
+                      <input type="checkbox" id="accesoUE">
+                    </h5>
+                  </div>
+                  <div class="col-md-4 text-center  d-flex justify-content-center" >
+                    <h5><label>  Activo/Desactivo:   </label>
+                      <input type="checkbox" id="activoDesactivoUE">
+                    </h5>
+                  </div>
+                </div>
+                <div class="col-md-12 text-center  d-flex justify-content-center " id="passw" >
+                  <div class="col-md-6 text-center  d-flex justify-content-center" >
+                    <h5><label>  Nueva contraseña:   </label>
+                      <input type="password" class="form-control" required="true" name="contrasenaUE" id="contrasenaUE">
+                    </h5>
+                  </div>
+                  <div class="col-md-6 text-center  d-flex justify-content-center" >
+                    <h5><label>  Confirmar contraseña:   </label>
+                      <input type="password" class="form-control" required="true" name="contrasenaNUE" id="contrasenaNUE">
+                    </h5>
+                  </div>
+                </div>
+                <div class="col-md-12 text-center  d-flex justify-content-center" >
+                  <div class="col-md-6 text-center  d-flex justify-content-center" >
+                    <h5><label>  Perfil:   </label>
+                      <select class="form-control" id="perfilUE"></select>
+                    </h5>
+                  </div>
+                </div>
+                <div class="col-md-12 text-center  d-flex justify-content-center" >
+                  <div class="col-md-6 text-center  d-flex justify-content-center" >
+                    <h5><label>  Cambiar contraseña:   </label>
+                      <input type="checkbox" onchange='OcultarPass(this);'>
+                    </h5>
+                  </div>
+                </div>
+                <div class="col-md-12 text-center  d-flex justify-content-center" >
+                  <button class="button2 btn btn-primary cerrar b-r-xl">Cancelar</button>
+                  <button class="button2 btn btn-primary b-r-xl" onclick="GuardarEditarUsuario();">Editar</button>
+                </div>
+              </div>
+
+            </div>
+
+
+
+
+
+      <div class="footer">
+        <div>
+          <strong>Todos los derechos reservados | </strong>SER Licorera 2014
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    <!-- Mainly scripts -->
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="js/inspinia.js"></script>
+    <script src="js/plugins/pace/pace.min.js"></script>
+
+    <script src="js/funciones_generales.js"></script>
+    <script src="js/plugins/dualListbox/jquery.bootstrap-duallistbox.js"></script>
+    <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
+
+    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="js/json2html.min.js"></script>
+
+    <script>
+    const getApi="get_usuarios.php";
+    const postApi="post_usuarios.php";
+    $( function() {
+      var options={
+        open: function() {
+            $(this).closest(".ui-dialog")
+            .find(".ui-dialog-titlebar-close")
+            .removeClass("ui-dialog-titlebar-close")
+            .html("<span class='ui-button-icon-primary ui-icon ui-icon-closethick'></span>");
+        },
+        autoOpen: false,
+        height: 'auto',
+        modal: true,
+        closeOnEscape: true,
+        show: {
+          effect: "puff",
+          duration: 800
+        },
+        hide: {
+          effect: "drop",
+          duration: 800
+        },
+        maxHeight: 570,
+        minWidth: 500,
+      };
+
+      agregarPerfil = $( "#agregarPerfil" ).dialog(options);
+      agregarUsuario = $( "#agregarUsuario" ).dialog(options);
+      editarUsuario = $( "#editarUsuario" ).dialog(options);
+    $( ".cerrar" ).button().on( "click", function() {
+      agregarPerfil.dialog( "close" );
+      agregarUsuario.dialog( "close" );
+      editarUsuario.dialog( "close" );
+    });
+
+
+    } );
+
+    function OcultarPass(valor){
+      if(valor.checked){
+        $("#passw").css("visibility", "visible");
+      }else{
+        $("#passw").css("visibility", "hidden");
+      }
+    }
+
+    async function GuardarEditarUsuario(){
+      if(String(document.getElementById("contrasenaUE").value).length>0 && String(document.getElementById("contrasenaUE").value).length<6){
+        mensajeError("La contraseña debe ser mayor o igual a 5 caracteres");
+        return;
+      }
+      if(document.getElementById("contrasenaUE").value!==document.getElementById("contrasenaNUE").value){
+        mensajeError("Las contraseñas no coinciden");
+        return;
+      }
+      try{
+        var params='usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&userEdit='+$("#usuarioUE").val()+
+        '&passn='+$("#contrasenaUE").val()+'&perfil='+$("#perfilUE").val()+"&activo="+($("#activoDesactivoUE").is(':checked')?1:0)+"&grupo="+
+        $("#grupoUE").val()+"&acceso="+($("#accesoUE").is(':checked')?1:0);
+        var url='RestApi/POST/'+postApi;
+        var result = await conexion("POST",url,params);
+        await mensajeSimple(result);
+        location.reload();
+      }catch(error){
+        mensajeError(error);
+      }
+    }
+
+    async function EditarUsuario(nombre,usuario,perfil,grupo,acceso,estado){
+      $("#passw").css("visibility", "hidden");
+      await CargarPerfiles("#perfilUE");
+      setSelectedValue(document.getElementById("perfilUE"),perfil);
+      $('#accesoUE').prop('checked', (acceso==="Si")?true:false);
+      $('#activoDesactivoUE').prop('checked', (estado==="Activo")?true:false);
+      document.getElementById("grupoUE").value=grupo;
+      document.getElementById("nombreUE").value=nombre;
+      document.getElementById("usuarioUE").value=usuario;
+      editarUsuario.dialog("open");
+    }
+
+    async function AgregarUsuario(){
+      if($("#nombreU").val()!=="" && $("#usuarioU").val()!=="" && $("#contrasenaU").val()!=="" && $("#contrasenaNU").val()!==""){
+        if(String(document.getElementById("contrasenaU").value).length>0 && String(document.getElementById("contrasenaNU").value).length<6){
+          await mensajeError("La contraseña debe ser mayor o igual a 5 caracteres");
+          return;
+        }
+        if(document.getElementById("contrasenaU").value!==document.getElementById("contrasenaNU").value){
+          await mensajeError("Las contraseñas no coinciden");
+          return;
+        }
+        try{
+          var url='RestApi/GET/get_perfil.php?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+"&veriuser="+$("#usuarioU").val();
+          await conexion("GET",url,"");
+
+          var params='usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&nombre='+$("#nombreU").val()+
+          '&passn='+$("#contrasenaU").val()+'&user='+$("#usuarioU").val()+'&perfil='+$("#perfilU").val()+
+          "&activo="+($("#activoDesactivoU").is(':checked')?1:0)+"&grupo="+$("#grupoU").val()+"&acceso="+($("#accesoU").is(':checked')?1:0);
+          var url='RestApi/POST/'+postApi;
+          var result = await conexion("POST",url,params);
+          await mensajeSimple(result);
+          location.reload();
+        }catch(error){
+          mensajeError(error);
+        }
+      }else{
+        mensajeError("Por favor completa los campos, solo el perfil puede estar vacío");
+      }
+    }
+    async function CargarTabla(){
+      try {
+        empezar();
+        const url='RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&tablaUsuarios=true';
+        var result = await conexion("GET",url,"");
+        var parsed =JSON.parse(result);
+        var transform = {"tag":"table", "children":[
+          {"tag":"tbody","children":[
+            {"tag":"tr","children":[
+              {"tag":"td","html":"${Clave}"},
+              {"tag":"td","html":"${Nombre}"},
+              {"tag":"td","html":"${Perfil}"},
+              {"tag":"td","html":"${Grupo}"},
+              {"tag":"td","html":"${Acceso}"},
+              {"tag":"td","html":"${Estado}"},
+              {"tag":"td","html":'<button class=" btn btn-primary b-r-xl" id="editarU">Editar</button>'}
+            ]}
+          ]}
+        ]};
+        $('#usuariosTabla > tbody').html(json2html.transform(parsed,transform));
+        parar();
+        Recargar();
+      } catch(error) {
+        mensajeError(error);
+      }
+    }
+    function Recargar(){
+      var table = $('#usuariosTabla').DataTable({
+        responsive: false,
+        "bPaginate": false,
+        "paging":   false,
+        "ordering": false,
+        "info":     false,
+        searching: true,
+        "language": {
+          "emptyTable": "No se encontraron solicitudes",
+          searchPlaceholder: "Busca algún dato aquí",
+          search: "",
+        }
+      });
+      $('#usuariosTabla tbody').on( 'click', '#editarU', function (e) {
+        var row = $(this).closest('tr');
+        var data = table.row( row ).data();
+        EditarUsuario(data[1],data[0],data[2],data[3],data[4],data[5]);
+      });
+    }
+
+    //Inicia Funciones de permisos
+    async function GuardarPermisos(){
+      var selectedValues = $('#permisos').val();
+      try{
+        var params='usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&idPerfil='+$("#perfiles").val()+'&permisos='+selectedValues;
+        var result=await conexion("POST", 'RestApi/POST/'+postApi,params);
+        setTimeout(async function() {
+          await mensajeSimple(result);
+        }, 500);
+      }catch(error){
+        setTimeout(async function() {
+          mensajeError(error);
+        }, 500);
+      }
+    }
+
+    async function AgregarPerfil(){
+      try{
+        if($("#nuevoPerfil").val()!==""){
+          try{
+            var params='usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&nombrePerfilC='+$("#nuevoPerfil").val();
+            var result=await conexion("POST", 'RestApi/POST/'+postApi,params);
+            setTimeout(async function() {
+              CargarPerfiles("#perfiles");
+              $(".listaP").css("visibility","hidden");
+              $("#borrar").hide();
+              await mensajeSimple(result);
+              agregarPerfil.dialog( "close" );
+            }, 500);
+          }catch(error){
+            setTimeout(async function() {
+              mensajeError(error);
+            }, 500);
+          }
+        }else{
+          mensajeError("Ingresa un nombre antes de guardar");
+        }
+      }catch(error){
+        mensajeError(error);
+      }
+    }
+    async function BorrarPerfil(){
+      try{
+        if($( "#perfiles" ).val()!==''){
+          if(await mensajeOpcional('¿Estas seguro de borrar el perfil de '+$( "#perfiles option:selected" ).text()+"?")){
+            try{
+              var params='usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&idPerfilB='+$("#perfiles").val();
+              var result=await conexion("POST", 'RestApi/POST/'+postApi,params);
+              setTimeout(async function() {
+                CargarPerfiles("#perfiles");
+                $(".listaP").css("visibility","hidden");
+                $("#borrar").hide();
+                await mensajeSimple(result);
+              }, 500);
+            }catch(error){
+              setTimeout(async function() {
+                mensajeError(error);
+              }, 500);
+            }
+          }
+        }else{
+          mensajeError('Este perfil no se puedo borrar');
+        }
+      }catch(error){
+        mensajeError(error);
+      }
+    }
+
+    async function CargarPerfiles(select){
+      try{
+        $(select).empty();
+        var result= await conexion("GET", 'RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&perfiles=true','');
+        var parsed =JSON.parse(result);
+        $(select).append($('<option>', {
+          value: '',
+          text: ''
+        }));
+        //document.getElementById("perfilU").appendChild(x);
+        //se agregan los elementos obtenidos en el servidor
+        for (i = 0; i < parsed.length; i++) {
+          $(select).append($('<option>', {
+            value: parsed[i]["IdPerfil"],
+            text: parsed[i]["Descripcion"]
+          }));
+        }
+      }catch(error){
+        mensajeError(error);
+      }
+    }
+    async function ObtenerPermisosPorPerfil(valor){
+      if(valor.value!=="" && valor.value!=="1"){
+        $("#borrar").show();
+        $("#guardarPer").show();
+        $(".listaP").css("visibility","visible");
+        BuscarPermisos(valor.value);
+      }else if(valor.value==="1"){
+        BuscarPermisos(valor.value);
+        $(".listaP").css("visibility","visible");
+        $("#guardarPer").hide();
+        $("#borrar").hide();
+      }else{
+        $(".listaP").css("visibility","hidden");
+        $("#borrar").hide();
+      }
+    }
+    async function BuscarPermisos(idperfil){
+      try{
+        $('#permisos option').prop('selected', false);
+        var result= await conexion("GET", 'RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&PerfilPermisos='+idperfil,'');
+        var parsed =JSON.parse(result);
+        //se agregan los elementos obtenidos en el servidor
+        for (i = 0; i < parsed.length; i++) {
+          $('#permisos option[value="'+parsed[i]["IdPermiso"]+'"]').prop('selected', true);
+        }
+        $('.dual_select').bootstrapDualListbox('refresh', true);
+      }catch(error){
+        mensajeError(error);
+      }
+    }
+
+    async function ObtenerPermisos(){
+      try{
+        var result= await conexion("GET", 'RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&permisos=true','');
+        var parsed =JSON.parse(result);
+        //se agregan los elementos obtenidos en el servidor
+        for (i = 0; i < parsed.length; i++) {
+          var x = document.createElement("OPTION");
+          x.setAttribute("value", parsed[i]["IdPermiso"]);
+          var t = document.createTextNode(parsed[i]["Descripcion"]);
+          x.appendChild(t);
+          document.getElementById("permisos").appendChild(x);
+        }
+      }catch(error){
+        mensajeError(error);
+      }
+      $('.dual_select').bootstrapDualListbox({
+          selectorMinimalHeight: 160,
+          showFilterInputs:false,
+          infoTextEmpty:'Lista vacía',
+          infoText:false,
+          nonSelectedListLabel: 'Lista de permisos',
+          selectedListLabel: 'Permisos del perfil',
+      });
+      $(".clear1").hide();
+      $(".clear2").hide();
+    }
+    //Termina Funciones de permisos
+
+    async function permisos(){
+      var perm=await revisarPermisos(["3"]);
+      if(!perm){
+        window.location.replace("index.php");
+      }
+    }
+
+    $(document).ready(function(){
+      //$('#contenedor').appendTo( $('#divPerfil') );
+      CargarTabla();
+      permisos();
+      ObtenerPermisos();
+      CargarPerfiles("#perfiles");
+      $("#borrar").hide();
+    });
+    </script>
+
+
+</body>
+
+</html>
