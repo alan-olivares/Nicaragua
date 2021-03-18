@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -69,14 +70,15 @@
                           <li><a href="reparacion.php">Barriles reparados</a></li>
                       </ul>
                   </li>
-                  <li class="dos">
+                  <li class="dos-cinco">
                       <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">TBRE</span><span class="fa arrow"></span></a>
                       <ul class="nav nav-second-level">
                           <li class="dos"><a href="validar_informacion.php">Validar información</a></li>
+                          <li class="cinco"><a href="impresion.html">Impresión de etiquetas</a></li>
                       </ul>
                   </li>
                   <li class="active uno-dos">
-                      <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="label label-primary float-right uno" id="letrero1">0</span></a>
+                      <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="fa arrow"></span><span class="label label-primary float-right uno" style="margin-right:15px;"id="letrero1">0</span></a>
                       <ul class="nav nav-second-level collapse">
                           <li class="active"><a href="pendientes.html">Pendientes <span class="label label-primary float-right uno" id="letrero2">0</span></a></li>
                           <li><a href="aceptadas.html">Aceptadas</a></li>
@@ -91,20 +93,19 @@
                           <li class="cuatro"><a href="configuracion.html">Configuración</a></li>
                       </ul>
                   </li>
-
               </ul>
 
           </div>
       </nav>
 
           <div id="page-wrapper" class="gray-bg">
-          <div class="row border-bottom ">
+          <div class="row border-bottom">
           <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
-          <div class="navbar-header ">
+          <div class="navbar-header">
               <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
 
           </div>
-              <h2 class="nav navbar-top-links ">Solicitudes pendientes</h2>
+              <h2 class="nav navbar-top-links titulo">Solicitudes pendientes</h2>
               <ul class="nav navbar-top-links navbar-right">
                 <li class="dropdown uno">
                     <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -129,41 +130,41 @@
 
           </nav>
       </div>
-            <div class="row wrapper border-bottom white-bg page-heading">
-              <div class="col-md-12 text-center  d-flex justify-content-center" >
-                <div class="form-inline text-center d-flex justify-content-center"  >
-                  <button class="button5 btn btn-w-m btn-danger autorizador b-r-xl" onclick="HacerTodas(3);">Rechazar todos</button>
-                  <button class="button5 btn btn-w-m btn-danger autorizador b-r-xl" onclick="HacerTodas(2);">Aceptar todos</button>
-                  <button class="button5 btn btn-primary autorizador b-r-xl" onclick="Cambios(3);">Rechazar seleccionados</button>
-                  <button class="button5 btn btn-primary autorizador b-r-xl" onclick="Cambios(2);">Aceptar seleccionados</button>
-                  <button class="button5 btn btn-w-m btn-danger Nautorizador b-r-xl" onclick="HacerTodas(3);">Cancelar todos</button>
-                  <button class="button5 btn btn-primary Nautorizador b-r-xl" onclick="Cambios(3);">Cancelar seleccionados</button>
-                </div>
-              </div>
-              <div class="col-md-12 d-flex justify-content-center table-responsive text-center ">
-                <div class="table-responsive col-md-12 centro">
-                  <table class="table table-bordered cell-border" id="barriles">
-                    <thead>
-                      <tr>
-                        <th>ID Solicitud</th>
-                        <th>Evento</th>
-                        <th>Consecutivo</th>
-                        <th>Fecha de solicitud</th>
-                        <th>Solicitante</th>
-                        <th>Estado</th>
-                        <th>Detalles</th>
-                      </tr>
-                    </thead>
-                    <tbody></tbody>
-                  </table>
-                </div>
-              </div>
-              <div class="sk-spinner sk-spinner-three-bounce">
-                <div class="sk-bounce1"></div>
-                <div class="sk-bounce2"></div>
-                <div class="sk-bounce3"></div>
-              </div>
-            </div>
+      <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-md-12 text-center  d-flex justify-content-center" >
+          <div class="form-inline text-center d-flex justify-content-center"  >
+            <button class="button5 btn btn-w-m btn-danger autorizador b-r-xl" onclick="HacerTodas(3);">Rechazar todos</button>
+            <button class="button5 btn btn-w-m btn-danger autorizador b-r-xl" onclick="HacerTodas(2);">Aceptar todos</button>
+            <button class="button5 btn btn-primary autorizador b-r-xl" onclick="Cambios(3);">Rechazar seleccionados</button>
+            <button class="button5 btn btn-primary autorizador b-r-xl" onclick="Cambios(2);">Aceptar seleccionados</button>
+            <button class="button5 btn btn-w-m btn-danger Nautorizador b-r-xl" onclick="HacerTodas(3);">Cancelar todos</button>
+            <button class="button5 btn btn-primary Nautorizador b-r-xl" onclick="Cambios(3);">Cancelar seleccionados</button>
+          </div>
+        </div>
+        <div class="col-md-12 d-flex justify-content-center table-responsive text-center ">
+          <div class="table-responsive col-md-12 centro">
+            <table class="table table-bordered cell-border" id="barriles">
+              <thead>
+                <tr>
+                  <th>ID Solicitud</th>
+                  <th>Evento</th>
+                  <th>Consecutivo</th>
+                  <th>Fecha de solicitud</th>
+                  <th>Solicitante</th>
+                  <th>Estado</th>
+                  <th>Detalles</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="sk-spinner sk-spinner-three-bounce">
+          <div class="sk-bounce1"></div>
+          <div class="sk-bounce2"></div>
+          <div class="sk-bounce3"></div>
+        </div>
+      </div>
 
 
             <div class="footer">
@@ -177,7 +178,7 @@
               <div>
                 <div class="col-md-12 text-center  d-flex justify-content-center" >
                   <div class="table-responsive col-md-12 centro" >
-                    <caption>Versión actual</caption>
+                    <caption>Versión anterior</caption>
                     <table class="table table-bordered table-hover display"  id="viejoBarril">
                       <thead>
                         <tr>
@@ -204,7 +205,7 @@
                 </div>
                 <div class="col-md-12 text-center  d-flex justify-content-center" >
                   <div class="table-responsive col-md-12 centro" >
-                    <caption>Versión a cambiar</caption>
+                    <caption>Versión actual</caption>
                     <table class="table table-bordered table-hover display"  id="nuevoBarril">
                       <thead>
                         <tr>
@@ -250,9 +251,9 @@
     <!-- Custom and plugin javascript -->
     <script src="js/inspinia.js"></script>
     <script src="js/plugins/pace/pace.min.js"></script>
-    <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
 
     <script src="js/funciones_generales.js"></script>
+    <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
 
 
     <script>

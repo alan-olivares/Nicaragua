@@ -1,5 +1,6 @@
 ObtenerNotificaciones();
 revisarPermisosInterface();
+$(".scrollingtable2").css("height",screen.height-260);
 async function ObtenerNotificaciones(){
   var numero=await conexion("GET", 'RestApi/GET/get_notificaciones.php?usuario='+localStorage['usuario']+'&pass='+localStorage['password'],'');
   document.getElementById("letrero1").innerHTML=numero;
@@ -40,6 +41,12 @@ async function mensajeOpcional2(texto){
         console.error(e);
         return false;
     }
+}
+function dateFormato(date,sep) {
+  var dia=date.getDate();
+  var mes=date.getMonth();
+  var year=date.getFullYear();
+  return ((dia<10)?'0'+dia:dia)+sep+((mes<9)?'0'+(mes+1):(mes+1))+sep+String(year).substring(2);
 }
 function mensajeOpcional(texto) {
   return new Promise(function(resolve, reject) {
@@ -120,24 +127,14 @@ async function revisarPermisosInterface2(){
 }
 async function revisarPermisosInterface(){
   var permisos=await conexion("GET", 'RestApi/GET/get_permisos.php?usuario='+localStorage['usuario']+'&pass='+localStorage['password'],'');
-  if(!permisos.includes(",1,")){
-    $(".uno").remove();
-  }
-  if(!permisos.includes(",2,")){
-    $(".dos").remove();
-  }
-  if(!permisos.includes(",3,")){
-    $(".tres").remove();
-  }
-  if(!permisos.includes(",4,")){
-    $(".cuatro").remove();
-  }
-  if(!permisos.includes(",3,") && !permisos.includes(",4,")){
-    $(".tres-cuatro").remove();
-  }
-  if(!permisos.includes(",1,") && !permisos.includes(",2,")){
-    $(".uno-dos").remove();
-  }
+  if(!permisos.includes(",1,")){$(".uno").remove()}
+  if(!permisos.includes(",2,")){$(".dos").remove()}
+  if(!permisos.includes(",3,")){$(".tres").remove()}
+  if(!permisos.includes(",4,")){$(".cuatro").remove()}
+  if(!permisos.includes(",5,")){$(".cinco").remove()}
+  if(!permisos.includes(",3,") && !permisos.includes(",4,")){$(".tres-cuatro").remove()}
+  if(!permisos.includes(",1,") && !permisos.includes(",2,")){$(".uno-dos").remove()}
+  if(!permisos.includes(",2,") && !permisos.includes(",5,")){$(".dos-cinco").remove()}
 }
 
 function conexion(method, url,params) {

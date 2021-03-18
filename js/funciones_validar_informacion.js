@@ -335,8 +335,8 @@ async function getInfo(sel,tipo,etiqueta,valor,boton){
   }
 }
 //Se limpian los campos cuando el usario decide buscar en otros selects
-function limpiarCampos(boton) {
-  switch (boton) {
+function limpiarCampos(select) {
+  switch (select) {
     case 'Costado':
       $("#Costado").empty();
       $("#Filas").empty();
@@ -392,6 +392,8 @@ async function CargarTabla(sel){
       var result = await conexion("GET",url,"");
       var parsed =JSON.parse(result);
       $("#Agregar").hide();
+      $("#Mover").hide();
+      $("#Editar").hide();
       var transform = {"tag":"table", "children":[
         {"tag":"tbody","children":[
           {"tag":"tr","children":[
@@ -416,7 +418,7 @@ async function CargarTabla(sel){
       mensajeError(error);
     }
   }else{
-  OcultarBotones();
+    OcultarBotones();
   }
 }
 //Se muestran los botones cuando el usuario haya buscado una tabla
@@ -424,10 +426,11 @@ function MostrarBotones(){
   if(document.getElementById("barriles").rows.length<=9){
     $("#Agregar").show();
   }
+  if(document.getElementById("barriles").rows.length>1){
+    $("#Mover").show();
+    $("#Editar").show();
+  }
   $("#scrollingtable").show();
-  $("#Quitar").show();
-  $("#Mover").show();
-  $("#Editar").show();
 
   MostrarEfecto('bounceInLeft','bounceOutRight');
 }
@@ -449,7 +452,6 @@ function OcultarBotones(){
   setTimeout(function() {
     $("#scrollingtable").hide();
     $("#Agregar").hide();
-    $("#Quitar").hide();
     $("#Mover").hide();
     $("#Editar").hide();
   }, 500);

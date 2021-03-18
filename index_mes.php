@@ -73,14 +73,15 @@
                             <li><a href="reparacion.php">Barriles reparados</a></li>
                         </ul>
                     </li>
-                    <li class="dos">
+                    <li class="dos-cinco">
                         <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">TBRE</span><span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li class="dos"><a href="validar_informacion.php">Validar información</a></li>
+                            <li class="cinco"><a href="impresion.html">Impresión de etiquetas</a></li>
                         </ul>
                     </li>
                     <li class="uno-dos">
-                        <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="label label-primary float-right uno" id="letrero1">0</span></a>
+                        <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="fa arrow"></span><span class="label label-primary float-right uno" style="margin-right:15px;"id="letrero1">0</span></a>
                         <ul class="nav nav-second-level collapse">
                             <li><a href="pendientes.html">Pendientes <span class="label label-primary float-right uno" id="letrero2">0</span></a></li>
                             <li><a href="aceptadas.html">Aceptadas</a></li>
@@ -108,7 +109,7 @@
                 <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
 
             </div>
-                <h2 class="nav navbar-top-links ">TBRE - Operación del día</h2>
+                <h2 class="nav navbar-top-links titulo">TBRE - Operación del día</h2>
                 <ul class="nav navbar-top-links navbar-right">
                   <li class="dropdown uno">
                       <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -271,19 +272,19 @@
     $llenados = "select SUBSTRING(CONVERT(CHAR(10), l.fecha, 120), 9, 2) as dia, count(distinct idbarrica) as Barriles
     from adm_logregbarril l inner join PR_RegBarril r on r.idregbarril=l.IdregBarril
     where l.fecha between '$hora1' and '$hora2' and r.TipoReg=1
-    group by SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2)";
+    group by SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2) order by SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2)";
     $rellenados ="select SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2) as dia, count(distinct idbarrica) as Barriles
     from adm_logregbarril l inner join PR_RegBarril r on r.idregbarril=l.IdregBarril
     where l.fecha between '$hora1' and '$hora2' and r.TipoReg in (2,4,5)
-    group by SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2)";
+    group by SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2) order by SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2)";
     $trasiegos="select SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2) as dia, count(distinct idbarrica) as Barriles
     from adm_logregbarril l inner join PR_RegBarril r on r.idregbarril=l.IdregBarril
     where l.fecha between '$hora1' and '$hora2' and r.TipoReg=3
-    group by SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2)";
+    group by SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2) order by SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2)";
     $reparados="SELECT SUBSTRING(CONVERT(CHAR(10), L.fecha, 120),  9, 2) as Hora, count(distinct M.idbarrica) as Barriles
     FROM PR_Mantenimiento M INNER JOIN ADM_logMantenimiento L ON M.IdMantenimiento=L.IdMantenimiento
     WHERE L.TipoOp='I' AND M.Fecha between '$hora1' and '$hora2'
-    group by SUBSTRING(CONVERT(CHAR(10), L.fecha, 120),  9, 2)";
+    group by SUBSTRING(CONVERT(CHAR(10), L.fecha, 120),  9, 2) order by SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2)";
 
     $llenadosTotal="select count(distinct idbarrica)
     from adm_logregbarril l inner join PR_RegBarril r on r.idregbarril=l.IdregBarril

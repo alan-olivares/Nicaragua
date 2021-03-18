@@ -48,6 +48,14 @@
 #scrollingtable {
   height:400px;
   overflow:auto;
+  margin-top:10px;
+  margin-bottom: 20px;
+}
+.titulo{
+  margin-left:120px;
+}
+.scrollingtable2 {
+  overflow:auto;
   margin-top:5px;
   margin-bottom: 20px;
 }
@@ -55,13 +63,11 @@
   width:100%;
 
 }
-#table-wrapper table thead th .otro{
-  position:absolute;
+#table-wrapper table thead th {
+  position:sticky;
   top:0px;
   z-index:2;
   height:20px;
-  width:35%;
-  border:1px solid red;
 }
 .centro {
   margin-top: 30px;

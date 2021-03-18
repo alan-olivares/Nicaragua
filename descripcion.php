@@ -103,7 +103,7 @@ include'general_connection.php';
         ?>
         <tr>
           <td style="text-align: center;"><?php echo (int)$row[0]?></td>
-          <td style="text-align: center;"><?php echo $row[1]?></td>
+          <td style="text-align: center;"><?php echo utf8_encode($row[1])?></td>
           <td style="text-align: center;"><?php echo $row[2]?></td>
           <td style="text-align: center;"><?php echo $row[3]?></td>
           <td style="text-align: right;"><?php echo (int)$row[4]?></td>

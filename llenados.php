@@ -64,14 +64,15 @@
                         <li><a href="reparacion.php">Barriles reparados</a></li>
                     </ul>
                 </li>
-                <li class="dos">
+                <li class="dos-cinco">
                     <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">TBRE</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li class="dos"><a href="validar_informacion.php">Validar información</a></li>
+                        <li class="cinco"><a href="impresion.html">Impresión de etiquetas</a></li>
                     </ul>
                 </li>
                 <li class="uno-dos">
-                    <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="label label-primary float-right uno" id="letrero1">0</span></a>
+                    <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="fa arrow"></span><span class="label label-primary float-right uno" style="margin-right:15px;"id="letrero1">0</span></a>
                     <ul class="nav nav-second-level collapse">
                         <li><a href="pendientes.html">Pendientes <span class="label label-primary float-right uno" id="letrero2">0</span></a></li>
                         <li><a href="aceptadas.html">Aceptadas</a></li>
@@ -99,7 +100,7 @@
             <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
 
         </div>
-            <h2 class="nav navbar-top-links ">Registro de barriles por llenado</h2>
+            <h2 class="nav navbar-top-links titulo">Registro de barriles por llenado</h2>
             <ul class="nav navbar-top-links navbar-right">
               <li class="dropdown uno">
                   <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">

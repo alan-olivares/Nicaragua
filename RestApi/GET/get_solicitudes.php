@@ -1,5 +1,4 @@
 <?php
-header('Content-Type: application/json; charset=utf-8');
 $usuario=$_GET["usuario"];
 $pass=$_GET["pass"];
 include'general_connection.php';
@@ -23,6 +22,12 @@ if($row[0]=='1'){
         left join CM_Usuario u on ad.Solicitante=u.IdUsuario
         left join WM_Barrica b on ad.IdBarrica=b.IdBarrica
         left join ADM_Estados ES on ES.IdEstado=ad.Estado where Estado='$estado' and u.Clave='$usuario'";
+      }
+      if($estado!=="1"){
+        $dias = "select Val1 from CM_Config where IdConfig=3";
+        $stmtDias = sqlsrv_query( $conn , $dias);
+        $rowDias = sqlsrv_fetch_array( $stmtDias, SQLSRV_FETCH_NUMERIC);
+        $barril=$barril." and ad.FechaSolicitud > DATEADD(DAY, -".$rowDias[0].", GETDATE())";
       }
       $stmtBarril = sqlsrv_query( $conn , $barril);
       if($stmtBarril){

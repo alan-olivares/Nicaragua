@@ -88,9 +88,10 @@ if($row[0]=='1'){//Si es un usuario registrado
         $Relleno=(ISSET($_POST['Relleno']))?"'".$_POST["Relleno"]."'":$rowDatosP[7];
         $NoTapa=(ISSET($_POST['NoTapa']))?$_POST["NoTapa"]:$rowDatosP[8];
         //Cuenta los barriles que existen en el pallet y en solicitudes pendientes para saber si hay lugar disponible
-        $queryCons="select (select COUNT(*) from WM_Barrica where IdPallet=(select IdPallet from WM_Pallet where RackLocID='$IdPallet'))+
-        (select COUNT(*) from ADM_logBAjuste ad left join ADM_Ajustes aj on ad.IdAjuste=aj.IdAjuste where
-        IdPallet=(select IdPallet from WM_Pallet where RackLocID='$IdPallet') and aj.Estado=1 and (aj.Evento='Mover' or aj.Evento='Agregar')) as capacidad";
+        $queryCons="select (select COUNT(*) from WM_Barrica B inner Join WM_Pallet P on P.Idpallet = B.IdPallet Where P.RackLocId = '$IdPallet')+
+          (select COUNT(*) from  ADM_Ajustes aj left join ADM_logBAjuste ad on ad.IdAjuste=aj.IdAjuste
+		        inner join WM_Pallet P on P.IdPallet=ad.IdPallet where P.RackLocId = '$IdPallet'
+		          and aj.Estado=1 and ad.op=2 and (aj.Evento='Mover' or aj.Evento='Agregar'))";
         $resultCons = sqlsrv_query( $conn , $queryCons);
         $row = sqlsrv_fetch_array( $resultCons, SQLSRV_FETCH_NUMERIC);
         if(((int)$CBarriles+(int)$row[0])<=9){
@@ -102,7 +103,7 @@ if($row[0]=='1'){//Si es un usuario registrado
           sqlsrv_fetch($result);
           $IdAjuste= (int)sqlsrv_get_field($result, 0);
           if($result){//Si se guardo en ADM_Ajustes
-            $Pallet="select IdPallet from WM_Pallet where RackLocID='$IdPallet'";
+            $Pallet="select top 1 IdPallet from WM_Pallet where RackLocID='$IdPallet' order by IdPallet desc";
             $resultPallet = sqlsrv_query( $conn , $Pallet);
             $rowPallet = sqlsrv_fetch_array( $resultPallet, SQLSRV_FETCH_NUMERIC);
             $queryADM_logBAjuste1="exec sp_ADM_logBAjuste '$IdAjuste', 1,'$rowDatosP[0]','$rowDatosP[1]','$rowDatosP[2]','$rowDatosP[3]','$consecutivo','$rowDatosP[4]','$rowDatosP[5]',$rowDatosP[6],$rowDatosP[7],'$rowDatosP[8]'";

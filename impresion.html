@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>TBRE</title>
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+  <link rel="icon" href="img\TBRE.ico">
+
+  <link href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+  <link href="css/animate.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+  <script src="impresora/BrowserPrint-3.0.216.min.js"></script>
+  <script src="impresora/BrowserPrint-Zebra-1.0.216.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/themes/base/jquery-ui.css">
+
+</head>
+
+<body>
+  <script src="js/revisar_sesion.js"></script>
+    <div id="wrapper">
+
+      <nav class="navbar-default navbar-static-side" role="navigation">
+          <div class="sidebar-collapse">
+              <ul class="nav metismenu" id="side-menu">
+                  <li class="nav-header">
+                    <div class="dropdown profile-element">
+                        <img alt="image" class="rounded-circle perfil" id="perfil1"/>
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <span class="block m-t-xs font-bold"><script>
+                              document.write(localStorage['nombre'] || 'Sin nombre');
+                              var foto=localStorage['nombre'] || 'Sin nombre';
+                              foto=foto.charAt(0).concat(".png").toLowerCase();
+                              document.getElementById("perfil1").src="img/letras/"+foto;
+                            </script></span>
+                            <span class="text-muted text-xs block"><script>
+                              document.write(localStorage['perfil'] || 'Sin perfil');
+                            </script><b class="caret"></b></span>
+                        </a>
+                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                            <li><a class="dropdown-item" href="perfil.html">Perfil</a></li>
+                            <li class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" onclick="limpiar();">Cerrar sesión</a></li>
+                        </ul>
+                    </div>
+                      <div class="logo-element">
+                          TBRE
+                      </div>
+                  </li>
+                  <li>
+                      <a href="index.php"><i class="fa fa-area-chart"></i> <span class="nav-label">Operación del día</span></a>
+                  </li>
+                  <li>
+                      <a href="#"><i class="fa fa-table"></i> <span class="nav-label">Reportes</span><span class="fa arrow"></span></a>
+                      <ul class="nav nav-second-level">
+                          <li><a href="inventario.php">Inventario</a></li>
+                          <li><a href="barriles_plantel.php">Barriles en plantel</a></li>
+                          <li><a href="llenados.php">Barriles llenados</a></li>
+                          <li><a href="rellenados.php">Barriles rellenados</a></li>
+                          <li><a href="trasiego.php">Barriles trasegados</a></li>
+                          <li><a href="reparacion.php">Barriles reparados</a></li>
+                      </ul>
+                  </li>
+                  <li class="dos-cinco active">
+                      <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">TBRE</span><span class="fa arrow"></span></a>
+                      <ul class="nav nav-second-level">
+                          <li class="dos"><a href="validar_informacion.php">Validar información</a></li>
+                          <li class="cinco active"><a href="impresion.html">Impresión de etiquetas</a></li>
+                      </ul>
+                  </li>
+                  <li class="uno-dos">
+                      <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="fa arrow"></span><span class="label label-primary float-right uno" style="margin-right:15px;"id="letrero1">0</span></a>
+                      <ul class="nav nav-second-level collapse">
+                          <li><a href="pendientes.html">Pendientes <span class="label label-primary float-right uno" id="letrero2">0</span></a></li>
+                          <li><a href="aceptadas.html">Aceptadas</a></li>
+                          <li><a href="rechazadas.html">Rechazadas</a></li>
+                          <li><a href="canceladas.html">Canceladas</a></li>
+                      </ul>
+                  </li>
+                  <li class="tres-cuatro">
+                      <a href="#"><i class="fa fa-gear"></i> <span class="nav-label">Administración</span><span class="fa arrow"></span></a>
+                      <ul class="nav nav-second-level">
+                          <li class="tres"><a href="usuarios.html">Usuarios</a></li>
+                          <li class="cuatro"><a href="configuracion.html">Configuración</a></li>
+                      </ul>
+                  </li>
+              </ul>
+
+          </div>
+      </nav>
+
+          <div id="page-wrapper" class="gray-bg">
+          <div class="row border-bottom">
+          <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+          <div class="navbar-header">
+              <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+
+          </div>
+              <h2 class="nav navbar-top-links" style="margin-left:90px; margin-right:10px;">Imprimir etiquetas</h2>
+              <ul class="nav navbar-top-links navbar-right">
+                <li class="dropdown uno">
+                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell"></i>  <span class="label label-primary" id="letrero3">0</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-alerts">
+                        <li>
+                            <a href="pendientes.html" class="dropdown-item">
+                                <div id="letrero4">
+                                    <i class="fa fa-envelope fa-fw" ></i> Tienes 0 solicitudes de cambios
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                  <li>
+                      <a onclick="javascript:limpiar();">
+                          <i class="fa fa-sign-out"></i> Cerrar sesión
+                      </a>
+                  </li>
+              </ul>
+
+          </nav>
+      </div>
+      <div class="panel panel-default" style="margin-top:40px;">
+        <div class="panel-heading">
+        <h4 class="panel-title">Imprimir etiquetas</h4>
+        </div>
+        <div class="panel-body">
+          <div class="col-md-12 text-center  d-flex justify-content-center" >
+            <div class="col-md-4 text-center" >
+              <h5><label>  N° de copias:   </label>
+                <input type="number" class="form-control" required="true" name="copias" id="copias">
+              </h5>
+            </div>
+            <div class="col-md-4 text-center" >
+              <h5><label>  Folio Inicial:   </label>
+                <input type="number" class="form-control" onchange="autoComplete(this);" required="true" name="Inicial" id="Inicial">
+              </h5>
+            </div>
+            <div class="col-md-4 text-center" >
+              <h5><label>  Folio Final:   </label>
+                <input type="number" class="form-control" required="true" name="Final" id="Final">
+              </h5>
+            </div>
+          </div>
+          <div class="col-md-12 text-center  d-flex justify-content-center" >
+            <button class="button5 btn btn-primary b-r-xl" onclick="Generar('CLN','CLNCuerpo',true);">Imprimir registro</button>
+            <button class="button5 btn btn-primary b-r-xl" onclick="Generar('Folio','FolioCuerpo',false);">Imprimir folios</button>
+          </div>
+        </div>
+      </div>
+
+
+            <div class="footer">
+                <div>
+                    <strong>Todos los derechos reservados | </strong>SER Licorera 2014
+                </div>
+            </div>
+
+
+
+
+        </div>
+        </div>
+
+
+    <!-- Mainly scripts -->
+    <script src="js/jquery-3.1.1.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="js/bootstrap-waitingfor.js"></script>
+    <script src="js/json2html.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="js/inspinia.js"></script>
+    <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="js/funciones_generales.js"></script>
+
+
+    <script>
+    const getApi="get_impresion.php";
+    const postApi="post_impresion.php";
+
+    function autoComplete(self){
+      document.getElementById('Final').value=self.value;
+    }
+
+    async function Generar(enca,cuer,opc){
+      var encabezado= await ObtenerDatos(enca);
+      var enviar=encabezado+'\n';
+      var cuerpo= await ObtenerDatos(cuer);
+      var inicio=document.getElementById('Inicial').value;
+      var fin=document.getElementById('Final').value;
+      if((String(inicio).length>6 || String(fin).length>6) || (inicio<0 || fin<0)){
+        mensajeError('Los folios deben de ser menor o igual a 6 digitos y mayores a 0');
+        return;
+      }
+      var copias=document.getElementById('copias').value;
+      var fecha=new Date();
+      if(opc){
+        for (var i = inicio; i <= fin; i++) {
+          enviar+=cuerpo.replace('DT2', dateFormato(fecha,'/')).replace('DT1',GenerarEtiqueta(i)).replace('PQ1','PQ'+copias)+'\n\n';
+        }
+      }else{
+        var aux=cuerpo;
+        var cont=0;
+        for (var i = inicio; i <= fin; i++) {
+          cont++;
+          aux=aux.replace(('DT'+cont),GenerarEtiqueta(i));
+          if(cont%8==0 || i==fin){
+            enviar+=aux.replace('PQ1','PQ'+copias)+'\n';
+            aux=cuerpo;
+            cont=0;
+          }
+        }
+      }
+      enviar+='^XA^ID000.GRF^FS^XZ';
+      if(selected_device.name===undefined){
+        try {
+          var impresoraIP = await conexion("GET",'RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password'],"");
+          await conexion("POST", "http://"+impresoraIP ,enviar);
+          Registro();
+        } catch (e) {
+          mensajeError(e);
+        }
+      }else{
+        imprimir(enviar);
+      }
+    }
+
+    async function ObtenerDatos(campo){
+      try {
+        var url='impresora/'+campo+'.prn';
+        var result = await conexion("GET",url,"");
+        return result;
+      } catch(error) {
+        await mensajeError('Hubo un problema al obtener el encabezado y/o el cuerpo de las etiquetas');
+        return null;
+      }
+    }
+
+    var selected_device;
+    function setup(){
+    	BrowserPrint.getDefaultDevice("printer", function(device)
+    			{
+    				selected_device = device;
+            revisarConfig(device);
+
+    			},function(error){
+            if(error==='' && localStorage['aplicacion']!=='no'){
+              var message_alert = $('<p>Se recomienda usar la aplicacion Zebra Printer para tener una mejor experiencia de impresión ¿Quieres descargarla ahora?</p>').dialog({
+                open: function() {
+                    $(this).closest(".ui-dialog")
+                    .find(".ui-dialog-titlebar-close")
+                    .removeClass("ui-dialog-titlebar-close")
+                    .html("<span class='ui-button-icon-primary ui-icon ui-icon-closethick'></span>");
+                },
+                buttons: {
+                    "Cancelar": function() {message_alert.dialog('close');},
+                    "Descargar":  function() {
+                      let link = document.createElement("a");
+                      if( /Mac|Macintosh/i.test(navigator.userAgent) ) {
+                        link.download = "Instalador.dmg";
+                        link.href = "impresora/zebra-browser-print-mac-v131445.dmg";
+                      }else if( /Windows/i.test(navigator.userAgent) ) {
+                        link.download = "Instalador.exe";
+                        link.href = "impresora/zebra-browser-print-windows-v131445.exe";
+                      }else if( /Android/i.test(navigator.userAgent) ) {
+                        link.download = "Aplicacion.apk";
+                        link.href = "impresora/zebra-browser-print-android-v130158.apk";
+                      }
+                      link.click();
+                      message_alert.dialog('close');
+                    },
+                    "No preguntar de nuevo":  function() {
+                        localStorage['aplicacion']='no';
+                        message_alert.dialog('close');
+                    }
+                },
+                minWidth: 600,
+
+              });
+            }
+    			})
+    }
+
+    async function Registro(){
+      var inicio=document.getElementById('Inicial').value;
+      var fin=document.getElementById('Final').value;
+      try {
+        for (var i = inicio; i <= fin; i++) {
+          var params='usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&etiqueta='+GenerarEtiqueta(i);
+          var result=await conexion("POST", 'RestApi/POST/'+postApi,params);
+        }
+      } catch (e) {
+        mensajeError(e);
+      }
+
+    }
+    function imprimir(dataToWrite){
+    	//selected_device.send(dataToWrite, undefined, errorCallback);
+      //Registro();
+      progress();
+      selected_device.isPrinterReady().then(function(){
+        //Registro();
+        return selected_device.send(dataToWrite, undefined, errorCallback);
+      }).catch(function(error){
+        mensajeError(error);
+      })
+    }
+
+
+    function progress(){
+      waitingDialog.show('Cargando...');
+     waitingDialog.progress(0);
+     setTimeout(function(){
+        waitingDialog.progress(10);
+         waitingDialog.message('Comunicando con la impresora');
+         $('.modal-body').append('<div class="col-md-12 text-center  d-flex justify-content-center" ><button class="button5 btn btn-primary b-r-xl" onclick="waitingDialog.hide();">Hacer en segundo plano</button></div>');
+     },500);
+    var mocks=[{message:'Obteniendo estado de la impresora',prog:10},{message:'Enviando datos a la impresora',prog:30},{message:'Guardando registro en la base de datos',prog:40},{message:'Imprimiendo',prog:50},{prog:55},{prog:70},{prog:80},{message:'Terminando...',prog:95},{prog:96},{prog:99},{prog:100}];
+    mocks.forEach(function(e,i){
+         setTimeout(function(){
+            if(e.message){
+               waitingDialog.message(e.message);
+            }else{
+               waitingDialog.message(e.prog+'% ...');
+            }
+             waitingDialog.progress(e.prog);
+         },(i+1)*1500);
+    });
+
+    setTimeout(function () {
+
+            waitingDialog.hide();
+
+   }, (mocks.length+0.5)*2000);
+  }
+
+
+    var readCallback = function(readData) {
+    	if(readData === undefined || readData === null || readData === "")
+    	{
+    		mensajeError("No Response from Device");
+    	}
+    	else
+    	{
+    		alert(readData);
+    	}
+
+    }
+    var errorCallback = function(errorMessage){
+    	mensajeError("Error: " + errorMessage);
+    }
+    function readFromSelectedPrinter()
+    {
+
+    	selected_device.read(readCallback, errorCallback);
+
+    }
+    var impresoraIP;
+    async function revisarConfig(impresora){
+      if(impresora.name===undefined){
+        mensajeError("Debes de configurar la aplicación de Zebra Printer con una impresora por default");
+        return;
+      }
+      var impresoraIP = await conexion("GET",'RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password'],"");
+      if(!impresoraIP.includes(impresora.uid.substring(0,impresora.uid.indexOf(':')))){
+        mensajeError("Tu configuración de la aplicación Zebra Printer es incorrecta, llama al administrador y mencionale que asigne esta dirección: "+impresoraIP.substring(0,impresoraIP.indexOf('/')));
+        return;
+      }
+    }
+
+    async function permisos(){
+      var perm=await revisarPermisos(["5"]);
+      if(!perm){
+        window.location.replace("index.php");
+      }
+
+    }
+
+    $(document).ready(function(){
+
+      setup();
+      permisos();
+      document.getElementById('copias').value=1;
+
+    });
+    </script>
+
+
+</body>
+
+</html>

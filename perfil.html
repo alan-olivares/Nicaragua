@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -40,7 +41,6 @@
                               var foto=localStorage['nombre'] || 'Sin nombre';
                               foto=foto.charAt(0).concat(".png").toLowerCase();
                               document.getElementById("perfil1").src="img/letras/"+foto;
-
                             </script></span>
                             <span class="text-muted text-xs block"><script>
                               document.write(localStorage['perfil'] || 'Sin perfil');
@@ -70,10 +70,11 @@
                           <li><a href="reparacion.php">Barriles reparados</a></li>
                       </ul>
                   </li>
-                  <li class="dos">
+                  <li class="dos-cinco">
                       <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">TBRE</span><span class="fa arrow"></span></a>
                       <ul class="nav nav-second-level">
                           <li class="dos"><a href="validar_informacion.php">Validar información</a></li>
+                          <li class="cinco"><a href="impresion.html">Impresión de etiquetas</a></li>
                       </ul>
                   </li>
                   <li class="uno-dos">
@@ -92,7 +93,6 @@
                           <li class="cuatro"><a href="configuracion.html">Configuración</a></li>
                       </ul>
                   </li>
-
               </ul>
 
           </div>
@@ -105,7 +105,7 @@
               <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
 
           </div>
-              <h2 class="nav navbar-top-links ">Perfil</h2>
+              <h2 class="nav navbar-top-links" style="margin-left:60px;">Mi perfil</h2>
               <ul class="nav navbar-top-links navbar-right">
                 <li class="dropdown uno">
                     <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -122,15 +122,14 @@
                     </ul>
                 </li>
                   <li>
-                      <a onclick="limpiar();">
-                          <i class="fa fa-sign-out"> Cerrar sesión</i>
+                      <a onclick="javascript:limpiar();">
+                          <i class="fa fa-sign-out"></i> Cerrar sesión
                       </a>
                   </li>
               </ul>
 
           </nav>
       </div>
-
       <div class="panel panel-default" style="margin-top:40px;">
         <div class="panel-heading">
         <h4 class="panel-title">Mi información</h4>
@@ -184,13 +183,17 @@
       </div>
 
 
-      <div class="footer">
-        <div>
-          <strong>Todos los derechos reservados | </strong>SER Licorera 2014
+            <div class="footer">
+                <div>
+                    <strong>Todos los derechos reservados | </strong>SER Licorera 2014
+                </div>
+            </div>
+
+
+
+
         </div>
-      </div>
-    </div>
-  </div>
+        </div>
 
 
     <!-- Mainly scripts -->
@@ -198,18 +201,20 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="js/json2html.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.js"></script>
     <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
     <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
-    <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
 
     <!-- Custom and plugin javascript -->
     <script src="js/inspinia.js"></script>
     <script src="js/plugins/pace/pace.min.js"></script>
 
     <script src="js/funciones_generales.js"></script>
+    <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
+
 
     <script>
     const getApi="get_perfil.php";

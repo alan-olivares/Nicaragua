@@ -71,14 +71,15 @@
                           <li><a href="reparacion.php">Barriles reparados</a></li>
                       </ul>
                   </li>
-                  <li class="dos">
+                  <li class="dos-cinco">
                       <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">TBRE</span><span class="fa arrow"></span></a>
                       <ul class="nav nav-second-level">
                           <li class="dos"><a href="validar_informacion.php">Validar información</a></li>
+                          <li class="cinco"><a href="impresion.html">Impresión de etiquetas</a></li>
                       </ul>
                   </li>
                   <li class="uno-dos">
-                      <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="label label-primary float-right uno" id="letrero1">0</span></a>
+                      <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="fa arrow"></span><span class="label label-primary float-right uno" style="margin-right:15px;"id="letrero1">0</span></a>
                       <ul class="nav nav-second-level collapse">
                           <li><a href="pendientes.html">Pendientes <span class="label label-primary float-right uno" id="letrero2">0</span></a></li>
                           <li><a href="aceptadas.html">Aceptadas</a></li>
@@ -139,11 +140,11 @@
           </ul>
           <div class="tab-content">
               <div role="tabpanel" id="divUsuario" class="tab-pane active">
-                <div class="row text-center  white-bg  d-flex justify-content-center">
+                <div class="row text-center  white-bg  d-flex justify-content-center" id="table-wrapper">
                   <div class="col-md-4" >
                     <button class="button5 btn btn-primary b-r-xl" style="margin-bottom:20px;" onclick='agregarUsuario.dialog("open");CargarPerfiles("#perfilU");'>Agregar nuevo usuario</button>
                   </div>
-                  <div class="table-responsive col-md-12 centro scrollingtable animated" id="scrollingtable">
+                  <div class="table-responsive col-md-12 centro animated" id="scrollingtable">
                     <table class="table table-bordered table-hover text-nowrap display" id="usuariosTabla">
                       <thead>
                         <tr>
@@ -421,7 +422,7 @@
 
 
     } );
-
+    //Inicia Funciones de permisos
     function OcultarPass(valor){
       if(valor.checked){
         $("#passw").css("visibility", "visible");
@@ -538,7 +539,7 @@
         EditarUsuario(data[1],data[0],data[2],data[3],data[4],data[5]);
       });
     }
-
+    //Termina funciones de usuarios
     //Inicia Funciones de permisos
     async function GuardarPermisos(){
       var selectedValues = $('#permisos').val();
@@ -616,7 +617,6 @@
           value: '',
           text: ''
         }));
-        //document.getElementById("perfilU").appendChild(x);
         //se agregan los elementos obtenidos en el servidor
         for (i = 0; i < parsed.length; i++) {
           $(select).append($('<option>', {
@@ -629,6 +629,8 @@
       }
     }
     async function ObtenerPermisosPorPerfil(valor){
+      $(".listaP").css("visibility","hidden");
+      $("#borrar").hide();
       if(valor.value!=="" && valor.value!=="1"){
         $("#borrar").show();
         $("#guardarPer").show();
@@ -638,10 +640,6 @@
         BuscarPermisos(valor.value);
         $(".listaP").css("visibility","visible");
         $("#guardarPer").hide();
-        $("#borrar").hide();
-      }else{
-        $(".listaP").css("visibility","hidden");
-        $("#borrar").hide();
       }
     }
     async function BuscarPermisos(idperfil){

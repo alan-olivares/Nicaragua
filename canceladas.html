@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -68,14 +69,15 @@
                           <li><a href="reparacion.php">Barriles reparados</a></li>
                       </ul>
                   </li>
-                  <li class="dos">
+                  <li class="dos-cinco">
                       <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">TBRE</span><span class="fa arrow"></span></a>
                       <ul class="nav nav-second-level">
                           <li class="dos"><a href="validar_informacion.php">Validar información</a></li>
+                          <li class="cinco"><a href="impresion.html">Impresión de etiquetas</a></li>
                       </ul>
                   </li>
                   <li class="active uno-dos">
-                      <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="label label-primary float-right uno" id="letrero1">0</span></a>
+                      <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="fa arrow"></span><span class="label label-primary float-right uno" style="margin-right:15px;"id="letrero1">0</span></a>
                       <ul class="nav nav-second-level collapse">
                           <li><a href="pendientes.html">Pendientes <span class="label label-primary float-right uno" id="letrero2">0</span></a></li>
                           <li><a href="aceptadas.html">Aceptadas</a></li>
@@ -90,7 +92,6 @@
                           <li class="cuatro"><a href="configuracion.html">Configuración</a></li>
                       </ul>
                   </li>
-
               </ul>
 
           </div>
@@ -103,7 +104,7 @@
               <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
 
           </div>
-              <h2 class="nav navbar-top-links ">Solicitudes canceladas</h2>
+              <h2 class="nav navbar-top-links titulo">Solicitudes canceladas</h2>
               <ul class="nav navbar-top-links navbar-right">
                 <li class="dropdown uno">
                     <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -129,9 +130,6 @@
           </nav>
       </div>
             <div class="row wrapper border-bottom white-bg page-heading">
-              <div class="col-md-12 text-center  d-flex justify-content-center" >
-
-              </div>
               <div class="col-md-12 d-flex justify-content-center table-responsive text-center ">
                 <div class="table-responsive col-md-12 centro">
                   <table class="table table-bordered cell-border animated" id="barriles">
@@ -170,7 +168,7 @@
               <div>
                 <div class="col-md-12 text-center  d-flex justify-content-center" >
                   <div class="table-responsive col-md-12 centro" >
-                    <caption>Versión actual</caption>
+                    <caption>Versión anterior</caption>
                     <table class="table table-bordered table-hover display"  id="viejoBarril">
                       <thead>
                         <tr>
@@ -197,7 +195,7 @@
                 </div>
                 <div class="col-md-12 text-center  d-flex justify-content-center" >
                   <div class="table-responsive col-md-12 centro" >
-                    <caption>Versión a cambiar</caption>
+                    <caption>Versión actual</caption>
                     <table class="table table-bordered table-hover display"  id="nuevoBarril">
                       <thead>
                         <tr>
@@ -245,6 +243,7 @@
     <script src="js/plugins/pace/pace.min.js"></script>
 
     <script src="js/funciones_generales.js"></script>
+
 
     <script>
     const getApi="get_solicitudes.php";

@@ -118,10 +118,10 @@ while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC))
 ?>
 <tr>
   <td style="text-align: center;color:blue;text-decoration: underline;"><a onclick="javascript:abrir('descripcion.php?almacen=<?php echo $row[1]?>&area=<?php echo $row[2]?>&seccion=<?php echo $row[3]?>&alcohol=<?php echo $row[4]?>&codificacion=<?php echo $row[5]?>&fecha=<?php echo $row[8]?>')"><?php echo $row[0]?></a></td>
-  <td style="text-align: center;"><?php echo $row[6]?></td>
+  <td style="text-align: center;"><?php echo utf8_encode($row[6])?></td>
   <td style="text-align: center;"><?php echo $row[7]?></td>
   <td style="text-align: center;"><?php echo $row[8]?></td>
-  <td style="text-align: center;"><?php echo $row[9]?></td>
+  <td style="text-align: center;"><?php echo utf8_encode($row[9])?></td>
   <td style="text-align: center;"><?php echo $row[10]?></td>
   <td style="text-align: right;"><?php echo (int)$row[11]?></td>
   <td style="text-align: right;"><?php echo (int)$row[12]?></td>

@@ -27,6 +27,8 @@ if($row[0]=='1'){
       $queryCons="DELETE from CM_Perfil where IdPerfil='$idPerfilB'";
       $resultCons = sqlsrv_query( $conn , $queryCons);
       if($resultCons){
+        $queryCons="DELETE from CM_PerfilPermiso where IdPerfil='$idPerfilB'";//Si se borro el perfil, entonces borramos los registros de CM_PerfilPermiso
+        $resultCons = sqlsrv_query( $conn , $queryCons);
         echo 'Perfil borrado con exito';
       }else{
         echo '..Error.. hubo un problema al borrar el perfil, este perfil esta activo en algún usuario, intenta desasociar todos lo usuarios con este perfil primero e intenta de nuevo';
@@ -34,26 +36,31 @@ if($row[0]=='1'){
     }else if(ISSET($_POST['permisos']) && ISSET($_POST['idPerfil'])){//Perfil a modificar
       $permisos=$_POST["permisos"];
       $idPerfil=$_POST["idPerfil"];
-      $queryborr="DELETE from CM_PerfilPermiso where IdPerfil='$idPerfil'";
-      $resultCons = sqlsrv_query( $conn , $queryborr);
-      if($resultCons && $permisos!=="null"){
-        $arrayPermisos = explode(",", $permisos);//EL fronend nos manda un string separando a cada permiso con una coma, aqui lo separamos
-        $queryPermiso="";
-        foreach ($arrayPermisos as $permiso) {
-          $queryPermiso= $queryPermiso." ('$idPerfil','$permiso'),";
-        }
-        $queryPermiso = substr($queryPermiso, 0, -1);
-        $queryCons="INSERT INTO CM_PerfilPermiso (IdPerfil,IdPermiso) VALUES ".$queryPermiso;
-        $resultCons = sqlsrv_query( $conn , $queryCons);
-        if($resultCons){
-          echo "El perfil se ha actualizado con exito";
+      if($idPerfil!=="1"){
+        $queryborr="DELETE from CM_PerfilPermiso where IdPerfil='$idPerfil'";//Borramos los permisos que tenia registrados
+        $resultCons = sqlsrv_query( $conn , $queryborr);
+        if($resultCons && $permisos!=="null"){
+          $arrayPermisos = explode(",", $permisos);//EL frontend nos manda un string separando a cada permiso con una coma, aqui lo separamos
+          $queryPermiso="";
+          foreach ($arrayPermisos as $permiso) {
+            $queryPermiso= $queryPermiso." ('$idPerfil','$permiso'),";
+          }
+          $queryPermiso = substr($queryPermiso, 0, -1);//Quitamos la ultima coma de la consulta
+          $queryCons="INSERT INTO CM_PerfilPermiso (IdPerfil,IdPermiso) VALUES ".$queryPermiso;
+          $resultCons = sqlsrv_query( $conn , $queryCons);
+          if($resultCons){
+            echo "El perfil se ha actualizado con exito";
+          }else{
+            echo '..Error.. hubo un problema al actualizar el perfil';
+          }
         }else{
-          echo '..Error.. hubo un problema al actualizar el perfil';
+          echo 'Los permisos se han borrado exitosamente';
         }
       }else{
-        echo 'Los permisos se han borrado exitosamente';
+        echo '..Error.. el perfil de administrador no puede ser modificado';
       }
-    }else if(ISSET($_POST['borrarIdUser'])){//Perfil a modificar
+
+    }/*else if(ISSET($_POST['borrarIdUser'])){//Usuario a borrar
       $borrarIdUser=$_POST["borrarIdUser"];
 
       $queryborr="DELETE from CM_Usuario where Clave='$borrarIdUser'";
@@ -63,7 +70,7 @@ if($row[0]=='1'){
       }else{
         echo '..Error.. hubo un problema al intentar hacer la solucitud, por favor intenta más tarde';
       }
-    }else if(ISSET($_POST['nombre'])){//Agregar nuevo usuario
+    }*/else if(ISSET($_POST['nombre'])){//Agregar nuevo usuario
       $passn=$_POST["passn"];
       $user=$_POST["user"];
       $perfil=$_POST["perfil"];

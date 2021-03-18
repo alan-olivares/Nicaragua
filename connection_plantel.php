@@ -73,7 +73,7 @@ while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC))
 ?>
 <tr>
   <td style="text-align: center;color:blue;text-decoration: underline;"><a onclick="javascript:abrir('descripcion_bodegas.php?almacen=<?php echo $row[1]?>&area=<?php echo $row[2]?>&codificacion=<?php echo $row[4]?>')"><?php echo $row[0]?></a></td>
-  <td style="text-align: center;"><?php echo $row[5]?></td>
+  <td style="text-align: center;"><?php echo utf8_encode($row[5])?></td>
   <td style="text-align: center;"><?php echo $row[6]?></td>
   <td style="text-align: right;"><?php echo (int)$row[7]?></td>
   <td style="text-align: right;"><?php echo (int)$row[8]?></td>
