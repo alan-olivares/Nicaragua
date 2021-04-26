@@ -1,6 +1,6 @@
 <?php
-$usuario=$_GET["usuario"];
-$pass=$_GET["pass"];
+$usuario=ISSET($_GET['usuario'])?$_GET['usuario']:"null";
+$pass=ISSET($_GET['pass'])?$_GET['pass']:"null";
 include'general_connection.php';
 $tsql = "exec sp_getAcceso '$usuario' , '$pass'";
 $stmtIncio = sqlsrv_query( $conn , $tsql);

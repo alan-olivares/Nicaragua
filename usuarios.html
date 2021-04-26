@@ -78,6 +78,14 @@
                           <li class="cinco"><a href="impresion.html">Impresión de etiquetas</a></li>
                       </ul>
                   </li>
+                  <li class="seis">
+                      <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Órdenes de trabajo</span><span class="fa arrow"></span></a>
+                      <ul class="nav nav-second-level">
+                          <li><a href="OLlenado.html">Llenado</a></li>
+                          <li><a href="ORelleno.html">Relleno</a></li>
+                          <li><a href="OTrasiego.html">Trasiego</a></li>
+                      </ul>
+                  </li>
                   <li class="uno-dos">
                       <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="fa arrow"></span><span class="label label-primary float-right uno" style="margin-right:15px;"id="letrero1">0</span></a>
                       <ul class="nav nav-second-level collapse">
@@ -226,24 +234,24 @@
                 </div>
               </div>
               <div class="col-md-12 text-center  d-flex justify-content-center" >
-                <div class="col-md-4 text-center  d-flex justify-content-center" >
+                <div class="col-md-4 text-center" >
                   <h5><label>  Grupo:   </label>
                     <select class="form-control" id="grupoU">
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                      <option value="6">6</option>
+                      <option value="1">ADMINISTRADOR</option>
+                      <option value="2">SUPERVISOR</option>
+                      <option value="3">OPERARIO</option>
+                      <option value="4">OP_MONTACARGAS</option>
+                      <option value="5">MANTENIMIENTO</option>
+                      <option value="6">GERENCIA</option>
                     </select>
                   </h5>
                 </div>
-                <div class="col-md-4 text-center  d-flex justify-content-center" >
+                <div class="col-md-4 text-center" >
                   <h5><label>  Acceso al sistema:   </label>
                     <input type="checkbox" id="accesoU" checked="true">
                   </h5>
                 </div>
-                <div class="col-md-4 text-center  d-flex justify-content-center" >
+                <div class="col-md-4 text-center " >
                   <h5><label>  Activo/Desactivo:   </label>
                     <input type="checkbox" id="activoDesactivoU" checked="true">
                   </h5>
@@ -294,12 +302,12 @@
                   <div class="col-md-4 text-center  d-flex justify-content-center" >
                     <h5><label>  Grupo:   </label>
                       <select class="form-control" id="grupoUE">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
+                        <option value="1">ADMINISTRADOR</option>
+                        <option value="2">SUPERVISOR</option>
+                        <option value="3">OPERARIO</option>
+                        <option value="4">OP_MONTACARGAS</option>
+                        <option value="5">MANTENIMIENTO</option>
+                        <option value="6">GERENCIA</option>
                       </select>
                     </h5>
                   </div>
@@ -422,7 +430,7 @@
 
 
     } );
-    //Inicia Funciones de permisos
+    //Inicia Funciones de usuarios
     function OcultarPass(valor){
       if(valor.checked){
         $("#passw").css("visibility", "visible");
@@ -459,7 +467,7 @@
       setSelectedValue(document.getElementById("perfilUE"),perfil);
       $('#accesoUE').prop('checked', (acceso==="Si")?true:false);
       $('#activoDesactivoUE').prop('checked', (estado==="Activo")?true:false);
-      document.getElementById("grupoUE").value=grupo;
+      setSelectedValue(document.getElementById("grupoUE"),grupo);
       document.getElementById("nombreUE").value=nombre;
       document.getElementById("usuarioUE").value=usuario;
       editarUsuario.dialog("open");

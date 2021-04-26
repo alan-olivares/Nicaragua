@@ -61,8 +61,6 @@
         if($row[0]=='1'){
           $tsql2 = "select u.Nombre,p.Descripcion from CM_Usuario u
             left join CM_Perfil p on p.IdPerfil=u.IdPerfil
-            left join CM_PerfilPermiso pp on pp.IdPerfil=p.IdPerfil
-            left join CM_Permiso per on per.IdPermiso=pp.IdPermiso
             where u.Clave='$usuario'";
           $stmt2 = sqlsrv_query( $conn , $tsql2);
           while( $row2 = sqlsrv_fetch_array( $stmt2, SQLSRV_FETCH_NUMERIC))

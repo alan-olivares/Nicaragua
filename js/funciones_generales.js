@@ -17,6 +17,40 @@ function FormatDate(fecha){
     return "";
   }
 }
+async function ActualizarFechasLotes(url){
+  try {
+    var result = await conexion("GET",url,"");
+    var parsed =JSON.parse(result);
+    var array1= [];
+    array1.push(dateFormatoCompleto(new Date,'-'));
+    for (var i = 0; i < parsed.length; i++) {
+      array1.push(parsed[i].Fecha);
+    }
+    $('#data_1 .input-group.date').datepicker({
+        todayBtn: "linked",
+        keyboardNavigation: false,
+        forceParse: false,
+        autoclose: true,
+        format: 'yyyy-mm-dd',
+        beforeShowDay: function(date) {
+            var fecha=dateFormatoCompleto(date,'-');
+            if(array1.indexOf(fecha) != -1 ){
+              return (true,"azul");
+            }else{
+              return (false);
+            }
+        }
+    });
+
+
+  }catch(error){
+    mensajeError(error);
+  }
+  $("#data_1 .input-group.date").datepicker().datepicker("setDate", new Date());
+
+
+}
+
 function empezar(){
   $(".sk-spinner-three-bounce div").css("visibility","visible");
 }
@@ -48,6 +82,13 @@ function dateFormato(date,sep) {
   var year=date.getFullYear();
   return ((dia<10)?'0'+dia:dia)+sep+((mes<9)?'0'+(mes+1):(mes+1))+sep+String(year).substring(2);
 }
+function dateFormatoCompleto(date,sep) {
+  var dia=date.getDate();
+  var mes=date.getMonth();
+  var year=date.getFullYear();
+  return year+sep+((mes<9)?'0'+(mes+1):(mes+1))+sep+((dia<10)?'0'+dia:dia);
+}
+
 function mensajeOpcional(texto) {
   return new Promise(function(resolve, reject) {
         swal({
@@ -132,6 +173,7 @@ async function revisarPermisosInterface(){
   if(!permisos.includes(",3,")){$(".tres").remove()}
   if(!permisos.includes(",4,")){$(".cuatro").remove()}
   if(!permisos.includes(",5,")){$(".cinco").remove()}
+  if(!permisos.includes(",6,")){$(".seis").remove()}
   if(!permisos.includes(",3,") && !permisos.includes(",4,")){$(".tres-cuatro").remove()}
   if(!permisos.includes(",1,") && !permisos.includes(",2,")){$(".uno-dos").remove()}
   if(!permisos.includes(",2,") && !permisos.includes(",5,")){$(".dos-cinco").remove()}

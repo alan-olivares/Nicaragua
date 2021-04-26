@@ -462,39 +462,7 @@ $('#barriles tbody').on( 'click', 'tr', function () {
   $(this).toggleClass('selected');
 });
 
-async function ActualizarFechasLotes(){
-  try {
-    const url='RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&fechasLotes=true';
-    var result = await conexion("GET",url,"");
-    var parsed =JSON.parse(result);
-    var array1= [];
-    for (var i = 0; i < parsed.length; i++) {
-      array1.push(parsed[i].Fecha);
-    }
-    $('#data_1 .input-group.date').datepicker({
-        todayBtn: "linked",
-        keyboardNavigation: false,
-        forceParse: false,
-        autoclose: true,
-        format: 'yyyy-mm-dd',
-        beforeShowDay: function(date) {
-            var fecha=date.getFullYear()+"-"+
-            (((date.getMonth()+1)<10)?"0"+(date.getMonth()+1):(date.getMonth()+1))+"-"+
-            ((date.getDate()<10)?"0"+date.getDate():date.getDate());
-            if(array1.indexOf(fecha) != -1){
-              return (true,"azul");
-            }else{
-              return (false);
-            }
-        }
-    });
 
-  }catch(error){
-    mensajeError(error);
-  }
-
-
-}
 async function permisos(){
   var perm=await revisarPermisos(["2"]);
   if(!perm){
@@ -504,7 +472,8 @@ async function permisos(){
 
 $(document).ready(function(){
   //Por default los botones y la tabla deben de estar desactivado
-  ActualizarFechasLotes();
+  const url='RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&fechasLotes=true';
+  ActualizarFechasLotes(url);
   permisos();
   $("#scrollingtable").hide();
   $("#Agregar").hide();

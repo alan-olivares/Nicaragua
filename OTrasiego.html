@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>TBRE</title>
+
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+  <link rel="icon" href="img\TBRE.ico">
+
+  <link href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+  <link href="css/animate.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+  <link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+  <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+  <script src="impresora/BrowserPrint-3.0.216.min.js"></script>
+  <script src="impresora/BrowserPrint-Zebra-1.0.216.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+</head>
+
+<body>
+  <script src="js/revisar_sesion.js"></script>
+    <div id="wrapper">
+
+      <nav class="navbar-default navbar-static-side" role="navigation">
+          <div class="sidebar-collapse">
+              <ul class="nav metismenu" id="side-menu">
+                  <li class="nav-header">
+                    <div class="dropdown profile-element">
+                        <img alt="image" class="rounded-circle perfil" id="perfil1"/>
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <span class="block m-t-xs font-bold"><script>
+                              document.write(localStorage['nombre'] || 'Sin nombre');
+                              var foto=localStorage['nombre'] || 'Sin nombre';
+                              foto=foto.charAt(0).concat(".png").toLowerCase();
+                              document.getElementById("perfil1").src="img/letras/"+foto;
+                            </script></span>
+                            <span class="text-muted text-xs block"><script>
+                              document.write(localStorage['perfil'] || 'Sin perfil');
+                            </script><b class="caret"></b></span>
+                        </a>
+                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                            <li><a class="dropdown-item" href="perfil.html">Perfil</a></li>
+                            <li class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" onclick="limpiar();">Cerrar sesión</a></li>
+                        </ul>
+                    </div>
+                      <div class="logo-element">
+                          TBRE
+                      </div>
+                  </li>
+                  <li>
+                      <a href="index.php"><i class="fa fa-area-chart"></i> <span class="nav-label">Operación del día</span></a>
+                  </li>
+                  <li>
+                      <a href="#"><i class="fa fa-table"></i> <span class="nav-label">Reportes</span><span class="fa arrow"></span></a>
+                      <ul class="nav nav-second-level">
+                          <li><a href="inventario.php">Inventario</a></li>
+                          <li><a href="barriles_plantel.php">Barriles en plantel</a></li>
+                          <li><a href="llenados.php">Barriles llenados</a></li>
+                          <li><a href="rellenados.php">Barriles rellenados</a></li>
+                          <li><a href="trasiego.php">Barriles trasegados</a></li>
+                          <li><a href="reparacion.php">Barriles reparados</a></li>
+                      </ul>
+                  </li>
+                  <li class="dos-cinco">
+                      <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">TBRE</span><span class="fa arrow"></span></a>
+                      <ul class="nav nav-second-level">
+                          <li class="dos"><a href="validar_informacion.php">Validar información</a></li>
+                          <li class="cinco"><a href="impresion.html">Impresión de etiquetas</a></li>
+                      </ul>
+                  </li>
+                  <li class="seis active">
+                      <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Órdenes de trabajo</span><span class="fa arrow"></span></a>
+                      <ul class="nav nav-second-level">
+                          <li><a href="OLlenado.html">Llenado</a></li>
+                          <li><a href="ORelleno.html">Relleno</a></li>
+                          <li class="active"><a href="OTrasiego.html">Trasiego</a></li>
+                      </ul>
+                  </li>
+                  <li class="uno-dos">
+                      <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="fa arrow"></span><span class="label label-primary float-right uno" style="margin-right:15px;"id="letrero1">0</span></a>
+                      <ul class="nav nav-second-level collapse">
+                          <li><a href="pendientes.html">Pendientes <span class="label label-primary float-right uno" id="letrero2">0</span></a></li>
+                          <li><a href="aceptadas.html">Aceptadas</a></li>
+                          <li><a href="rechazadas.html">Rechazadas</a></li>
+                          <li><a href="canceladas.html">Canceladas</a></li>
+                      </ul>
+                  </li>
+                  <li class="tres-cuatro">
+                      <a href="#"><i class="fa fa-gear"></i> <span class="nav-label">Administración</span><span class="fa arrow"></span></a>
+                      <ul class="nav nav-second-level">
+                          <li class="tres"><a href="usuarios.html">Usuarios</a></li>
+                          <li class="cuatro"><a href="configuracion.html">Configuración</a></li>
+                      </ul>
+                  </li>
+              </ul>
+
+          </div>
+      </nav>
+
+          <div id="page-wrapper" class="gray-bg">
+          <div class="row border-bottom">
+          <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+          <div class="navbar-header">
+              <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+
+          </div>
+              <h2 class="nav navbar-top-links" style="margin-left:120px; margin-right:10px;">Órdenes de trasiego</h2>
+              <ul class="nav navbar-top-links navbar-right">
+                <li class="dropdown uno">
+                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell"></i>  <span class="label label-primary" id="letrero3">0</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-alerts">
+                        <li>
+                            <a href="pendientes.html" class="dropdown-item">
+                                <div id="letrero4">
+                                    <i class="fa fa-envelope fa-fw" ></i> Tienes 0 solicitudes de cambios
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                  <li>
+                      <a onclick="javascript:limpiar();">
+                          <i class="fa fa-sign-out"></i> Cerrar sesión
+                      </a>
+                  </li>
+              </ul>
+
+          </nav>
+      </div>
+      <div class="tabs-container">
+          <ul class="nav nav-tabs d-flex justify-content-center" role="tablist">
+              <li><a class="nav-link active" data-toggle="tab" href="#generar"> Generar órdenes</a></li>
+              <li><a class="nav-link" data-toggle="tab" onclick="ActualizarOrnedes('hoy');" href="#ver">Ver órdenes</a></li>
+          </ul>
+          <div class="tab-content">
+              <div role="tabpanel" id="generar" class="tab-pane active">
+                <div class="panel panel-default" style="margin-top:0px;">
+                  <div class="row text-center  white-bg  d-flex justify-content-center" >
+                    <button class="button5 btn btn-primary b-r-xl" style="margin-bottom:20px;" onclick='CargarDialogo();'>Agregar ordenes</button>
+                  </div>
+                  <div class="col-md-12 d-flex justify-content-center table-responsive text-center " id="table-wrapper">
+                    <div class="table-responsive col-md-12 centro" id="scrollingtable">
+                      <table class="table table-bordered cell-border" id="lotes">
+                        <thead>
+                          <tr>
+                            <th>Número</th>
+                            <th>Bodega</th>
+                            <th>Fecha alcohol</th>
+                            <th>Alcohol</th>
+                            <th>Uso</th>
+                            <th>Cantidad</th>
+                            <th>Litros</th>
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>
+                      <div class="sk-spinner spinner1">
+                        <div class="sk-bounce1"></div>
+                        <div class="sk-bounce2"></div>
+                        <div class="sk-bounce3"></div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <div role="tabpanel" id="ver" class="tab-pane">
+                <div class="row text-center  white-bg  d-flex justify-content-center">
+                  <div class="col-md-12 text-center  d-flex justify-content-center" >
+                    <div class="col-md-4 text-center"style="max-width:250px;" id="data_1">
+                      <h5><label>  Fecha de filtro:   </label>
+                        <div class="input-group date">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" id="FOrdenes" onchange="ActualizarOrnedes(this.value);" data-date-format='yy-mm-dd'>
+                          </div>
+                        </h5>
+                      </div>
+                  </div>
+                  <div class="col-md-12 d-flex justify-content-center table-responsive text-center " id="table-wrapper">
+                    <div class="table-responsive col-md-12 centro" id="scrollingtable">
+                      <table class="table table-bordered cell-border" id="lotesOrden">
+                        <thead>
+                          <tr>
+                            <th>Órden</th>
+                            <th>Bodega</th>
+                            <th>Cantidad</th>
+                            <th>Paletas</th>
+                            <th>Operador</th>
+                            <th>Montacarguista</th>
+                            <th>Supervisor</th>
+                            <th>Estatus</th>
+                            <th>Opción</th>
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>
+                      <div class="sk-spinner sk-spinner-three-bounce">
+                        <div class="sk-bounce1"></div>
+                        <div class="sk-bounce2"></div>
+                        <div class="sk-bounce3"></div>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="col-md-12 ibox-content listaP">
+                      <h4>
+                          Selecciona los permisos que deseas agregar a este perfil
+                      </h4>
+                      <select class="form-control dual_select" id="permisos" name="duallistbox" multiple>
+                      </select>
+                      <button class="button5 btn btn-primary b-r-xl" style="margin-right:30px;margin-bottom:30px;" id="guardarPer" onclick="GuardarPermisos();">Guardar cambios</button>
+                  </div>
+                </div>
+              </div>
+          </div>
+      </div>
+
+
+            <div class="footer">
+                <div>
+                    <strong>Todos los derechos reservados | </strong>SER Licorera 2014
+                </div>
+            </div>
+            <div id="Dialog" title="Resumen de órden" class="animated">
+              <div>
+                <div class="col-md-12 text-center  d-flex justify-content-center" >
+                  <div class="table-responsive col-md-12 centro" >
+                    <table class="table table-bordered table-hover display"  id="generarOrdenes">
+                      <thead>
+                        <tr>
+                          <th>Bodega</th>
+                          <th>Año</th>
+                          <th>Alcohol</th>
+                          <th>Uso</th>
+                          <th>Cantidad</th>
+                          <th>Tanque</th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="sk-spinner sk-spinner-three-bounce">
+                  <div class="sk-bounce1"></div>
+                  <div class="sk-bounce2"></div>
+                  <div class="sk-bounce3"></div>
+                </div>
+                <div class="col-md-12 text-center  d-flex justify-content-center" >
+                  <button class="button5 btn btn-primary cerrar">Cerrar</button>
+                  <button class="button5 btn btn-primary" onclick="GenerarOrdenes();">Generar ordenes</button>
+                </div>
+              </div>
+            </div>
+
+
+
+
+        </div>
+        </div>
+
+
+    <!-- Mainly scripts -->
+    <script src="js/jquery-3.1.1.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+    <script src="js/bootstrap-waitingfor.js"></script>
+    <script src="js/json2html.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="js/plugins/datapicker/bootstrap-datepicker.js"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="js/inspinia.js"></script>
+    <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
+    <script src="js/funciones_generales.js"></script>
+
+
+    <script>
+    const getApi="get_OTrasiego.php";
+    const postApi="post_OTrasiego.php";
+    $( function() {
+      var options={
+        open: function() {
+            $(this).closest(".ui-dialog")
+            .find(".ui-dialog-titlebar-close")
+            .removeClass("ui-dialog-titlebar-close")
+            .html("<span class='ui-button-icon-primary ui-icon ui-icon-closethick'></span>");
+        },
+        autoOpen: false,
+        height: 'auto',
+        modal: true,
+        closeOnEscape: true,
+        show: {
+          effect: "puff",
+          duration: 800
+        },
+        hide: {
+          effect: "drop",
+          duration: 800
+        },
+        maxHeight: 570,
+        minWidth: 570,
+      };
+
+      generarOrdenes = $( "#Dialog" ).dialog(options);
+    $( ".cerrar" ).button().on( "click", function() {
+      generarOrdenes.dialog( "close" );
+    });
+
+
+    } );
+    function comenzar(id){
+      $(id+" div").css("visibility","visible");
+    }
+    function terminar(id){
+      $(id+" div").css("visibility","hidden");
+    }
+
+    async function CargarTabla(){
+      try {
+        comenzar('.spinner1');
+        const url='RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&lotes=true';
+        var result = await conexion("GET",url,"");
+        var cargarTabla =JSON.parse(result);
+        var transform = {"tag":"table", "children":[
+          {"tag":"tbody","children":[
+            {"tag":"tr","children":[
+              {"tag":"td","html":"${Num}"},
+              {"tag":"td","html":"${Bod}"},
+              {"tag":"td","html":"${Fecha_Li}"},
+              {"tag":"td","html":"${Alcohol}"},
+              {"tag":"td","html":"${Barril}"},
+              {"tag":"td","html":"${Cantidad}"},
+              {"tag":"td","html":"${Lts}"},
+            ]}
+          ]}
+        ]};
+        $('#lotes > tbody').html(json2html.transform(cargarTabla,transform));
+        terminar('.spinner1');
+      } catch(error) {
+        await mensajeError(error);
+      }
+      Recargar();
+    }
+
+    async function CargarDialogo(){
+      $("#generarOrdenes > tbody").empty();
+      var elements = document.getElementsByClassName("selected");
+      try {
+        var url='RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&tanques=true';
+        var result = await conexion("GET",url,"");
+        var tanques =JSON.parse(result);
+        var opciones=opcionTanques(tanques);
+        if(elements.length>0){
+          for (var i = 0; i < elements.length; i++) {
+            var eee=elements[i].querySelectorAll('td');
+            $('#generarOrdenes').find('tbody').append("<tr><td>"+eee[1].innerHTML+"</td><td>"+eee[2].innerHTML+"</td><td>"+eee[3].innerHTML+"</td><td>"+eee[4].innerHTML+"</td><td><input onchange='maximo(this,"+eee[5].innerHTML+");' type='number' style='max-width: 80px;' value='1'></input></td>"+opciones+"</tr>");
+          }
+          generarOrdenes.dialog( "open" );
+        }else{
+          mensajeError('Selecciona al menos una opción');
+        }
+      } catch (e) {
+        mensajeError(e);
+      }
+
+    }
+
+    function opcionTanques(tanques){
+      var content='<td><select class="form-control">';
+      for (var i = 0; i < tanques.length; i++) {
+        content+='<option value="'+tanques[i].IDTanque+'" selected>'+tanques[i].Codigo+'</option>';
+      }
+      content+='</select></td>';
+      return content;
+    }
+
+    function maximo(valor,max){
+      if(valor.value>max){
+        mensajeError('No puedes asignar un valor mayor a la cantidad de barriles');
+        valor.value=max;
+      }else if(valor.value<1){
+        mensajeError('Debes asignar al menos un barril');
+        valor.value=1;
+      }
+    }
+
+    var fechaU;
+    async function ActualizarOrnedes(valor){
+      if((fechaU!=='' && fechaU!==$('#FOrdenes').val() && $('#FOrdenes').val()!=="") || (valor==='hoy' && $('#FOrdenes').val()!=="")){
+        fechaU=$('#FOrdenes').val();
+        try {
+          empezar();
+          $("#lotesOrden > tbody").empty();
+          var url='RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&fechaOrdenes='+fechaU;
+          var result = await conexion("GET",url,"");
+          url='RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&operador=';
+          var operador = await conexion("GET",url+"3","");
+          var operadorJ =JSON.parse(operador);
+          var montaca = await conexion("GET",url+"4","");
+          var montacaJ =JSON.parse(montaca);
+          var supervisor = await conexion("GET",url+"2","");
+          var supervisorJ =JSON.parse(supervisor);
+          var cargarTabla =JSON.parse(result);
+          for (var i = 0; i < cargarTabla.length; i++) {
+            var boton=(cargarTabla[i].Estatus==='Por Asignar')?'<button class="btn btn-primary b-r-xl asignar">Asignar</button>':(cargarTabla[i].Estatus==='Asignada')?'<button class="btn btn-primary b-r-xl asignar">Actualizar</button>':'<button class="btn btn-primary b-r-xl" disabled>'+cargarTabla[i].Estatus+'</button>';
+            var opc=(cargarTabla[i].Estatus!=='Por Asignar' && cargarTabla[i].Estatus!=='Asignada')?'disabled':'';
+            $("#lotesOrden > tbody").append("<tr><td class='IdOrden'>"+cargarTabla[i].IdOrden+"</td><td>"+cargarTabla[i].Bodega+"</td><td>"+cargarTabla[i].CantBarriles+"</td><td>"+cargarTabla[i].Paletas+"</td>"+escoger(operadorJ,cargarTabla[i].Op,'operador',opc)+escoger(montacaJ,cargarTabla[i].OpeMonta,'montaca',opc)+escoger(supervisorJ,cargarTabla[i].Supervidor,'supervisor',opc)+"<td class='Estatus'>"+cargarTabla[i].Estatus+"</td><td>"+boton+"</td></tr>");
+          }
+          parar();
+          $(".asignar").click(function() {
+            var $row = $(this).closest("tr");
+            Asignacion($row.find(".IdOrden").text(),$row.find(".operador").val(),$row.find(".montaca").val(),$row.find(".supervisor").val(),$row.find(".Estatus"),$row.find(".asignar"));
+          });
+        } catch(error) {
+          await mensajeError(error);
+        }
+      }
+    }
+
+    async function Asignacion(orden,operador,maquinista,supervisor,estatus,boton){
+      if(operador!=='' && maquinista!=='' && supervisor!=='' && estatus.text()==='Por Asignar' || estatus.text()==='Asignada'){
+        try {
+          var url='RestApi/POST/'+postApi;
+          var params='usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&orden='+orden+'&operador='+operador+'&motaca='+maquinista+'&supervisor='+supervisor;
+          await conexion("POST", url,params);
+          estatus.html('Asignada');
+          boton.html('Actualizar');
+          if(estatus.text()==='Por Asignar'){
+            mensajeSimple('Orden asignada con exito');
+          }else{
+            mensajeSimple('Orden actualizada con exito');
+          }
+        } catch (e) {
+          mensajeError(e);
+        }
+
+      }else{
+        mensajeError('Todos los campos deben estar llenados');
+      }
+    }
+
+    function escoger(operadores,operador,caso,opc){//Se agregan todos los options en cada select de acuerdo al parametro de usuarios que son los operadores
+      var content='<td><select class="form-control '+caso+'" '+opc+'><option value=""></option>';
+      for (var i = 0; i < operadores.length; i++) {
+        if(operadores[i].Nombre===operador){
+          content+='<option value="'+operadores[i].Id+'" selected>'+operadores[i].Nombre+'</option>';
+        }else{
+          content+='<option value="'+operadores[i].Id+'">'+operadores[i].Nombre+'</option>';
+        }
+      }
+      content+='</select></td>';
+      return content;
+    }
+
+    async function GenerarOrdenes(){
+      try {
+        $("#generarOrdenes > tbody > tr").each(async function () {
+          var url='RestApi/POST/'+postApi;
+          var params='usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&bodega='+$(this).find('td').eq(0).text()+"&year="+$(this).find('td').eq(1).text()
+                    +"&Alcohol="+$(this).find('td').eq(2).text()+"&Uso="+$(this).find('td').eq(3).text()+"&Cantidad="+$(this).find("td:eq(4) input[type='number']").val()+"&tanque="+$(this).find("td:eq(5) select").val();
+          await conexion("POST", url,params);
+        });
+        await mensajeSimple((document.getElementById("generarOrdenes").rows.length-1)+" órdenes fueron creadas");
+        generarOrdenes.dialog( "close" );
+      } catch (e) {
+        mensajeError(error);
+      }
+    }
+
+
+    function Recargar(){
+      var table = $('#lotes').DataTable({
+        responsive: false,
+        "bPaginate": false,
+        "paging":   false,
+        "ordering": false,
+        "info":     false,
+        searching: true,
+        "language": {
+          "emptyTable": "No se encontraron solicitudes",
+          searchPlaceholder: "Busca algún dato aquí",
+          search: "",
+        }
+      });
+      $('#lotes tbody').on( 'click', 'tr', function (e) {
+        var data = table.row( this ).data();
+        $(this).toggleClass('selected');
+      });
+    }
+
+    async function permisos(){
+      var perm=await revisarPermisos(["6"]);
+      if(!perm){
+        window.location.replace("index.php");
+      }
+
+    }
+
+    $(document).ready(function(){
+      permisos();
+      ActualizarFechasLotes('RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&fechasLotes=true');
+      CargarTabla();
+    });
+    </script>
+
+
+</body>
+
+</html>

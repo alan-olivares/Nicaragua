@@ -71,6 +71,14 @@
                         <li class="cinco"><a href="impresion.html">Impresión de etiquetas</a></li>
                     </ul>
                 </li>
+                <li class="seis">
+                    <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Órdenes de trabajo</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li><a href="OLlenado.html">Llenado</a></li>
+                        <li><a href="ORelleno.html">Relleno</a></li>
+                        <li><a href="OTrasiego.html">Trasiego</a></li>
+                    </ul>
+                </li>
                 <li class="uno-dos">
                     <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="fa arrow"></span><span class="label label-primary float-right uno" style="margin-right:15px;"id="letrero1">0</span></a>
                     <ul class="nav nav-second-level collapse">
