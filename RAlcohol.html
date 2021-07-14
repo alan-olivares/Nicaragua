@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>TBRE</title>
+      <link href="css/bootstrap.min.css" rel="stylesheet">
+      <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+      <link rel="icon" href="img\TBRE.ico">
+      <link rel="stylesheet" href="css/jquery-ui.css">
+      <link href="css/animate.css" rel="stylesheet">
+      <link href="css/style.css" rel="stylesheet">
+      <link rel="stylesheet" href="/resources/demos/style.css">
+      <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+   </head>
+   <body>
+      <script src="js/revisar_sesion.js"></script>
+      <div id="wrapper">
+         <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="sidebar-collapse">
+               <ul class="nav metismenu" id="side-menu">
+                  <li class="nav-header">
+                     <div class="dropdown profile-element">
+                        <img alt="image" class="rounded-circle perfil" id="perfil1"/>
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                           <span class="block m-t-xs font-bold">
+                              <script>
+                                 document.write(localStorage['nombre'] || 'Sin nombre');
+                                 var foto=localStorage['nombre'] || 'Sin nombre';
+                                 foto=foto.charAt(0).concat(".png").toLowerCase();
+                                 document.getElementById("perfil1").src="img/letras/"+foto;
+                              </script>
+                           </span>
+                           <span class="text-muted text-xs block">
+                              <script>
+                                 document.write(localStorage['perfil'] || 'Sin perfil');
+                              </script><b class="caret"></b>
+                           </span>
+                        </a>
+                        <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                           <li><a class="dropdown-item" href="perfil.html">Perfil</a></li>
+                           <li class="dropdown-divider"></li>
+                           <li><a class="dropdown-item" onclick="limpiar();">Cerrar sesión</a></li>
+                        </ul>
+                     </div>
+                     <div class="logo-element">
+                        TBRE
+                     </div>
+                  </li>
+                  <li>
+                     <a href="index.php"><i class="fa fa-area-chart"></i> <span class="nav-label">Operación del día</span></a>
+                  </li>
+                  <li>
+                     <a href="#"><i class="fa fa-table"></i> <span class="nav-label">Reportes</span><span class="fa arrow"></span></a>
+                     <ul class="nav nav-second-level">
+                        <li><a href="inventario.php">Inventario</a></li>
+                        <li><a href="barriles_plantel.php">Barriles en plantel</a></li>
+                        <li><a href="llenados.php">Barriles llenados</a></li>
+                        <li><a href="rellenados.php">Barriles rellenados</a></li>
+                        <li><a href="trasiego.php">Barriles trasegados</a></li>
+                        <li><a href="reparacion.php">Barriles reparados</a></li>
+                     </ul>
+                  </li>
+                  <li class="dos-cinco">
+                     <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">TBRE</span><span class="fa arrow"></span></a>
+                     <ul class="nav nav-second-level">
+                        <li class="dos"><a href="validar_informacion.php">Validar información</a></li>
+                        <li class="cinco"><a href="impresion.html">Impresión de etiquetas</a></li>
+                     </ul>
+                  </li>
+                  <li class="seis">
+                     <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Órdenes de trabajo</span><span class="fa arrow"></span></a>
+                     <ul class="nav nav-second-level">
+                        <li><a href="OLlenado.html">Llenado</a></li>
+                        <li><a href="ORelleno.html">Relleno</a></li>
+                        <li><a href="revision.html">Revisión</a></li>
+                        <li><a href="OTrasiego.html">Trasiego</a></li>
+                     </ul>
+                  </li>
+                  <li class="ocho active">
+                     <a href="#"><i class="fa fa-inbox"></i> <span class="nav-label">Recepción</span><span class="fa arrow"></span></a>
+                     <ul class="nav nav-second-level collapse">
+                        <li class="active"><a href="RAlcohol.html">Alcohol</a></li>
+                        <li><a href="RBarriles.html">Barriles</a></li>
+                     </ul>
+                  </li>
+                  <li class="uno-dos">
+                     <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="fa arrow"></span><span class="label label-primary float-right uno" style="margin-right:15px;"id="letrero1">0</span></a>
+                     <ul class="nav nav-second-level collapse">
+                        <li><a href="pendientes.html">Pendientes <span class="label label-primary float-right uno" id="letrero2">0</span></a></li>
+                        <li><a href="aceptadas.html">Aceptadas</a></li>
+                        <li><a href="rechazadas.html">Rechazadas</a></li>
+                        <li><a href="canceladas.html">Canceladas</a></li>
+                     </ul>
+                  </li>
+                  <li class="siete">
+                     <a href="disenoAlmacen.html"><i class="fa fa-building"></i> <span class="nav-label">Diseñar almacenes</span></a>
+                  </li>
+                  <li class="tres-cuatro">
+                     <a href="#"><i class="fa fa-gear"></i> <span class="nav-label">Administración</span><span class="fa arrow"></span></a>
+                     <ul class="nav nav-second-level">
+                        <li class="tres"><a href="usuarios.html">Usuarios</a></li>
+                        <li class="cuatro"><a href="configuracion.html">Configuración</a></li>
+                     </ul>
+                  </li>
+               </ul>
+            </div>
+         </nav>
+         <div id="page-wrapper" class="gray-bg">
+            <div class="row border-bottom">
+               <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                  <div class="navbar-header">
+                     <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                  </div>
+                  <h2 class="nav navbar-top-links titulo">Recepción de alcohol</h2>
+                  <ul class="nav navbar-top-links navbar-right">
+                     <li class="dropdown uno">
+                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell"></i>  <span class="label label-primary" id="letrero3">0</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-alerts">
+                           <li>
+                              <a href="pendientes.html" class="dropdown-item">
+                                 <div id="letrero4">
+                                    <i class="fa fa-envelope fa-fw" ></i> Tienes 0 solicitudes de cambios
+                                 </div>
+                              </a>
+                           </li>
+                        </ul>
+                     </li>
+                     <li>
+                        <a onclick="javascript:limpiar();">
+                        <i class="fa fa-sign-out"></i> Cerrar sesión
+                        </a>
+                     </li>
+                  </ul>
+               </nav>
+            </div>
+            <div class="row wrapper border-bottom white-bg page-heading">
+              <div class="panel-body col-md-12 row">
+                <div class="col-md-8 text-center d-flex justify-content-center row">
+                  <div class="col-md-11 row" >
+                    <div class="col-md-5" >
+                      <label>  Remitente:   </label>
+                      <input type="text" class="form-control" required="true" id="remitente" value="Almacén Producto Terminado" disabled>
+                    </div>
+                    <div class="col-md-3" >
+                      <label>  Envío No:   </label>
+                      <input type="number" class="form-control" required="true" id="envio" onchange="revisarEnvio(this,false);">
+                    </div>
+                    <div class="col-md-4" >
+                      <label>  Para:   </label>
+                      <select class="form-control" id="para">
+                        <option value="AEE">AEE</option>
+                        <option value="Embarrilado">Embarrilado</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-10 row" >
+
+                    <div class="col-md-6" hidden>
+                      <label>  Destino:   </label>
+                      <select class="form-control" id="destino"></select>
+                    </div>
+                  </div>
+                  <div class="col-md-11 row" >
+                    <div class="col-md-6" >
+                      <label>  Fecha alcohol:   </label>
+                      <input type="date" class="form-control" required="true" id="fecha">
+                    </div>
+                    <div class="col-md-3" >
+                      <label>  Año alcohol:   </label>
+                      <input type="number" class="form-control" required="true" id="anno">
+                    </div>
+                    <div class="col-md-3" >
+                      <label>  Hora:   </label>
+                      <input type="time" class="form-control" required="true" id="hora">
+                    </div>
+                  </div>
+
+                </div>
+                <div class="col-md-4 text-center">
+                  <label >Ver/Editar/Agregar</label>
+                  <div class="col-md-12">
+                    <button class="button5 btn btn-primary b-r-xl" onclick="abrir('reporteEnviosAlcohol.html')">Envíos</button>
+                    <button class="button5 btn btn-primary b-r-xl" onclick="CargarTanques()">Tanques</button>
+                    <button class="button5 btn btn-primary b-r-xl" onclick="CargarAlcohol()">Alcohol</button>
+                  </div>
+                </div>
+                <div class="col-md-12 text-center  d-flex justify-content-center row" style="margin-top:25px;">
+                   <div class="table-responsive col-md-12 d-flex justify-content-center">
+                     <table class="table-bordered cell-border" id="tablaPrincipal" >
+                       <thead>
+                         <tr>
+                            <th>Almacén</th>
+                            <th>Tanque</th>
+                            <th>Litros</th>
+                            <th>Medida (CMS)</th>
+                            <th>Item</th>
+                            <th>Descripción</th>
+                            <th>Opciones</th>
+                         </tr>
+                       </thead>
+                       <tbody></tbody>
+                     </table>
+                   </div>
+                   <button class="b-r-xl btn btn-primary " onclick="agregarEnvio()" id="agregarEn" style="margin-bottom:20px">Agregar nuevo envio</button>
+                </div>
+              </div>
+            </div>
+            <div class="footer">
+               <div>
+                  <strong>Todos los derechos reservados | </strong>SER Licorera 2014
+               </div>
+            </div>
+            <div id="tanques" title="Catalogo de tanques" class="animated">
+               <div>
+                  <div class="col-md-12 text-center  d-flex justify-content-center" id="table-wrapper">
+                     <div class="table-responsive col-md-12 centro" id="scrollingtable">
+                        <table class="table-bordered cell-border"  id="tanquesTabla">
+                           <thead>
+                              <tr>
+                                 <th rowspan="2">Código</th>
+                                 <th rowspan="2">Descripción</th>
+                                 <th rowspan="2">Capacidad</th>
+                                 <th rowspan="2">Tipo</th>
+                                 <th colspan="4">Revisiones</th>
+                                 <th rowspan="2">Actualizar</th>
+                                 <th rowspan="2">Eliminar</th>
+                              </tr>
+                              <tr>
+                                <th>Estado de bomba</th>
+                                <th>Estado de tuberia</th>
+                                <th>Conexiones</th>
+                                <th>Fallas electricas</th>
+                              </tr>
+                           </thead>
+                           <tbody></tbody>
+                        </table>
+                     </div>
+                  </div>
+                  <div class="col-md-12 text-center  d-flex justify-content-center" id="agregando">
+                    <table class="">
+                      <thead>
+                        <tr>
+                           <th rowspan="2">Código</th>
+                           <th rowspan="2">Descripción</th>
+                           <th rowspan="2">Capacidad</th>
+                           <th rowspan="2">Tipo</th>
+                           <th colspan="4">Revisiones</th>
+                           <th rowspan="2"></th>
+                           <th rowspan="2"></th>
+                        </tr>
+                        <tr>
+                          <th>Estado de bomba</th>
+                          <th>Estado de tuberia</th>
+                          <th>Conexiones</th>
+                          <th>Fallas electricas</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr><td><input type="text" style="max-width:80px;" id="NCodigoT"></td>
+                        <td><input type="text" style="min-width:140px;" id="NDescripcionT"></td>
+                        <td><input type="text" style="max-width:80px;" id="NCapacidadT"></td>
+                        <td><select class="form-control" id="NTipoT"><option value="1">Intermedio</option>
+                        <option value="2">Llenado</option>
+                        <option value="3">Blending</option></select></td>
+                        <td><input type="checkbox" id="NBombaT"></td>
+                        <td><input type="checkbox" id="NTuberiaT"></td>
+                        <td><input type="checkbox" id="NConexionT"></td>
+                        <td><input type="checkbox" id="NFallasT"></td>
+                        <td><button class="b-r-xl btn btn-primary" onclick="agregarTanque()">Agregar</button></td>
+                        <td><button class="b-r-xl btn btn-danger" onclick="document.getElementById('agregando').style.visibility = 'hidden';">Cancelar</button></td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="col-md-12 text-center  d-flex justify-content-center" >
+                     <button class="button5 btn btn-primary" onclick="document.getElementById('agregando').style.visibility = 'visible';">Nuevo tanque</button>
+                     <button class="button5 btn btn-primary cerrar">Cerrar</button>
+                  </div>
+               </div>
+            </div>
+            <div id="alcohol" title="Catalogo de alcoholes" class="animated">
+               <div>
+                  <div class="col-md-12 text-center  d-flex justify-content-center" id="table-wrapper">
+                     <div class="table-responsive col-md-12 centro" id="scrollingtable">
+                        <table class="table-bordered cell-border"  id="alcoholesTabla">
+                           <thead>
+                              <tr>
+                                 <th>Código</th>
+                                 <th>Descripción</th>
+                                 <th>Grado</th>
+                                 <th>Observaciones</th>
+                                 <th>Actualizar</th>
+                                 <th>Eliminar</th>
+                              </tr>
+                           </thead>
+                           <tbody></tbody>
+                        </table>
+                     </div>
+                  </div>
+                  <div class="col-md-12 text-center  d-flex justify-content-center" id="agregandoA">
+                    <table class="">
+                      <thead>
+                        <tr>
+                           <th>Código</th>
+                           <th>Descripción</th>
+                           <th>Grado</th>
+                           <th>Observaciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr><td><input style="max-width:150px;" id="NCodigoA"></td>
+                        <td><input style="max-width:150px;" id="NDescripcionA"></td>
+                        <td><input type="text" style="max-width:150px;" id="NGradoA"></td>
+                        <td><input type="text" style="min-width:200px;" id="NObservaA"></td>
+                        <td><button class="b-r-xl btn btn-primary" onclick="agregarAlcohol()">Agregar</button></td>
+                        <td><button class="b-r-xl btn btn-danger" onclick="document.getElementById('agregandoA').style.visibility = 'hidden';">Cancelar</button></td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="col-md-12 text-center  d-flex justify-content-center" >
+                     <button class="button5 btn btn-primary" onclick="document.getElementById('agregandoA').style.visibility = 'visible';">Nuevo alcohol</button>
+                     <button class="button5 btn btn-primary cerrar">Cerrar</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <script src="js/jquery-3.1.1.min.js"></script>
+      <script src="js/jquery-ui.js"></script>
+      <script src="js/popper.min.js"></script>
+      <script src="js/bootstrap.js"></script>
+      <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+      <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+      <script src="js/inspinia.js"></script>
+      <script src="js/plugins/pace/pace.min.js"></script>
+      <script src="js/funciones_generales.js"></script>
+      <script src="js/abrir_ventana.js"></script>
+      <script src="js/exportar_csv.js"></script>
+      <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
+      <script>
+         const getApi="get_RAlcohol.php";
+         const postApi="post_RAlcohol.php";
+         $( function() {
+           var options={
+             open: function() {
+                 $(this).closest(".ui-dialog")
+                 .find(".ui-dialog-titlebar-close")
+                 .removeClass("ui-dialog-titlebar-close").addClass("b-r-xl btn btn-danger");
+             },
+             autoOpen: false,
+             height: 'auto',
+             width: 'auto',
+             modal: true,
+             position:{ my: "left", at: "left bottom", of: '#remitente' },
+             closeOnEscape: true,
+             show: {
+               effect: "puff",
+               duration: 800
+             },
+             hide: {
+               effect: "drop",
+               duration: 800
+             },
+           };
+
+           Dialog = $( "#tanques" ).dialog(options);
+           alcohol = $( "#alcohol" ).dialog(options);
+           $( ".cerrar" ).button().on( "click", function() {
+             Dialog.dialog( "close" );
+             alcohol.dialog( "close" );
+         });
+
+
+         } );
+         async function revisarEnvio(campo,recargar){
+           $('#tablaPrincipal').hide();
+           $('#tablaPrincipal > tbody').empty();
+           var url='RestApi/GET/'+getApi+'?envios='+campo.value;
+           var result = await conexion("GET",url,"");
+           var parsed =JSON.parse(result);
+           if(parsed.length>0){
+             if(recargar || await mensajeOpcional('Ya existen registros de éste envío, ¿deseas verlos y/o finalizarlos?')){
+               url='RestApi/GET/'+getApi+'?alcohol=true';
+               result = await conexion("GET",url,"");
+               $('#tablaPrincipal').show();
+               var alcoholes =JSON.parse(result);
+               var content="";
+               for (var i = 0; i < parsed.length; i++) {
+                 var disabled=(parsed[i]['Estatus']==1?"disabled":"");
+                 content+='<tr><td><input type="text" style="max-width:80px;" value="LBA" disabled></td>'
+                 content+='<td><input type="text" style="max-width:150px;" value="'+parsed[i]['tanque']+'" disabled></td>';
+                 content+='<td><input type="number" style="max-width:100px;" value="'+parsed[i]['Litros']+'" disabled></td>';
+                 content+='<td><input type="number" style="max-width:100px;" value="'+parsed[i]['Medida']+'" disabled></td>';
+                 content+='<td><input type="text" style="max-width:100px;" value="'+parsed[i]['CodAlcohol']+'" id="item" disabled></td>';
+                 content+=seleccionarAlcohol(alcoholes,parsed[i]['alcohol'],"disabled");
+                 content+='<td class="d-flex justify-content-center"><button class="b-r-xl btn btn-primary" onclick="finalizarEnvio(\''+parsed[i]['IdRecDetail']+'\',this)" '+disabled+'>Finalizar</button></td>';
+                 content+="</tr>";
+               }
+               $('#tablaPrincipal > tbody').append(content);
+               $('#agregarEn').show();
+             }else{
+               campo.value="";
+             }
+           }else{
+             $('#agregarEn').show();
+           }
+         }
+
+         async function finalizarEnvio(IdDetalle,boton){
+           if(await mensajeOpcional('Selecciona si, solo si este tanque ya se encuentra vacío')){
+             try {
+               var url='RestApi/POST/'+postApi;
+               var params='finalizaTanque='+IdDetalle;
+               await conexion("POST", url,params);
+               $(boton).attr("disabled", true);
+               setTimeout(async function() {
+                 mensajeSimple("Envío actualizado con exito");
+               }, 500);
+             } catch (e) {
+               setTimeout(async function() {
+                 mensajeSimple(e);
+               }, 500);
+             }
+           }
+         }
+
+         function seleccionarAlcohol(valores,seleccion,opc){
+           var content='<td><select class="form-control" style="min-width:100px;" id="descripcion" onchange="escogerItem(this);" '+opc+'><option value=""></option>';
+           for (var i = 0; i < valores.length; i++) {
+             if(valores[i]['Descripcion']===seleccion){
+               content+='<option value="'+valores[i].IdAlcohol+'" selected>'+valores[i].Descripcion+'</option>';
+             }else{
+               content+='<option value="'+valores[i].IdAlcohol+'">'+valores[i].Descripcion+'</option>';
+             }
+           }
+           content+="</select></td>";
+           return content;
+         }
+
+         async function escogerItem(campo){
+           try {
+             var url='RestApi/GET/'+getApi+'?alcohol='+campo.value;
+             var result = await conexion("GET",url,"");
+             var alcoholes =JSON.parse(result);
+             var $row = $(campo).closest('tr');
+             $row.find('td').find("#item").val(alcoholes[0].Codigo);
+           } catch (e) {
+             mensajeError(e);
+           }
+         }
+
+         function cancelarEnvio(campo){
+           var $row = $(campo).closest('tr');
+           $row.remove();
+           if ($('#tablaPrincipal tr').length == 1) {
+             $('#tablaPrincipal').hide();
+           }
+         }
+
+         async function guardarNuevoEnvio(campo){
+           var $row = $(campo).closest('tr');
+           var tanque,litros,medida,item,IdAlcohol,anno,para,fecha,envio;
+           tanque=$row.find('td').find("#tanqueSelec").val() || "";
+           litros=$row.find('td').find("#litrosSelec").val() || "";
+           medida=$row.find('td').find("#medidaSelec").val() || "";
+           item=$row.find('td').find("#item").val() || "";
+           IdAlcohol=$row.find('td').find("#descripcion").val();
+           anno=document.getElementById('anno').value;
+           para=document.getElementById('para').value;
+           fecha=document.getElementById('fecha').value;
+           envio=document.getElementById('envio').value;
+           if(tanque!=="" && litros!=="" && medida!=="" && item!=="" && IdAlcohol!=="" && anno!=="" && para!=="" && fecha!=="" && envio!==""){
+             var mensaje="Por favor valida los datos antes de confirmar\n-Tanque: "+$row.find('td').find("#tanqueSelec :selected").text()+
+             "\n-Litros: "+litros+"\n-Medida: "+medida+"\n-Item: "+item+"\n-Alcohol: "+$row.find('td').find("#descripcion :selected").text();
+             if(await mensajeOpcional(mensaje)){
+               var url='RestApi/POST/'+postApi;
+               var params='tanque='+tanque+'&litros='+litros+'&medida='+medida+'&IdAlcohol='+IdAlcohol+"&anno="+anno+
+               "&para="+para+"&fecha="+fecha+"&envio="+envio+"&nuevoEnvio=true";
+               try {
+                 var resultado=await conexion("POST", url,params);
+                 setTimeout(async function() {
+                   mensajeSimple(resultado);
+                 }, 500);
+                 revisarEnvio(document.getElementById('envio'),true);
+               } catch (e) {
+                 setTimeout(async function() {
+                   mensajeError(e);
+                 }, 500);
+               }
+             }
+           }else{
+             mensajeError("Todos los campos deben ser llenados antes de guardar");
+           }
+         }
+
+         async function agregarEnvio(){
+           try {
+             var url='RestApi/GET/'+getApi+'?alcohol=true';
+             var result = await conexion("GET",url,"");
+             $('#tablaPrincipal').show();
+             var alcoholes =JSON.parse(result);
+             var content='<tr><td><input type="text" style="max-width:80px;" value="LBA" disabled></td>';
+             content+='<td><select class="form-control" onchange="verificarTanque(this)" id="tanqueSelec">'+$("#destino").html()+'</select></td>';
+             content+='<td><input type="number" style="max-width:100px;" value="" id="litrosSelec" ></td>';
+             content+='<td><input type="number" style="max-width:100px;" value="" id="medidaSelec" ></td>';
+             content+='<td><input type="text" style="max-width:100px;" value="" id="item" disabled></td>';
+             content+=seleccionarAlcohol(alcoholes,"","");
+             content+='<td class="d-flex justify-content-center"><button class="b-r-xl btn btn-primary" onclick="guardarNuevoEnvio(this);">Guardar</button>'
+             +'<button class="b-r-xl btn btn-danger" onclick="cancelarEnvio(this);">Cancelar</button></td>';
+             content+="</tr>";
+             $('#tablaPrincipal > tbody').append(content);
+           } catch (e) {
+             mensajeError(e);
+           }
+         }
+         async function verificarTanque(campo){
+           try {
+             var url='RestApi/GET/'+getApi+'?checkTanque='+campo.value;
+             var result = await conexion("GET",url,"");
+             var parsed =JSON.parse(result);
+             if(parsed.length>0){
+               if(await mensajeOpcional('Se encontro un registro de esté tanque en el envío '+parsed[0].EnvioNo+'\nEste tanque ya se encuentra lleno del alcohol '+parsed[0].Descripcion+' y sólo se podrá llenar con este mismo alcohol ¿Deseas continuar?')){
+                 var $row = $(campo).closest('tr');
+                 $row.find('td').find("#item").val(parsed[0].Codigo);
+                 $row.find('td').find("#descripcion").val(parsed[0].IdAlcohol);
+                 $row.find('td').find("#descripcion").attr("disabled", true);
+               }else{
+                 campo.value="";
+               }
+             }else{
+               var $row = $(campo).closest('tr');
+               $row.find('td').find("#descripcion").attr("disabled", false);
+             }
+           } catch (e) {
+             mensajeError(e);
+           }
+
+         }
+         async function obtenerDestinos(){
+           try {
+             $('#destino').empty();
+             var url='RestApi/GET/'+getApi+'?tanques=2';//Son los que se pueden mandar como recepción
+             var result = await conexion("GET",url,"");
+             var parsed =JSON.parse(result);
+             $('#destino').append($('<option>', {
+               value: "",
+               text: ""
+             }));
+             for (i = 0; i < parsed.length; i++) {
+               $('#destino').append($('<option>', {
+                 value: parsed[i]["Codigo"],
+                 text: parsed[i]["Descripcion"]
+               }));
+             }
+           } catch (e) {
+             mensajeError(e);
+           }
+         }
+
+         //Empieza código de alcoholes
+         async function CargarAlcohol(){
+           try {
+             $("#agregandoA").css("visibility", "hidden");
+             $('#alcoholesTabla > tbody').empty();
+             var url='RestApi/GET/'+getApi+'?alcohol=true';
+             var result = await conexion("GET",url,"");
+             var parsed =JSON.parse(result);
+             var keys=Object.keys(parsed[0]);
+             var content="";
+             for (var i = 0; i < parsed.length; i++) {
+               content+='<tr>'
+               keys.forEach(function(key) {
+                 if(parsed[i][key]==null)
+                    parsed[i][key]="";
+                 if(key!=='IdAlcohol'){
+                   content+='<td><input type="text" style="max-width:150px;" value="'+parsed[i][key]+'"></td>';
+                 }
+               });
+               content+='<td><button class="b-r-xl btn btn-primary delbtn" onclick="editarAlcohol(this,\''+parsed[i].IdAlcohol+'\',\''+parsed[i].Codigo+'\')">Actualizar</button></td>';
+               content+='<td><button class="b-r-xl btn btn-danger" onclick="eliminarAlcohol(\''+parsed[i].IdAlcohol+'\',\''+parsed[i].Codigo+'\')">Eliminar</button></td>';
+               content+='</tr>'
+             }
+             $('#alcoholesTabla > tbody').append(content);
+
+           } catch(error) {
+             await mensajeError(error);
+           }
+           alcohol.dialog( "open" );
+         }
+
+         async function eliminarAlcohol(id,codigo){
+           try {
+             if(await mensajeOpcional('¿Seguro que deseas eliminar el alcohol con código '+codigo+'?')){
+               var url='RestApi/POST/'+postApi;
+               var params='codigo='+id+'&desc=&grado=&obs=&operacionA=eliminados';
+               var resultado=await conexion("POST", url,params);
+               setTimeout(async function() {
+                 mensajeSimple(resultado);
+               }, 500);
+               CargarAlcohol();
+             }
+           } catch (e) {
+             setTimeout(async function() {
+               mensajeError(e);
+             }, 500);
+           }
+         }
+
+         async function editarAlcohol(campo,id,codigo){
+           try {
+             if(await mensajeOpcional('¿Seguro que deseas actualizar el alcohol con código '+codigo+'?')){
+               var $row = $(campo).closest('tr');
+               var valores=[];
+               $row.find('td').each(function(){
+                 var valor= $(this).find("input[type='text']").val();
+                 valores.push(valor);
+               });
+               var url='RestApi/POST/'+postApi;
+               var params='codigo='+id+'&codigoA='+codigo+'&codigoAN='+valores[0]+'&desc='+valores[1]+'&grado='+valores[2]+'&obs='+valores[3]+'&operacionA=editados';
+               var resultado=await conexion("POST", url,params);
+               setTimeout(async function() {
+                 mensajeSimple(resultado);
+               }, 500);
+             }
+
+           } catch (e) {
+             setTimeout(async function() {
+               mensajeError(e);
+             }, 500);
+             CargarAlcohol();
+           }
+         }
+
+         async function agregarAlcohol(){
+           try {
+             var url='RestApi/POST/'+postApi;
+             var codigo=document.getElementById('NCodigoA').value;
+             var desc=document.getElementById('NDescripcionA').value;
+             var grado=document.getElementById('NGradoA').value;
+             var obs=document.getElementById('NObservaA').value;
+             if(codigo!==""){
+               var params='codigo='+codigo+'&desc='+desc+'&grado='+grado+'&obs='+obs+'&operacionA=agregados';
+               var resultado=await conexion("POST", url,params);
+               CargarAlcohol();
+               mensajeSimple(resultado);
+               document.getElementById('NCodigoA').value="";
+               document.getElementById('NDescripcionA').value="";
+               document.getElementById('NGradoA').value="";
+               document.getElementById('NObservaA').value="";
+             }else{
+               mensajeError("Ingresa algún código antes de guardar");
+             }
+
+           } catch (e) {
+             mensajeError(e);
+           }
+         }
+         //Termina código de alcoholes
+         //Empieza código de tanques
+         async function CargarTanques(){
+           try {
+             $("#agregando").css("visibility", "hidden");
+             $('#tanquesTabla > tbody').empty();
+             var url='RestApi/GET/'+getApi+'?tanques=true';
+             var result = await conexion("GET",url,"");
+             console.log(result);
+             var parsed =JSON.parse(result);
+             var keys=Object.keys(parsed[0]);
+             var content="";
+             for (var i = 0; i < parsed.length; i++) {
+               content+='<tr>'
+               keys.forEach(function(key) {
+                 if(parsed[i][key]==null)
+                    parsed[i][key]="";
+                 if(key==='A' || key==='B'|| key==='C'|| key==='D'){
+                   content+='<td><input type="checkbox" '+(parsed[i][key]==1?'checked':'')+'></td>';
+                 }else if(key==='Descripcion'){
+                   content+='<td><input type="text" style="max-width:150px;" value="'+parsed[i][key]+'"></td>';
+                 }else if(key==='Tipo'){
+                   content+='<td><select class="form-control"  style="min-width:80px;"><option value="1" '+(parsed[i][key]==1?'selected':'')+'>Intermedio</option>'+
+                   '<option value="2" '+(parsed[i][key]==2?'selected':'')+'>Llenado</option>'+
+                   '<option value="3" '+(parsed[i][key]==3?'selected':'')+'>Blending</option></select></td>';
+                 }else if(key==='Codigo'){
+                   content+='<td><h5 style="max-width:80px;">'+parsed[i][key]+'</h5></td>';
+                 }else{
+                   content+='<td><input type="text" style="max-width:80px;" value="'+parsed[i][key]+'"></td>';
+                 }
+
+               });
+               content+='<td><button class="b-r-xl btn btn-primary delbtn" onclick="editarTanque(this,\''+parsed[i].Codigo+'\')">Actualizar</button></td>';
+               content+='<td><button class="b-r-xl btn btn-danger" onclick="eliminarTanque(\''+parsed[i].Codigo+'\')">Eliminar</button></td>';
+               content+='</tr>'
+             }
+             $('#tanquesTabla > tbody').append(content);
+
+           } catch(error) {
+             await mensajeError(error);
+           }
+           Dialog.dialog( "open" );
+         }
+
+
+
+         async function eliminarTanque(codigo){
+           try {
+             if(await mensajeOpcional('¿Seguro que deseas eliminar el tanque con código '+codigo+'?')){
+               var url='RestApi/POST/'+postApi;
+               var params='codigo='+codigo+'&desc=&capa=&tipo=&bomba=&tube=&conex=&fallas=&operacion=eliminados';
+               var resultado=await conexion("POST", url,params);
+               setTimeout(async function() {
+                 mensajeSimple(resultado);
+               }, 500);
+               CargarTanques();
+               obtenerDestinos();
+             }
+           } catch (e) {
+             setTimeout(async function() {
+               mensajeError(e);
+             }, 500);
+           }
+         }
+
+         async function editarTanque(campo,codigo){
+           try {
+             if(await mensajeOpcional('¿Seguro que deseas actualizar el tanque con código '+codigo+'?')){
+               var $row = $(campo).closest('tr');
+               var valores=[];
+               $row.find('td').each(function(){
+                 var valor=$(this).find("input[type='checkbox']").prop('checked') || $(this).find('select option:selected').val()  || $(this).find("input[type='text']").val();
+                 valores.push((valor!==undefined)?(valor===true?1:valor):0);
+               });
+               var url='RestApi/POST/'+postApi;
+               var params='codigo='+codigo+'&desc='+(valores[1]==0?"":valores[1])+'&capa='+valores[2]+'&tipo='+valores[3]+'&bomba='+valores[4]+'&tube='+valores[5]+
+               '&conex='+valores[6]+'&fallas='+valores[7]+'&operacion=editados';
+               var resultado=await conexion("POST", url,params);
+               obtenerDestinos();
+               setTimeout(async function() {
+                 mensajeSimple(resultado);
+               }, 500);
+             }
+
+           } catch (e) {
+             setTimeout(async function() {
+               mensajeError(e);
+             }, 500);
+             CargarTanques();
+           }
+         }
+
+         async function agregarTanque(){
+           try {
+             var url='RestApi/POST/'+postApi;
+             var codigo=document.getElementById('NCodigoT').value;
+             var desc=document.getElementById('NDescripcionT').value;
+             var capa=document.getElementById('NCapacidadT').value;
+             var tipo=document.getElementById('NTipoT').value;
+             if(codigo!=="" && tipo!==""){
+               var params='codigo='+codigo+'&desc='+desc+'&capa='+capa+'&tipo='+tipo+'&bomba='+($('#NBombaT').is(":checked")?1:0)+
+               '&tube='+($('#NTuberiaT').is(":checked")?1:0)+
+               '&conex='+($('#NConexionT').is(":checked")?1:0)+'&fallas='+($('#NFallasT').is(":checked")?1:0)+'&operacion=agregados';
+               var resultado=await conexion("POST", url,params);
+               CargarTanques();
+               mensajeSimple(resultado);
+               document.getElementById('NCodigoT').value="";
+               document.getElementById('NDescripcionT').value="";
+               document.getElementById('NCapacidadT').value="";
+               document.getElementById('NTipoT').value="1";
+               $('#NBombaT').prop('checked', false);
+               $('#NTuberiaT').prop('checked', false);
+               $('#NConexionT').prop('checked', false);
+               $('#NFallasT').prop('checked', false);
+               $("#agregando").css("visibility", "hidden");
+               obtenerDestinos();
+             }else{
+               mensajeError("Ingresa algún código antes de guardar");
+             }
+
+           } catch (e) {
+             mensajeError(e);
+           }
+         }
+
+         async function permisos(){
+           var perm=await revisarPermisos(["8"]);
+           if(!perm){
+             window.location.replace("index.php");
+           }
+         }
+
+         $(document).ready(function(){
+           permisos();
+           $('#tablaPrincipal').hide();
+           $('#agregarEn').hide();
+           obtenerDestinos();
+           var fecha=new Date();
+           document.getElementById('fecha').valueAsDate=fecha;
+           document.getElementById('hora').value=(fecha.getHours()<10?"0"+fecha.getHours():fecha.getHours())+":"+(fecha.getMinutes()<10?"0"+fecha.getMinutes():fecha.getMinutes());
+           document.getElementById('anno').value=fecha.getFullYear();
+           //CargarTabla();
+         });
+      </script>
+   </body>
+</html>

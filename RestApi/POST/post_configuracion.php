@@ -1,12 +1,12 @@
 <?php
-$usuario=ISSET($_POST['usuario'])?$_POST['usuario']:"null";
-$pass=ISSET($_POST['pass'])?$_POST['pass']:"null";
-include'general_connection.php';
+//$usuario=ISSET($_POST['usuario'])?$_POST['usuario']:"null";
+//$pass=ISSET($_POST['pass'])?$_POST['pass']:"null";
+include '../general_connection.php';
 $tsql = "exec sp_getAcceso '$usuario' , '$pass'";
 $stmt = sqlsrv_query( $conn , $tsql);
 $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC);
 if($row[0]=='1'){
-  include'revisar_permisos.php';
+  include '../revisar_permisos.php';
   if(strpos($permisos,',4,') !== false){
     if(isJson($_POST["data"])){
       $data = json_decode($_POST["data"], true);

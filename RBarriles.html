@@ -3,14 +3,15 @@
    <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Reportes</title>
+      <title>TBRE</title>
       <link href="css/bootstrap.min.css" rel="stylesheet">
       <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
       <link rel="icon" href="img\TBRE.ico">
-      <link href="css/plugins/dataTables/datatables.min.css" rel="stylesheet">
-      <link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+      <link rel="stylesheet" href="css/jquery-ui.css">
       <link href="css/animate.css" rel="stylesheet">
       <link href="css/style.css" rel="stylesheet">
+      <link rel="stylesheet" href="/resources/demos/style.css">
+      <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
    </head>
    <body>
       <script src="js/revisar_sesion.js"></script>
@@ -49,12 +50,12 @@
                   <li>
                      <a href="index.php"><i class="fa fa-area-chart"></i> <span class="nav-label">Operación del día</span></a>
                   </li>
-                  <li class="active">
+                  <li>
                      <a href="#"><i class="fa fa-table"></i> <span class="nav-label">Reportes</span><span class="fa arrow"></span></a>
                      <ul class="nav nav-second-level">
                         <li><a href="inventario.php">Inventario</a></li>
                         <li><a href="barriles_plantel.php">Barriles en plantel</a></li>
-                        <li class="active"><a href="llenados.php">Barriles llenados</a></li>
+                        <li><a href="llenados.php">Barriles llenados</a></li>
                         <li><a href="rellenados.php">Barriles rellenados</a></li>
                         <li><a href="trasiego.php">Barriles trasegados</a></li>
                         <li><a href="reparacion.php">Barriles reparados</a></li>
@@ -76,11 +77,11 @@
                         <li><a href="OTrasiego.html">Trasiego</a></li>
                      </ul>
                   </li>
-                  <li class="ocho">
+                  <li class="ocho active">
                      <a href="#"><i class="fa fa-inbox"></i> <span class="nav-label">Recepción</span><span class="fa arrow"></span></a>
                      <ul class="nav nav-second-level collapse">
                         <li><a href="RAlcohol.html">Alcohol</a></li>
-                        <li><a href="RBarriles.html">Barriles</a></li>
+                        <li class="active"><a href="RBarriles.html">Barriles</a></li>
                      </ul>
                   </li>
                   <li class="uno-dos">
@@ -111,7 +112,7 @@
                   <div class="navbar-header">
                      <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
                   </div>
-                  <h2 class="nav navbar-top-links titulo">Registro de barriles por llenado</h2>
+                  <h2 class="nav navbar-top-links" style="margin-left:90px; margin-right:10px;">Recepción de barriles</h2>
                   <ul class="nav navbar-top-links navbar-right">
                      <li class="dropdown uno">
                         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -135,27 +136,73 @@
                   </ul>
                </nav>
             </div>
-            <div class="row wrapper border-bottom white-bg page-heading" >
-               <div class="col-md-7 text-center  d-flex justify-content-center" >
-                  <form class="form-inline text-center d-flex justify-content-center" method="POST" action="">
-                     <h5><label class="">Fecha Inicial:</label>
-                        <input type="date" class="form-control" value="" id="date1" name="date1">
-                     </h5>
-                     <h5><label class="">Fecha Final:</label>
-                        <input type="date" class="form-control" value="" id="date2" name="date2">
-                     </h5>
-                     <button class="btn btn-primary button3" name="search"><span class="glyphicon glyphicon-search"></span></button>
-                  </form>
+            <div class="panel panel-default" style="margin-top:20px;">
+               <div class="panel-heading">
+                  <h4 class="panel-title">Generación de nuevos barriles</h4>
                </div>
-               <div class="col-md-5 text-center" >
-                  <button class="button2 btn btn-primary b-r-xl" onclick="javascript:generate();">PDF</button>
-                  <button class="button2 btn btn-primary b-r-xl" onclick="exportTableToCSV('Barriles llenados.csv')">CSV</button>
+               <div class="panel-body ">
+                 <div class="col-md-12 text-center d-flex justify-content-center">
+                   <div class="col-md-6 text-center d-flex justify-content-center" style="border-style: dotted;border-color: black;">
+                     <div class="col-md-6 text-center" >
+                        <h5><label>  Último folio generado:   </label>
+                           <h5 id="generado">...</h5>
+                        </h5>
+                     </div>
+                     <div class="col-md-6 text-center" >
+                        <h5><label>  Último folio impreso:   </label>
+                           <h5 id="impreso">...</h5>
+                        </h5>
+                     </div>
+                   </div>
+
+                 </div>
+                 <div class="col-md-12 text-center d-flex justify-content-center">
+                   <div class="col-md-2 text-center" >
+                      <h5><label>  Cantidad:   </label>
+                         <input type="number" class="form-control" required="true" id="cantidad" value="1">
+                      </h5>
+                   </div>
+                   <div class="col-md-2 text-center" >
+                      <h5><label>  Capacidad:   </label>
+                         <input type="number" class="form-control" required="true" id="capacidad" value="200">
+                      </h5>
+                   </div>
+                   <div class="col-md-4 text-center" >
+                      <h5><label>  Uso:   </label>
+                         <select class="form-control" id="uso">
+
+                         </select>
+                      </h5>
+                   </div>
+                 </div>
+                 <div class="col-md-12 text-center d-flex justify-content-center">
+                   <div class="col-md-4 text-center" >
+                     <h5><label>  Asignar a plantel:   </label>
+                        <select class="form-control" id="plantel">
+
+                        </select>
+                     </h5>
+                   </div>
+                   <div class="col-md-4 text-center" >
+                      <h5><label>  Proveedor:   </label>
+                         <select class="form-control" id="proveedor">
+
+                         </select>
+                      </h5>
+                   </div>
+                 </div>
+
+                 <div class="col-md-12 text-center d-flex justify-content-center">
+                   <div class="col-md-8 text-center" >
+                      <h5><label>  Órden de compra:   </label>
+                         <input type="text" class="form-control" required="true" id="orden">
+                      </h5>
+                   </div>
+                 </div>
+                  <div class="col-md-12 text-center  d-flex justify-content-center" >
+                     <button class="button5 btn btn-primary b-r-xl" onclick="GuardarDatos();" style="margin-right:70px;">Generar registro</button>
+                  </div>
                </div>
-               <script type="text/javascript">
-                  document.getElementById("date1").valueAsDate= new Date();
-                  document.getElementById("date2").valueAsDate= new Date();
-               </script>
-               <?php include'connection_llenados.php'?>
             </div>
             <div class="footer">
                <div>
@@ -166,149 +213,91 @@
       </div>
       <!-- Mainly scripts -->
       <script src="js/jquery-3.1.1.min.js"></script>
+      <script src="js/jquery-ui.js"></script>
       <script src="js/popper.min.js"></script>
       <script src="js/bootstrap.js"></script>
       <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
       <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-      <script src="js/plugins/dataTables/datatables.min.js"></script>
-      <script src="js/plugins/dataTables/dataTables.bootstrap4.min.js"></script>
       <!-- Custom and plugin javascript -->
       <script src="js/inspinia.js"></script>
       <script src="js/plugins/pace/pace.min.js"></script>
-      <!-- Data picker -->
-      <script src="js/plugins/datapicker/bootstrap-datepicker.js"></script>
       <script src="js/funciones_generales.js"></script>
+      <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
       <script>
+         const getApi="get_RBarriles.php";
+         const postApi="post_RBarriles.php";
+
+         async function GuardarDatos(){
+           if($("#cantidad").val()<1 || $("#capacidad").val()<1){
+             mensajeError("Cantidad o capacidad deben ser mayor a 0");
+             $("#cantidad").val('1');
+             $("#capacidad").val('200');
+             return;
+           }
+           try {
+             var mensaje='Se agregarán:\n-Barriles: '+$("#cantidad").val()+'\n-Capacidad: '+$("#capacidad").val()+' litros \n-Plantel: '+
+             $("#plantel option:selected").text()+'\n-Uso: '+$("#uso option:selected").text()+
+             '\n-Proveedor: '+$("#proveedor option:selected").text()+'\n-Orden de compra: '+$("#orden").val()+'\n¿Deseas continuar?';
+             if(await mensajeOpcional(mensaje) ){
+               var params='Cant='+$("#cantidad").val()+'&Capac='+$("#capacidad").val()+'&IdCodEdad='+$("#uso").val()+
+               '&Area='+$("#plantel").val()+'&Provee='+$("#proveedor").val()+'&OC='+$("#orden").val();
+               var result=await conexion("POST", 'RestApi/POST/'+postApi, params);
+               setTimeout(async function() {
+                 mensajeSimple(result);
+                 ObtenerDatos();
+               }, 500);
+             }
+
+           } catch(error) {
+             setTimeout(async function() {
+               mensajeError(error);
+             }, 500);
+           }
+         }
+
+         async function ObtenerDatos(){
+           try {
+             var url='RestApi/GET/'+getApi+'?barriles=true';
+             var result = await conexion("GET",url,"");
+             var parsed =JSON.parse(result);
+             document.getElementById('generado').innerHTML=parsed[0].Conselast;
+             document.getElementById('impreso').innerHTML=parsed[0].ImpreLast;
+             url='RestApi/GET/'+getApi+'?planteles=true';
+             result = await conexion("GET",url,"");
+             parsed =JSON.parse(result);
+             for (i = 0; i < parsed.length; i++) {
+               $('#plantel').append($('<option>', {
+                 value: parsed[i]["IdArea"],
+                 text: parsed[i]["Nombre"]
+               }));
+             }
+             url='RestApi/GET/'+getApi+'?codificacion=true';
+             result = await conexion("GET",url,"");
+             parsed =JSON.parse(result);
+             for (i = 0; i < parsed.length; i++) {
+               $('#uso').append($('<option>', {
+                 value: parsed[i]["IdCodEdad"],
+                 text: parsed[i]["CodiEdad"]
+               }));
+             }
+             url='RestApi/GET/'+getApi+'?proveedor=true';
+             result = await conexion("GET",url,"");
+             parsed =JSON.parse(result);
+             for (i = 0; i < parsed.length; i++) {
+               $('#proveedor').append($('<option>', {
+                 value: parsed[i]["IdProveedor"],
+                 text: parsed[i]["Descripcion"]
+               }));
+             }
+           } catch(error) {
+             await mensajeError(error);
+           }
+         }
+
          $(document).ready(function(){
-           revisarPermisosInterface();
-           $('#tabla2').DataTable( {"footerCallback": function ( row, data, start, end, display ) {
-             var api = this.api(), data;
-
-             // Remove the formatting to get integer data for summation
-             var intVal = function ( i ) {
-                 return typeof i === 'string' ?
-                     i.replace(/[\$,]/g, '')*1 :
-                     typeof i === 'number' ?
-                         i : 0;
-             };
-             pageTotal = api.column( 4, { page: 'current'} ).data().reduce( function (a, b) {
-                 return intVal(a) + intVal(b);
-             }, 0 );
-             suma= api.column( 4, { page: 'current'} ).data().reduce( function (a) {
-                 return a+1;
-             }, 0 );
-             // Update footer
-             $( api.column(4).footer() ).html((Math.round(pageTotal * 100) / 100).toFixed(3).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-             $( api.column(3).footer() ).html(suma);
-         },
-         responsive: true,
-         "bPaginate": false,
-         "paging":   false,
-         "ordering": false,
-         "info":     false,
-         dom: '<"html5buttons"B>lTfgitp',
-         language: {
-           searchPlaceholder: "Busca algún dato aquí",
-           search: "",
-         },
-         buttons: [
-             { extend: 'copy',text:'Copiar'},
-             {extend: 'csv',text:'CSV',title: 'Reporte Llenado',customize: function (csv) {
-               var buffer = new ArrayBuffer(3);
-               var dataView = new DataView(buffer);
-               dataView.setUint8(0, 0xef);
-               dataView.setUint8(1, 0xbb);
-               dataView.setUint8(2, 0xbf);
-               var read = new Uint8Array(buffer);
-               var blob = new Blob([read, csv], {type: 'text/csv;charset=utf-8'});
-               return blob;
-             }},
-             {extend: 'excel',text:'Excel', title: 'Reporte Llenado',footer:true, customize: function( xlsx ) {
-
-               var sheet = xlsx.xl.worksheets['sheet1.xml'];
-               //Lista de columnas que se le quitan el formato en excel
-               $('row c[r^="A"]', sheet).attr( 's', '' );
-               $('row c[r^="C"]', sheet).attr( 's', '' );
-               $('row c[r^="D"]', sheet).attr( 's', '' );
-               $('row c[r^="G"]', sheet).attr( 's', '' );
-             }},
-             {extend: 'pdf',text:'PDF', title: function(){ return "Reporte Llenado";},
-             footer:true,customize:function(doc){
-               doc.styles.tableHeader.fillColor='#1ab394';
-               doc.styles.title.alignment='left';
-               doc.styles.tableFooter.fillColor='#1ab394';
-               doc.styles.tableBodyEven ={alignment: 'center'};
-               doc.styles.tableBodyOdd ={alignment: 'center'};
-             }},
-
-             {extend: 'print',text:'Imprimir',
-              customize: function (win){
-                     $(win.document.body).addClass('white-bg');
-                     $(win.document.body).css('font-size', '10px');
-
-                     $(win.document.body).find('table')
-                             .addClass('compact')
-                             .css('font-size', 'inherit');
-             }
-             }
-         ]
-         } );
-         $('#tabla1').DataTable({
-         responsive: true,
-         "bPaginate": false,
-         "paging":   false,
-         "ordering": false,
-         "info":     false,
-         dom: '<"html5buttons"B>lTfgitp',
-         language: {
-           searchPlaceholder: "Busca algún dato aquí",
-           search: "",
-         },
-         buttons: [
-             { extend: 'copy',text:'Copiar'},
-             {extend: 'csv',text:'CSV',title: 'Reporte Detalle Llenado',footer:true,customize: function (csv) {
-               var buffer = new ArrayBuffer(3);
-               var dataView = new DataView(buffer);
-               dataView.setUint8(0, 0xef);
-               dataView.setUint8(1, 0xbb);
-               dataView.setUint8(2, 0xbf);
-               var read = new Uint8Array(buffer);
-               var blob = new Blob([read, csv], {type: 'text/csv;charset=utf-8'});
-               return blob;
-             }},
-             {extend: 'excel',text:'Excel', title: 'Reporte Detalle Llenado',footer:true,customize: function( xlsx ) {
-
-               var sheet = xlsx.xl.worksheets['sheet1.xml'];
-               //list of columns that should get a 1000 separator depending on local Excel installation
-               $('row c[r^="D"]', sheet).attr( 's', '' );
-               $('row c[r^="F"]', sheet).attr( 's', '' );
-             }},
-             {extend: 'pdf',text:'PDF', title: function(){ return "Reporte Detalle Llenado";},
-             footer:true,customize:function(doc){
-               doc.styles.tableHeader.fillColor='#1ab394';
-               doc.styles.title.alignment='left';
-               doc.styles.tableFooter.fillColor='#1ab394';
-               doc.styles.tableBodyEven ={alignment: 'center'};
-               doc.styles.tableBodyOdd ={alignment: 'center'};
-             }},
-
-             {extend: 'print',text:'Imprimir',footer:true,
-              customize: function (win){
-                     $(win.document.body).addClass('white-bg');
-                     $(win.document.body).css('font-size', '10px');
-
-                     $(win.document.body).find('table')
-                             .addClass('compact')
-                             .css('font-size', 'inherit');
-             }
-             }
-         ]
+           ObtenerDatos();
 
          });
-
-         });
-
-
       </script>
    </body>
 </html>

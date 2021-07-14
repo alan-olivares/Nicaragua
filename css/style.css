@@ -96,7 +96,9 @@
 .tabla thead {
     border: 1px solid black;
 }
-
+.tablaVarios td,th,thead,caption,tr{
+  text-align:center;border:1px solid #ccc;
+}
 
 .glyphicon-asterisk:before {
   content: "\002a";

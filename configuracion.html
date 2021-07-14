@@ -1,257 +1,244 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>TBRE</title>
-
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
-  <link rel="icon" href="img\TBRE.ico">
-
-  <link href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
-  <link href="css/animate.css" rel="stylesheet">
-  <link href="css/style.css" rel="stylesheet">
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <link rel="stylesheet" href="/resources/demos/style.css">
-  <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
-
-</head>
-
-<body>
-  <script src="js/revisar_sesion.js"></script>
-    <div id="wrapper">
-
-      <nav class="navbar-default navbar-static-side" role="navigation">
-          <div class="sidebar-collapse">
-              <ul class="nav metismenu" id="side-menu">
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>TBRE</title>
+      <link href="css/bootstrap.min.css" rel="stylesheet">
+      <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+      <link rel="icon" href="img\TBRE.ico">
+      <link href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+      <link href="css/animate.css" rel="stylesheet">
+      <link href="css/style.css" rel="stylesheet">
+      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+      <link rel="stylesheet" href="/resources/demos/style.css">
+      <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+   </head>
+   <body>
+      <script src="js/revisar_sesion.js"></script>
+      <div id="wrapper">
+         <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="sidebar-collapse">
+               <ul class="nav metismenu" id="side-menu">
                   <li class="nav-header">
-                    <div class="dropdown profile-element">
+                     <div class="dropdown profile-element">
                         <img alt="image" class="rounded-circle perfil" id="perfil1"/>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="block m-t-xs font-bold"><script>
-                              document.write(localStorage['nombre'] || 'Sin nombre');
-                              var foto=localStorage['nombre'] || 'Sin nombre';
-                              foto=foto.charAt(0).concat(".png").toLowerCase();
-                              document.getElementById("perfil1").src="img/letras/"+foto;
-                            </script></span>
-                            <span class="text-muted text-xs block"><script>
-                              document.write(localStorage['perfil'] || 'Sin perfil');
-                            </script><b class="caret"></b></span>
+                           <span class="block m-t-xs font-bold">
+                              <script>
+                                 document.write(localStorage['nombre'] || 'Sin nombre');
+                                 var foto=localStorage['nombre'] || 'Sin nombre';
+                                 foto=foto.charAt(0).concat(".png").toLowerCase();
+                                 document.getElementById("perfil1").src="img/letras/"+foto;
+                              </script>
+                           </span>
+                           <span class="text-muted text-xs block">
+                              <script>
+                                 document.write(localStorage['perfil'] || 'Sin perfil');
+                              </script><b class="caret"></b>
+                           </span>
                         </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                            <li><a class="dropdown-item" href="perfil.html">Perfil</a></li>
-                            <li class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" onclick="limpiar();">Cerrar sesión</a></li>
+                           <li><a class="dropdown-item" href="perfil.html">Perfil</a></li>
+                           <li class="dropdown-divider"></li>
+                           <li><a class="dropdown-item" onclick="limpiar();">Cerrar sesión</a></li>
                         </ul>
-                    </div>
-                      <div class="logo-element">
-                          TBRE
-                      </div>
+                     </div>
+                     <div class="logo-element">
+                        TBRE
+                     </div>
                   </li>
                   <li>
-                      <a href="index.php"><i class="fa fa-area-chart"></i> <span class="nav-label">Operación del día</span></a>
+                     <a href="index.php"><i class="fa fa-area-chart"></i> <span class="nav-label">Operación del día</span></a>
                   </li>
                   <li>
-                      <a href="#"><i class="fa fa-table"></i> <span class="nav-label">Reportes</span><span class="fa arrow"></span></a>
-                      <ul class="nav nav-second-level">
-                          <li><a href="inventario.php">Inventario</a></li>
-                          <li><a href="barriles_plantel.php">Barriles en plantel</a></li>
-                          <li><a href="llenados.php">Barriles llenados</a></li>
-                          <li><a href="rellenados.php">Barriles rellenados</a></li>
-                          <li><a href="trasiego.php">Barriles trasegados</a></li>
-                          <li><a href="reparacion.php">Barriles reparados</a></li>
-                      </ul>
+                     <a href="#"><i class="fa fa-table"></i> <span class="nav-label">Reportes</span><span class="fa arrow"></span></a>
+                     <ul class="nav nav-second-level">
+                        <li><a href="inventario.php">Inventario</a></li>
+                        <li><a href="barriles_plantel.php">Barriles en plantel</a></li>
+                        <li><a href="llenados.php">Barriles llenados</a></li>
+                        <li><a href="rellenados.php">Barriles rellenados</a></li>
+                        <li><a href="trasiego.php">Barriles trasegados</a></li>
+                        <li><a href="reparacion.php">Barriles reparados</a></li>
+                     </ul>
                   </li>
                   <li class="dos-cinco">
-                      <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">TBRE</span><span class="fa arrow"></span></a>
-                      <ul class="nav nav-second-level">
-                          <li class="dos"><a href="validar_informacion.php">Validar información</a></li>
-                          <li class="cinco"><a href="impresion.html">Impresión de etiquetas</a></li>
-                      </ul>
+                     <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">TBRE</span><span class="fa arrow"></span></a>
+                     <ul class="nav nav-second-level">
+                        <li class="dos"><a href="validar_informacion.php">Validar información</a></li>
+                        <li class="cinco"><a href="impresion.html">Impresión de etiquetas</a></li>
+                     </ul>
                   </li>
                   <li class="seis">
-                      <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Órdenes de trabajo</span><span class="fa arrow"></span></a>
-                      <ul class="nav nav-second-level">
-                          <li><a href="OLlenado.html">Llenado</a></li>
-                          <li><a href="ORelleno.html">Relleno</a></li>
-                          <li><a href="OTrasiego.html">Trasiego</a></li>
-                      </ul>
+                     <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Órdenes de trabajo</span><span class="fa arrow"></span></a>
+                     <ul class="nav nav-second-level">
+                        <li><a href="OLlenado.html">Llenado</a></li>
+                        <li><a href="ORelleno.html">Relleno</a></li>
+                        <li><a href="revision.html">Revisión</a></li>
+                        <li><a href="OTrasiego.html">Trasiego</a></li>
+                     </ul>
+                  </li>
+                  <li class="ocho">
+                     <a href="#"><i class="fa fa-inbox"></i> <span class="nav-label">Recepción</span><span class="fa arrow"></span></a>
+                     <ul class="nav nav-second-level collapse">
+                        <li><a href="RAlcohol.html">Alcohol</a></li>
+                        <li><a href="RBarriles.html">Barriles</a></li>
+                     </ul>
                   </li>
                   <li class="uno-dos">
-                      <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="fa arrow"></span><span class="label label-primary float-right uno" style="margin-right:15px;"id="letrero1">0</span></a>
-                      <ul class="nav nav-second-level collapse">
-                          <li><a href="pendientes.html">Pendientes <span class="label label-primary float-right uno" id="letrero2">0</span></a></li>
-                          <li><a href="aceptadas.html">Aceptadas</a></li>
-                          <li><a href="rechazadas.html">Rechazadas</a></li>
-                          <li><a href="canceladas.html">Canceladas</a></li>
-                      </ul>
+                     <a href="#"><i class="fa fa-bell"></i> <span class="nav-label">Solicitudes</span><span class="fa arrow"></span><span class="label label-primary float-right uno" style="margin-right:15px;"id="letrero1">0</span></a>
+                     <ul class="nav nav-second-level collapse">
+                        <li><a href="pendientes.html">Pendientes <span class="label label-primary float-right uno" id="letrero2">0</span></a></li>
+                        <li><a href="aceptadas.html">Aceptadas</a></li>
+                        <li><a href="rechazadas.html">Rechazadas</a></li>
+                        <li><a href="canceladas.html">Canceladas</a></li>
+                     </ul>
+                  </li>
+                  <li class="siete">
+                     <a href="disenoAlmacen.html"><i class="fa fa-building"></i> <span class="nav-label">Diseñar almacenes</span></a>
                   </li>
                   <li class="tres-cuatro active">
-                      <a href="#"><i class="fa fa-gear"></i> <span class="nav-label">Administración</span><span class="fa arrow"></span></a>
-                      <ul class="nav nav-second-level">
-                          <li class="tres"><a href="usuarios.html">Usuarios</a></li>
-                          <li class="cuatro active"><a href="configuracion.html">Configuración</a></li>
-                      </ul>
+                     <a href="#"><i class="fa fa-gear"></i> <span class="nav-label">Administración</span><span class="fa arrow"></span></a>
+                     <ul class="nav nav-second-level">
+                        <li class="tres"><a href="usuarios.html">Usuarios</a></li>
+                        <li class="cuatro active"><a href="configuracion.html">Configuración</a></li>
+                     </ul>
                   </li>
-              </ul>
-
-          </div>
-      </nav>
-
-          <div id="page-wrapper" class="gray-bg">
-          <div class="row border-bottom">
-          <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
-          <div class="navbar-header">
-              <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
-
-          </div>
-              <h2 class="nav navbar-top-links" style="margin-left:90px; margin-right:10px;">Configuración</h2>
-              <ul class="nav navbar-top-links navbar-right">
-                <li class="dropdown uno">
-                    <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
-                        <i class="fa fa-bell"></i>  <span class="label label-primary" id="letrero3">0</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-alerts">
-                        <li>
-                            <a href="pendientes.html" class="dropdown-item">
-                                <div id="letrero4">
-                                    <i class="fa fa-envelope fa-fw" ></i> Tienes 0 solicitudes de cambios
-                                </div>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                  <li>
-                      <a onclick="javascript:limpiar();">
-                          <i class="fa fa-sign-out"></i> Cerrar sesión
-                      </a>
-                  </li>
-              </ul>
-
-          </nav>
-      </div>
-      <div class="panel panel-default" style="margin-top:40px;">
-        <div class="panel-heading">
-        <h4 class="panel-title">Configuración del sistema</h4>
-        </div>
-        <div class="panel-body">
-          <div id="inputsDinamicos">
-          </div>
-          <div class="col-md-12 text-center  d-flex justify-content-center" >
-            <h5><label>  Modificar campos:   </label>
-              <input type="checkbox" onchange='OcultarPass(this);' id="cbox" style="margin-right:40px;">
-            </h5>
-          </div>
-          <div class="col-md-12 text-center  d-flex justify-content-center" >
-            <button class="button5 btn btn-primary b-r-xl" onclick="GuardarDatos();" style="margin-right:70px;">Guardar cambios</button>
-          </div>
-        </div>
-      </div>
-
-
-            <div class="footer">
-                <div>
-                    <strong>Todos los derechos reservados | </strong>SER Licorera 2014
-                </div>
+               </ul>
             </div>
+         </nav>
+         <div id="page-wrapper" class="gray-bg">
+            <div class="row border-bottom">
+               <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                  <div class="navbar-header">
+                     <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                  </div>
+                  <h2 class="nav navbar-top-links" style="margin-left:90px; margin-right:10px;">Configuración</h2>
+                  <ul class="nav navbar-top-links navbar-right">
+                     <li class="dropdown uno">
+                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell"></i>  <span class="label label-primary" id="letrero3">0</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-alerts">
+                           <li>
+                              <a href="pendientes.html" class="dropdown-item">
+                                 <div id="letrero4">
+                                    <i class="fa fa-envelope fa-fw" ></i> Tienes 0 solicitudes de cambios
+                                 </div>
+                              </a>
+                           </li>
+                        </ul>
+                     </li>
+                     <li>
+                        <a onclick="javascript:limpiar();">
+                        <i class="fa fa-sign-out"></i> Cerrar sesión
+                        </a>
+                     </li>
+                  </ul>
+               </nav>
+            </div>
+            <div class="panel panel-default" style="margin-top:40px;">
+               <div class="panel-heading">
+                  <h4 class="panel-title">Configuración del sistema</h4>
+               </div>
+               <div class="panel-body">
+                  <div id="inputsDinamicos">
+                  </div>
+                  <div class="col-md-12 text-center  d-flex justify-content-center" >
+                     <h5><label>  Modificar campos:   </label>
+                        <input type="checkbox" onchange='OcultarPass(this);' id="cbox" style="margin-right:40px;">
+                     </h5>
+                  </div>
+                  <div class="col-md-12 text-center  d-flex justify-content-center" >
+                     <button class="button5 btn btn-primary b-r-xl" onclick="GuardarDatos();" style="margin-right:70px;">Guardar cambios</button>
+                  </div>
+               </div>
+            </div>
+            <div class="footer">
+               <div>
+                  <strong>Todos los derechos reservados | </strong>SER Licorera 2014
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- Mainly scripts -->
+      <script src="js/jquery-3.1.1.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+      <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+      <script src="js/json2html.min.js"></script>
+      <script src="js/popper.min.js"></script>
+      <script src="js/bootstrap.js"></script>
+      <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+      <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+      <!-- Custom and plugin javascript -->
+      <script src="js/inspinia.js"></script>
+      <script src="js/plugins/pace/pace.min.js"></script>
+      <script src="js/funciones_generales.js"></script>
+      <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
+      <script>
+         const getApi="get_configuracion.php";
+         const postApi="post_configuracion.php";
+         function OcultarPass(valor){
+           if(valor.checked){
+             $(".campos").prop('disabled', false);
+           }else{
+             $(".campos").prop('disabled', true);
+           }
+         }
+         async function GuardarDatos(){
+           if(!document.getElementById('cbox').checked){
+             mensajeError("Modifica algo antes de guardar");
+             return;
+           }
+           try {
+             var allinputs=$('#inputsDinamicos').find(':input');
+             var data = "data=[";
+             for (var i = 0; i < allinputs.length; i++) {
+               data +='{ "id": '+allinputs[i].id+', "valor": "'+allinputs[i].value+'" },';
+             }
+             data=data.slice(0,-1);
+             var result=await conexion("POST", 'RestApi/POST/'+postApi, data+"]");
+             await mensajeSimple(result);
+             $(".campos").prop('disabled', true);
+             $("#cbox").prop('checked', false);
 
+           } catch(error) {
+             mensajeError(error);
+           }
+         }
 
+         async function ObtenerDatos(){
+           try {
+             var url='RestApi/GET/'+getApi;
+             var result = await conexion("GET",url,"");
+             var parsed =JSON.parse(result);
+             var content="";
+             for (var i = 0; i < parsed.length; i++) {
+               if((i%2)==0){
+                 content+= ' <div class="col-md-12 text-center  d-flex justify-content-center"> <div class="col-md-6 text-center"> <h5><label>  '+String(parsed[i].Descripcion)+':   </label> <input type="text" class="form-control campos" value="'+String(parsed[i].Val1)+'" name="'+String(parsed[i].IdConfig)+'" id="'+String(parsed[i].IdConfig)+'" disabled> </h5> </div>';
+               }
+               if((i%2)==1){
+                 content+='<div class="col-md-6 text-center" > <h5><label>  '+parsed[i].Descripcion+':   </label> <input type="text" class="form-control campos" value="'+String(parsed[i].Val1)+'" name="'+String(parsed[i].IdConfig)+'" id="'+String(parsed[i].IdConfig)+'" disabled> </h5> </div> </div>';
+               }
+               if(i==(parsed.length-1) && (i%2)==0){
+                 content+='</div>';
+               }
+             }
+             $('#inputsDinamicos').append(content);
+           } catch(error) {
+             await mensajeError(error);
+           }
+         }
 
+         $(document).ready(function(){
+           ObtenerDatos();
 
-        </div>
-        </div>
-
-
-    <!-- Mainly scripts -->
-    <script src="js/jquery-3.1.1.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
-    <script src="js/json2html.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.js"></script>
-    <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
-    <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
-    <!-- Custom and plugin javascript -->
-    <script src="js/inspinia.js"></script>
-    <script src="js/plugins/pace/pace.min.js"></script>
-
-    <script src="js/funciones_generales.js"></script>
-    <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
-
-
-    <script>
-    const getApi="get_configuracion.php";
-    const postApi="post_configuracion.php";
-    function OcultarPass(valor){
-      if(valor.checked){
-        $(".campos").prop('disabled', false);
-      }else{
-        $(".campos").prop('disabled', true);
-      }
-    }
-    async function GuardarDatos(){
-      if(!document.getElementById('cbox').checked){
-        mensajeError("Modifica algo antes de guardar");
-        return;
-      }
-      try {
-        var allinputs=$('#inputsDinamicos').find(':input');
-        var data = "&data=[";
-        for (var i = 0; i < allinputs.length; i++) {
-          data +='{ "id": '+allinputs[i].id+', "valor": "'+allinputs[i].value+'" },';
-        }
-        data=data.slice(0,-1);
-        var result=await conexion("POST", 'RestApi/POST/'+postApi,'usuario='+localStorage['usuario']+'&pass='+localStorage['password']+data+"]");
-        await mensajeSimple(result);
-        $(".campos").prop('disabled', true);
-        $("#cbox").prop('checked', false);
-
-      } catch(error) {
-        mensajeError(error);
-      }
-    }
-
-    async function ObtenerDatos(){
-      try {
-        var url='RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password'];
-        var result = await conexion("GET",url,"");
-        var parsed =JSON.parse(result);
-        var content="";
-        for (var i = 0; i < parsed.length; i++) {
-          if((i%2)==0){
-            content+= ' <div class="col-md-12 text-center  d-flex justify-content-center"> <div class="col-md-6 text-center"> <h5><label>  '+String(parsed[i].Descripcion)+':   </label> <input type="text" class="form-control campos" value="'+String(parsed[i].Val1)+'" name="'+String(parsed[i].IdConfig)+'" id="'+String(parsed[i].IdConfig)+'" disabled> </h5> </div>';
-          }
-          if((i%2)==1){
-            content+='<div class="col-md-6 text-center" > <h5><label>  '+parsed[i].Descripcion+':   </label> <input type="text" class="form-control campos" value="'+String(parsed[i].Val1)+'" name="'+String(parsed[i].IdConfig)+'" id="'+String(parsed[i].IdConfig)+'" disabled> </h5> </div> </div>';
-          }
-          if(i==(parsed.length-1) && (i%2)==0){
-            content+='</div>';
-          }
-        }
-        $('#inputsDinamicos').append(content);
-      } catch(error) {
-        await mensajeError(error);
-      }
-    }
-
-    $(document).ready(function(){
-      ObtenerDatos();
-
-    });
-    </script>
-
-
-</body>
-
+         });
+      </script>
+   </body>
 </html>

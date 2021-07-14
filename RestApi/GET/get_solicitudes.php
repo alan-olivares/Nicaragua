@@ -1,12 +1,12 @@
 <?php
-$usuario=ISSET($_GET['usuario'])?$_GET['usuario']:"null";
-$pass=ISSET($_GET['pass'])?$_GET['pass']:"null";
-include'general_connection.php';
+//$usuario=ISSET($_GET['usuario'])?$_GET['usuario']:"null";
+//$pass=ISSET($_GET['pass'])?$_GET['pass']:"null";
+include '../general_connection.php';
 $tsql = "exec sp_getAcceso '$usuario' , '$pass'";
 $stmt = sqlsrv_query( $conn , $tsql);
 $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC);
 if($row[0]=='1'){
-  include'revisar_permisos.php';
+  include '../revisar_permisos.php';
   if(strpos($permisos,',2,') !== false || strpos($permisos,',1,') !== false){
     if(ISSET($_GET['estado'])){
       $estado=$_GET["estado"];
@@ -40,7 +40,7 @@ if($row[0]=='1'){
           if($row[2]==null){$row[2]= "\"\"";}
           $result=$result. "{\"IdAjuste\":".$row[0].","."\"Evento\":\"".$row[1]."\",".
             "\"Consecutivo\":".$row[2].","."\"FechaSolicitud\":\"".$row[3]."\","."\"Solicitante\":\"".utf8_encode($row[4])."\",".
-            "\"FechaAutorizacion\":\"".$row[5]."\","."\"Autorizador\":\"".utf8_encode($row[6])."\","."\"Estado\":\"".$row[7]."\"},";
+            "\"FechaAutorizacion\":\"".$row[5]."\","."\"Autorizador\":\"".$row[6]."\","."\"Estado\":\"".$row[7]."\"},";
         }
         if(strlen($result)>1){
           $result = substr($result, 0, -1);
@@ -71,7 +71,7 @@ if($row[0]=='1'){
         $result = array();
         do {
           while ($row = sqlsrv_fetch_array($stmtFila, SQLSRV_FETCH_ASSOC)){
-            $result[] = array_map("utf8_encode",$row);
+            $result[] = $row;
           }
         } while (sqlsrv_next_result($stmtFila));
 

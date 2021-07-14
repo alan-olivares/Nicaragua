@@ -1,12 +1,12 @@
 <?php
-$usuario=ISSET($_GET['usuario'])?$_GET['usuario']:"null";
-$pass=ISSET($_GET['pass'])?$_GET['pass']:"null";
-include'general_connection.php';
+//$usuario=ISSET($_GET['usuario'])?$_GET['usuario']:"null";
+//$pass=ISSET($_GET['pass'])?$_GET['pass']:"null";
+include '../general_connection.php';
 $tsql = "exec sp_getAcceso '$usuario' , '$pass'";
 $stmtIncio = sqlsrv_query( $conn , $tsql);
 $row = sqlsrv_fetch_array( $stmtIncio, SQLSRV_FETCH_NUMERIC);
 if($row[0]=='1'){
-  include'revisar_permisos.php';
+  include '../revisar_permisos.php';
   if(strpos($permisos,',1,') !== false){
     $cantidad = "select COUNT(*) from ADM_Ajustes where Estado='1'";
     $stmtNumero = sqlsrv_query( $conn , $cantidad);

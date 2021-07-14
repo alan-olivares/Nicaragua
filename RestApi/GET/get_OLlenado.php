@@ -9,16 +9,15 @@ if($row[0]=='1'){
   include '../revisar_permisos.php';
   if(strpos($permisos,',6,') !== false){
     if(ISSET($_GET['lotes'])){
-      $lotes = "exec sp_LoteRelleno";
+      $lotes = "exec sp_LoteLlenado";
       imprimir($lotes,$conn);
-
     }else if(ISSET($_GET['fechasLotes'])){//Obtenemos informacion de las ordenes por la fecha
-      $fecha = "select DISTINCT(convert(varchar, Fecha, 23)) as Fecha from PR_Orden where IdTipoOp=3 order by Fecha";
+      $fecha = "select DISTINCT(convert(varchar, Fecha, 23)) as Fecha from PR_Orden where IdTipoOp=1 order by Fecha";
       imprimir($fecha,$conn);
 
     }else if(ISSET($_GET['fechaOrdenes'])){//Obtenemos las ordenes dadas por una fecha en especifico
       $fecha=$_GET['fechaOrdenes'];
-      $ordenes = "exec sp_Orden 3, '$fecha'";
+      $ordenes = "exec sp_Orden 1, '$fecha'";
       imprimir($ordenes,$conn);
 
     }else if(ISSET($_GET['operador'])){//Operadores dado a un grupo
@@ -29,6 +28,7 @@ if($row[0]=='1'){
   }else{
     echo '..Error.. No tienes acceso a esta area';
   }
+
 }else{
   echo '..Error.. Acceso no autorizado';
 }

@@ -5,8 +5,7 @@ $( function() {
     open: function() {
         $(this).closest(".ui-dialog")
         .find(".ui-dialog-titlebar-close")
-        .removeClass("ui-dialog-titlebar-close")
-        .html("<span class='ui-button-icon-primary ui-icon ui-icon-closethick'></span>");
+        .removeClass("ui-dialog-titlebar-close").addClass("b-r-xl btn btn-danger");
     },
     autoOpen: false,
     height: 'auto',
@@ -49,8 +48,7 @@ async function GuardarMover(){
       for (var i = elements.length-1; i >= 0; i--) {
         var eee=elements[i].querySelectorAll('td');
         var url='RestApi/POST/'+postApi;
-        var params='usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&evento=Mover&consecutivo='+eee[0].innerHTML+
-                  "&IdPallet="+document.getElementById("NivelesM").value+"&CBarriles="+(i+1);
+        var params='evento=Mover&consecutivo='+eee[0].innerHTML+"&IdPallet="+document.getElementById("NivelesM").value+"&CBarriles="+(i+1);
         var result=await conexion("POST", url,params);
         check=result;
 
@@ -70,8 +68,7 @@ async function GuardarEditar(){
   if(eee[10].innerHTML !=='Vacío (Plantel)' && document.getElementById("estado").options[document.getElementById("estado").selectedIndex].text==='Vacío (Plantel)'){
     if(await mensajeOpcional('El barril se encuentra lleno, si lo quieres cambiar a vacío generará los datos de un barril vacío ¿Quieres continuar?')){
       try{
-        var params='usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&evento=Editar&consecutivo='+eee[0].innerHTML+
-                '&IdPallet='+document.getElementById("Niveles").value+'&CBarriles=0&restablecer=vacio';
+        var params='evento=Editar&consecutivo='+eee[0].innerHTML+'&IdPallet='+document.getElementById("Niveles").value+'&CBarriles=0&restablecer=vacio';
         var result=await conexion("POST", 'RestApi/POST/'+postApi,params);
         setTimeout(async function() {
           await mensajeSimple(result);
@@ -89,8 +86,7 @@ async function GuardarEditar(){
   }else if(eee[10].innerHTML ==='Vacío (Plantel)' && document.getElementById("estado").options[document.getElementById("estado").selectedIndex].text==='Lleno (Bodega)'){
     if(await mensajeOpcional('El barril se encuentra vacío, si lo quieres cambiar a lleno generará los datos del estado anterior ¿Quieres continuar?')){
       try{
-        var params='usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&evento=Editar&consecutivo='+eee[0].innerHTML+
-                '&IdPallet='+document.getElementById("Niveles").value+'&CBarriles=0&restablecer=pasado';
+        var params='evento=Editar&consecutivo='+eee[0].innerHTML+'&IdPallet='+document.getElementById("Niveles").value+'&CBarriles=0&restablecer=pasado';
         var result=await conexion("POST", 'RestApi/POST/'+postApi,params);
         setTimeout(async function() {
           await mensajeSimple(result);
@@ -106,7 +102,7 @@ async function GuardarEditar(){
   }else{
     if(eee[5].innerHTML !== document.getElementById("tapa").value){
       try{
-        await conexion("GET", 'RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&tapa='+document.getElementById("tapa").value+"&year="+document.getElementById("Aalcohol").value,'');
+        await conexion("GET", 'RestApi/GET/'+getApi+'?tapa='+document.getElementById("tapa").value+"&year="+document.getElementById("Aalcohol").value,'');
 
         campos=campos+"NoTapa="+document.getElementById("tapa").value+"&";
       }catch(error){
@@ -120,7 +116,7 @@ async function GuardarEditar(){
       return;
     }
     try{
-      var result =await conexion("GET", 'RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&ConsecutivoLoteB='+eee[0].innerHTML,'');
+      var result =await conexion("GET", 'RestApi/GET/'+getApi+'?ConsecutivoLoteB='+eee[0].innerHTML,'');
       var ConsecutivoLoteB =JSON.parse(result);
       if(document.getElementById("alcohol").value!=ConsecutivoLoteB[0].IdLoteBarrica){
         campos=campos+"IdLoteBarica="+document.getElementById("alcohol").value+"&";
@@ -142,8 +138,7 @@ async function GuardarEditar(){
       }
 
       if(campos!=""){
-        var params='usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&evento=Editar&consecutivo='+eee[0].innerHTML+
-                  '&IdPallet='+document.getElementById("Niveles").value+'&CBarriles=0&'+campos;
+        var params='evento=Editar&consecutivo='+eee[0].innerHTML+'&IdPallet='+document.getElementById("Niveles").value+'&CBarriles=0&'+campos;
         result=await conexion("POST", 'RestApi/POST/'+postApi,params);
         await mensajeSimple(result);
         dialogEditar.dialog( "close" );
@@ -161,8 +156,8 @@ async function GuardarAgregar(){
     if(!document.getElementById("ubicacionA").value.includes(document.getElementById("Niveles").value)){
       var query="UPDATE WM_Barrica SET IdPallet=(select IdPallet from WM_Pallet where RackLocID="+document.getElementById("Niveles").value+") where Consecutivo="+EtiquetaAConsecutivo(document.getElementById("etiquetaA").value);
       var url='RestApi/POST/'+postApi;
-      var params='usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&evento=Agregar&consecutivo='+
-      EtiquetaAConsecutivo(document.getElementById("etiquetaA").value)+"&IdPallet="+document.getElementById("Niveles").value+"&CBarriles=1";
+      var params='evento=Agregar&consecutivo='+EtiquetaAConsecutivo(document.getElementById("etiquetaA").value)+
+      "&IdPallet="+document.getElementById("Niveles").value+"&CBarriles=1";
       try{
         var result=await conexion("POST", url,params);
         await mensajeSimple(result);
@@ -192,7 +187,7 @@ function BorrarCamposAgregarDialog(){
 async function BuscarBarril(){
   if(document.getElementById('concecutivoA').value!=""){
     try {
-      const url='RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&consecutivo='+document.getElementById('concecutivoA').value;
+      const url='RestApi/GET/'+getApi+'?consecutivo='+document.getElementById('concecutivoA').value;
       var result = await conexion("GET",url,"");
       var parsed =JSON.parse(result);
       if(parsed.length>0){
@@ -233,7 +228,7 @@ function Agregar(){
     document.getElementById("Abarrica").value=eee[4].innerHTML;
     setSelectedValue(document.getElementById("estado"), eee[10].innerHTML);
     document.getElementById("Aalcohol").value=eee[8].innerHTML;
-    var result =await conexion("GET", 'RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&ConsecutivoLoteB='+eee[0].innerHTML,'');
+    var result =await conexion("GET", 'RestApi/GET/'+getApi+'?ConsecutivoLoteB='+eee[0].innerHTML,'');
     var ConsecutivoLoteB =JSON.parse(result);
 
     //document.getElementById("LAlcohol").value=ConsecutivoLoteB[0].Lote;
@@ -247,7 +242,7 @@ function Agregar(){
   }
 }
 async function PonerOpcAlcohol(fecha,valor){
-  var result =await conexion("GET", 'RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&fechaLoteB='+fecha,'');
+  var result =await conexion("GET", 'RestApi/GET/'+getApi+'?fechaLoteB='+fecha,'');
   var fechaLoteB =JSON.parse(result);
   $("#alcohol").empty();
   for (i = 0; i < fechaLoteB.length; i++) {
@@ -308,7 +303,7 @@ async function getInfo(sel,tipo,etiqueta,valor,boton){
   if(sel.value!=""){
     try{
       empezar();
-      const url='RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&'+tipo+'='+sel.value;
+      const url='RestApi/GET/'+getApi+'?'+tipo+'='+sel.value;
       var result = await conexion("GET",url,"");
       var parsed =JSON.parse(result);
       limpiarCampos(boton);
@@ -388,7 +383,7 @@ async function CargarTabla(sel){
   if(sel.value!=""){
     try {
       empezar();
-      const url='RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&Rack='+sel.value;
+      const url='RestApi/GET/'+getApi+'?Rack='+sel.value;
       var result = await conexion("GET",url,"");
       var parsed =JSON.parse(result);
       $("#Agregar").hide();
@@ -472,7 +467,7 @@ async function permisos(){
 
 $(document).ready(function(){
   //Por default los botones y la tabla deben de estar desactivado
-  const url='RestApi/GET/'+getApi+'?usuario='+localStorage['usuario']+'&pass='+localStorage['password']+'&fechasLotes=true';
+  const url='RestApi/GET/'+getApi+'?fechasLotes=true';
   ActualizarFechasLotes(url);
   permisos();
   $("#scrollingtable").hide();

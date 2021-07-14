@@ -2,13 +2,12 @@ ObtenerNotificaciones();
 revisarPermisosInterface();
 $(".scrollingtable2").css("height",screen.height-260);
 async function ObtenerNotificaciones(){
-  var numero=await conexion("GET", 'RestApi/GET/get_notificaciones.php?usuario='+localStorage['usuario']+'&pass='+localStorage['password'],'');
+  var numero=await conexion("GET", 'RestApi/GET/get_notificaciones.php','');
   document.getElementById("letrero1").innerHTML=numero;
   document.getElementById("letrero2").innerHTML=numero;
   document.getElementById("letrero3").innerHTML=numero;
   document.getElementById("letrero4").innerHTML="Tienes "+numero+" solicitudes pendientes";
 }
-
 function FormatDate(fecha){
   if(fecha!=null){
     var res = fecha.split("-");
@@ -142,7 +141,7 @@ function mensajeError(error){
 }
 
 async function revisarPermisos(pagina){
-  var permisos=await conexion("GET", 'RestApi/GET/get_permisos.php?usuario='+localStorage['usuario']+'&pass='+localStorage['password'],'');
+  var permisos=await conexion("GET", 'RestApi/GET/get_permisos.php','');
   var reg=false;
   pagina.forEach(function(valor) {
     if(permisos.includes(","+valor+",")){//el servidor separa cada permiso con una , así no habrá problema de repeticiones
@@ -152,7 +151,7 @@ async function revisarPermisos(pagina){
   return reg;
 }
 async function revisarPermisosInterface2(){
-  var permisos=await conexion("GET", 'RestApi/GET/get_permisos.php?usuario='+localStorage['usuario']+'&pass='+localStorage['password'],'');
+  var permisos=await conexion("GET", 'RestApi/GET/get_permisos.php','');
   if(permisos.includes(",1,")){
     $(".uno").css("visibility","visible");
   }
@@ -167,13 +166,15 @@ async function revisarPermisosInterface2(){
   }
 }
 async function revisarPermisosInterface(){
-  var permisos=await conexion("GET", 'RestApi/GET/get_permisos.php?usuario='+localStorage['usuario']+'&pass='+localStorage['password'],'');
+  var permisos=await conexion("GET", 'RestApi/GET/get_permisos.php','');
   if(!permisos.includes(",1,")){$(".uno").remove()}
   if(!permisos.includes(",2,")){$(".dos").remove()}
   if(!permisos.includes(",3,")){$(".tres").remove()}
   if(!permisos.includes(",4,")){$(".cuatro").remove()}
   if(!permisos.includes(",5,")){$(".cinco").remove()}
   if(!permisos.includes(",6,")){$(".seis").remove()}
+  if(!permisos.includes(",7,")){$(".siete").remove()}
+  if(!permisos.includes(",8,")){$(".ocho").remove()}
   if(!permisos.includes(",3,") && !permisos.includes(",4,")){$(".tres-cuatro").remove()}
   if(!permisos.includes(",1,") && !permisos.includes(",2,")){$(".uno-dos").remove()}
   if(!permisos.includes(",2,") && !permisos.includes(",5,")){$(".dos-cinco").remove()}
@@ -184,9 +185,11 @@ function conexion(method, url,params) {
         let xhttp = new XMLHttpRequest();
         xhttp.open(method, url,true);
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.setRequestHeader("Authorization", "basic " + btoa(localStorage['usuario'] + ":" + localStorage['password']) );
         xhttp.onload = function () {
             if (this.readyState == 4 && this.status == 200) {
               if(!xhttp.response.includes("..Error..")){
+                console.log(xhttp.response);
                 resolve(xhttp.response);
               }else{
                 reject(xhttp.response);
