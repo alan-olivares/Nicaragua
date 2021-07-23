@@ -96,6 +96,9 @@
                   <li class="siete">
                      <a href="disenoAlmacen.html"><i class="fa fa-building"></i> <span class="nav-label">Diseñar almacenes</span></a>
                   </li>
+                  <li class="nueve">
+                     <a href="AjustesInventario.html"><i class="fa fa-edit"></i> <span class="nav-label">Ajustes de inventario</span></a>
+                  </li>
                   <li class="tres-cuatro">
                      <a href="#"><i class="fa fa-gear"></i> <span class="nav-label">Administración</span><span class="fa arrow"></span></a>
                      <ul class="nav nav-second-level">
@@ -142,15 +145,15 @@
                   <div class="col-md-11 row" >
                     <div class="col-md-5" >
                       <label>  Remitente:   </label>
-                      <input type="text" class="form-control" required="true" id="remitente" value="Almacén Producto Terminado" disabled>
+                      <input type="text" class="form-control b-r-xl" required="true" id="remitente" value="Almacén Producto Terminado" disabled>
                     </div>
                     <div class="col-md-3" >
                       <label>  Envío No:   </label>
-                      <input type="number" class="form-control" required="true" id="envio" onchange="revisarEnvio(this,false);">
+                      <input type="number" class="form-control b-r-xl" required="true" id="envio" onchange="revisarEnvio(this,false);">
                     </div>
                     <div class="col-md-4" >
                       <label>  Para:   </label>
-                      <select class="form-control" id="para">
+                      <select class="form-control b-r-xl" id="para">
                         <option value="AEE">AEE</option>
                         <option value="Embarrilado">Embarrilado</option>
                       </select>
@@ -166,15 +169,15 @@
                   <div class="col-md-11 row" >
                     <div class="col-md-6" >
                       <label>  Fecha alcohol:   </label>
-                      <input type="date" class="form-control" required="true" id="fecha">
+                      <input type="date" class="form-control b-r-xl" required="true" id="fecha">
                     </div>
                     <div class="col-md-3" >
                       <label>  Año alcohol:   </label>
-                      <input type="number" class="form-control" required="true" id="anno">
+                      <input type="number" class="form-control b-r-xl" required="true" id="anno">
                     </div>
                     <div class="col-md-3" >
                       <label>  Hora:   </label>
-                      <input type="time" class="form-control" required="true" id="hora">
+                      <input type="time" class="form-control b-r-xl" required="true" id="hora">
                     </div>
                   </div>
 
@@ -420,7 +423,7 @@
                }, 500);
              } catch (e) {
                setTimeout(async function() {
-                 mensajeSimple(e);
+                 mensajeError(e);
                }, 500);
              }
            }
@@ -536,7 +539,10 @@
            } catch (e) {
              mensajeError(e);
            }
-
+         }
+         function actualizarCambios(){
+           obtenerDestinos();
+           revisarEnvio(document.getElementById('envio'),true);
          }
          async function obtenerDestinos(){
            try {
@@ -544,16 +550,7 @@
              var url='RestApi/GET/'+getApi+'?tanques=2';//Son los que se pueden mandar como recepción
              var result = await conexion("GET",url,"");
              var parsed =JSON.parse(result);
-             $('#destino').append($('<option>', {
-               value: "",
-               text: ""
-             }));
-             for (i = 0; i < parsed.length; i++) {
-               $('#destino').append($('<option>', {
-                 value: parsed[i]["Codigo"],
-                 text: parsed[i]["Descripcion"]
-               }));
-             }
+             llenarSelect('#destino',"Codigo","Descripcion",parsed);
            } catch (e) {
              mensajeError(e);
            }
@@ -600,6 +597,7 @@
                  mensajeSimple(resultado);
                }, 500);
                CargarAlcohol();
+               actualizarCambios();
              }
            } catch (e) {
              setTimeout(async function() {
@@ -620,6 +618,7 @@
                var url='RestApi/POST/'+postApi;
                var params='codigo='+id+'&codigoA='+codigo+'&codigoAN='+valores[0]+'&desc='+valores[1]+'&grado='+valores[2]+'&obs='+valores[3]+'&operacionA=editados';
                var resultado=await conexion("POST", url,params);
+               actualizarCambios();
                setTimeout(async function() {
                  mensajeSimple(resultado);
                }, 500);
@@ -649,6 +648,7 @@
                document.getElementById('NDescripcionA').value="";
                document.getElementById('NGradoA').value="";
                document.getElementById('NObservaA').value="";
+               actualizarCambios();
              }else{
                mensajeError("Ingresa algún código antes de guardar");
              }
@@ -713,7 +713,7 @@
                  mensajeSimple(resultado);
                }, 500);
                CargarTanques();
-               obtenerDestinos();
+               actualizarCambios();
              }
            } catch (e) {
              setTimeout(async function() {
@@ -735,7 +735,7 @@
                var params='codigo='+codigo+'&desc='+(valores[1]==0?"":valores[1])+'&capa='+valores[2]+'&tipo='+valores[3]+'&bomba='+valores[4]+'&tube='+valores[5]+
                '&conex='+valores[6]+'&fallas='+valores[7]+'&operacion=editados';
                var resultado=await conexion("POST", url,params);
-               obtenerDestinos();
+               actualizarCambios();
                setTimeout(async function() {
                  mensajeSimple(resultado);
                }, 500);
@@ -772,7 +772,7 @@
                $('#NConexionT').prop('checked', false);
                $('#NFallasT').prop('checked', false);
                $("#agregando").css("visibility", "hidden");
-               obtenerDestinos();
+               actualizarCambios();
              }else{
                mensajeError("Ingresa algún código antes de guardar");
              }

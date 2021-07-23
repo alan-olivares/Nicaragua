@@ -27,7 +27,7 @@ if($row[0]=='1'){
       imprimir($usuarios,$conn);
 
     }else if(ISSET($_GET['tanques'])){//Operadores dado a un grupo
-      $usuarios = "SELECT IDTanque,Codigo from CM_Tanque";
+      $usuarios = "SELECT * from CM_Tanque";
       imprimir($usuarios,$conn);
     }
   }else{

@@ -175,6 +175,7 @@ async function revisarPermisosInterface(){
   if(!permisos.includes(",6,")){$(".seis").remove()}
   if(!permisos.includes(",7,")){$(".siete").remove()}
   if(!permisos.includes(",8,")){$(".ocho").remove()}
+  if(!permisos.includes(",9,")){$(".nueve").remove()}
   if(!permisos.includes(",3,") && !permisos.includes(",4,")){$(".tres-cuatro").remove()}
   if(!permisos.includes(",1,") && !permisos.includes(",2,")){$(".uno-dos").remove()}
   if(!permisos.includes(",2,") && !permisos.includes(",5,")){$(".dos-cinco").remove()}
@@ -184,7 +185,7 @@ function conexion(method, url,params) {
     return new Promise(function (resolve, reject) {
         let xhttp = new XMLHttpRequest();
         xhttp.open(method, url,true);
-        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded;charset=UTF-8");
         xhttp.setRequestHeader("Authorization", "basic " + btoa(localStorage['usuario'] + ":" + localStorage['password']) );
         xhttp.onload = function () {
             if (this.readyState == 4 && this.status == 200) {
@@ -210,6 +211,45 @@ function conexion(method, url,params) {
         };
         xhttp.send(params);
     });
+}
+function llenarSelect(select,valor,texto,json){
+  $(select).append($('<option>', {
+    value: "",
+    text: ""
+  }));
+  for (i = 0; i < json.length; i++) {
+    $(select).append($('<option>', {
+      value: json[i][valor],
+      text: json[i][texto]
+    }));
+  }
+}
+function crearTablaJson(json,tabla){
+  $(tabla+' > thead').empty();
+  $(tabla+' > tbody').empty();
+  var content="";
+  if(json.length>0){
+    var keys=Object.keys(json[0]);
+    content="<tr>";
+    keys.forEach(function(key) {
+      content+='<th>'+key+'</th>';
+    });
+    content+="</tr>";
+    $(tabla+' > thead').append(content);
+    content="";
+    for (var i = 0; i < json.length; i++) {
+      content+="<tr>";
+      keys.forEach(function(key) {
+        content+='<td style="max-width:100%;white-space:nowrap;">'+json[i][key]+'</td>';
+      });
+      content+="</tr>";
+    }
+    $(tabla+' > tbody').append(content);
+  }else{
+    $(tabla+' > thead').append('<tr><th>Tabla sin datos</th></tr>');
+  }
+
+  return content;
 }
 function GenerarEtiqueta(consecutivo){
   var n = String(consecutivo).length;

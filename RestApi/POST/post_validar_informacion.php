@@ -6,19 +6,20 @@ $tsql = "exec sp_getAcceso '$usuario' , '$pass'";
 $stmt = sqlsrv_query( $conn , $tsql);
 $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC);
 if($row[0]=='1'){//Si es un usuario registrado
-  $evento=$_POST["evento"];
-  $consecutivo=$_POST["consecutivo"];
   include '../revisar_permisos.php';
   if(strpos($permisos,',2,') !== false){
+    $evento=$_POST["evento"];
+    $consecutivo=$_POST["consecutivo"];
+    $motivo=$_POST["motivo"];
     //Verificar que el barril no tenga otras solicitudes pendientes
     $queryCons="select COUNT(*) from ADM_Ajustes where IdBarrica=(select IdBarrica from WM_Barrica where Consecutivo='$consecutivo') AND Estado=1";
     $resultCons = sqlsrv_query( $conn , $queryCons);
     $row = sqlsrv_fetch_array( $resultCons, SQLSRV_FETCH_NUMERIC);
     if($row[0]==0){
       if(ISSET($_POST['restablecer'])){//Esta restableciendo el barril a una versión pasada o se esta poniendo en vacío
-        $query="insert into ADM_Ajustes (Evento,IdBarrica,FechaSolicitud,Solicitante,Estado,Codigo)
+        $query="insert into ADM_Ajustes (Evento,IdBarrica,FechaSolicitud,Solicitante,Estado,Codigo,IdRazon)
                                 values ('$evento',(select IdBarrica from WM_Barrica where Consecutivo='$consecutivo'),(SELECT GETDATE()),
-                                        (select IdUsuario from CM_Usuario where Clave = '$usuario'),1,''); SELECT SCOPE_IDENTITY()";
+                                        (select IdUsuario from CM_Usuario where Clave = '$usuario'),1,'',$motivo); SELECT SCOPE_IDENTITY()";
         $result = sqlsrv_query( $conn , $query);
         sqlsrv_next_result($result);
         sqlsrv_fetch($result);
@@ -95,9 +96,9 @@ if($row[0]=='1'){//Si es un usuario registrado
         $resultCons = sqlsrv_query( $conn , $queryCons);
         $row = sqlsrv_fetch_array( $resultCons, SQLSRV_FETCH_NUMERIC);
         if(((int)$CBarriles+(int)$row[0])<=9){
-          $query="insert into ADM_Ajustes (Evento,IdBarrica,FechaSolicitud,Solicitante,Estado,Codigo)
+          $query="insert into ADM_Ajustes (Evento,IdBarrica,FechaSolicitud,Solicitante,Estado,Codigo,IdRazon)
                                   values ('$evento',(select IdBarrica from WM_Barrica where Consecutivo='$consecutivo'),(SELECT GETDATE()),
-                                          (select IdUsuario from CM_Usuario where Clave = '$usuario'),1,''); SELECT SCOPE_IDENTITY()";
+                                          (select IdUsuario from CM_Usuario where Clave = '$usuario'),1,'',$motivo); SELECT SCOPE_IDENTITY()";
           $result = sqlsrv_query( $conn , $query);
           sqlsrv_next_result($result);
           sqlsrv_fetch($result);

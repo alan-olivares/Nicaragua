@@ -57,6 +57,12 @@
   margin-top:10px;
   margin-bottom: 20px;
 }
+
+#scrollingtableMini {
+  height:86px;
+  overflow:auto;
+}
+
 .titulo{
   margin-left:120px;
 }
@@ -4861,7 +4867,6 @@ body.body-small .footer.fixed {
   border-bottom: 1px solid #DDDDDD;
   vertical-align: bottom;
 }
-.table > thead > tr > th,
 .table > tbody > tr > th,
 .table > tfoot > tr > th,
 .table > thead > tr > td,

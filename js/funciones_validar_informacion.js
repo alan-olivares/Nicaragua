@@ -20,7 +20,7 @@ $( function() {
       effect: "drop",
       duration: 800
     },
-    maxHeight: 570,
+    maxHeight: 600,
     minWidth: 500,
   };
 
@@ -37,21 +37,24 @@ $( ".cerrar" ).button().on( "click", function() {
 } );
 
 async function GuardarMover(){
-  if(document.getElementById("NivelesM").value===document.getElementById("Niveles").value){
+  var motivo=document.getElementById("MotivoM").value;
+  if(motivo===""){
+    mensajeError("El motivo no debe estar vacío");
+  }else if(document.getElementById("NivelesM").value===document.getElementById("Niveles").value){
     mensajeError("Este barril ya pertenece a esta bodega");
   }else if(document.getElementById("NivelesM").value===""){
     mensajeError("Por favor completa todos los datos");
   }else{
     var elements = document.getElementsByClassName("selected");
+
     var check="";
     try{
       for (var i = elements.length-1; i >= 0; i--) {
         var eee=elements[i].querySelectorAll('td');
         var url='RestApi/POST/'+postApi;
-        var params='evento=Mover&consecutivo='+eee[0].innerHTML+"&IdPallet="+document.getElementById("NivelesM").value+"&CBarriles="+(i+1);
+        var params='evento=Mover&consecutivo='+eee[0].innerHTML+"&IdPallet="+document.getElementById("NivelesM").value+"&CBarriles="+(i+1)+"&motivo="+motivo;
         var result=await conexion("POST", url,params);
         check=result;
-
       }
       await mensajeSimple(check);
       dialogMover.dialog( "close" );
@@ -65,10 +68,15 @@ async function GuardarEditar(){
   var elements = document.getElementsByClassName("selected");
   var eee=elements[0].querySelectorAll('td');
   var campos="";
+  var motivo=document.getElementById("MotivoE").value;
+  if(motivo===""){
+    mensajeError("El motivo no debe estar vacío");
+    return;
+  }
   if(eee[10].innerHTML !=='Vacío (Plantel)' && document.getElementById("estado").options[document.getElementById("estado").selectedIndex].text==='Vacío (Plantel)'){
     if(await mensajeOpcional('El barril se encuentra lleno, si lo quieres cambiar a vacío generará los datos de un barril vacío ¿Quieres continuar?')){
       try{
-        var params='evento=Editar&consecutivo='+eee[0].innerHTML+'&IdPallet='+document.getElementById("Niveles").value+'&CBarriles=0&restablecer=vacio';
+        var params='evento=Editar&consecutivo='+eee[0].innerHTML+'&IdPallet='+document.getElementById("Niveles").value+'&CBarriles=0&restablecer=vacio&motivo='+motivo;
         var result=await conexion("POST", 'RestApi/POST/'+postApi,params);
         setTimeout(async function() {
           await mensajeSimple(result);
@@ -86,7 +94,7 @@ async function GuardarEditar(){
   }else if(eee[10].innerHTML ==='Vacío (Plantel)' && document.getElementById("estado").options[document.getElementById("estado").selectedIndex].text==='Lleno (Bodega)'){
     if(await mensajeOpcional('El barril se encuentra vacío, si lo quieres cambiar a lleno generará los datos del estado anterior ¿Quieres continuar?')){
       try{
-        var params='evento=Editar&consecutivo='+eee[0].innerHTML+'&IdPallet='+document.getElementById("Niveles").value+'&CBarriles=0&restablecer=pasado';
+        var params='evento=Editar&consecutivo='+eee[0].innerHTML+'&IdPallet='+document.getElementById("Niveles").value+'&CBarriles=0&restablecer=pasado&motivo='+motivo;
         var result=await conexion("POST", 'RestApi/POST/'+postApi,params);
         setTimeout(async function() {
           await mensajeSimple(result);
@@ -138,7 +146,7 @@ async function GuardarEditar(){
       }
 
       if(campos!=""){
-        var params='evento=Editar&consecutivo='+eee[0].innerHTML+'&IdPallet='+document.getElementById("Niveles").value+'&CBarriles=0&'+campos;
+        var params='evento=Editar&consecutivo='+eee[0].innerHTML+'&IdPallet='+document.getElementById("Niveles").value+'&CBarriles=0&'+campos+"motivo="+motivo;
         result=await conexion("POST", 'RestApi/POST/'+postApi,params);
         await mensajeSimple(result);
         dialogEditar.dialog( "close" );
@@ -152,12 +160,12 @@ async function GuardarEditar(){
   }
 }
 async function GuardarAgregar(){
-  if(document.getElementById('etiquetaA').value!=""){
+  if(document.getElementById('etiquetaA').value!=="" && document.getElementById("MotivoA").value!==""){
     if(!document.getElementById("ubicacionA").value.includes(document.getElementById("Niveles").value)){
-      var query="UPDATE WM_Barrica SET IdPallet=(select IdPallet from WM_Pallet where RackLocID="+document.getElementById("Niveles").value+") where Consecutivo="+EtiquetaAConsecutivo(document.getElementById("etiquetaA").value);
+      //var query="UPDATE WM_Barrica SET IdPallet=(select IdPallet from WM_Pallet where RackLocID="+document.getElementById("Niveles").value+") where Consecutivo="+EtiquetaAConsecutivo(document.getElementById("etiquetaA").value);
       var url='RestApi/POST/'+postApi;
       var params='evento=Agregar&consecutivo='+EtiquetaAConsecutivo(document.getElementById("etiquetaA").value)+
-      "&IdPallet="+document.getElementById("Niveles").value+"&CBarriles=1";
+      "&IdPallet="+document.getElementById("Niveles").value+"&CBarriles=1&motivo="+document.getElementById("MotivoA").value;
       try{
         var result=await conexion("POST", url,params);
         await mensajeSimple(result);
@@ -307,20 +315,8 @@ async function getInfo(sel,tipo,etiqueta,valor,boton){
       var result = await conexion("GET",url,"");
       var parsed =JSON.parse(result);
       limpiarCampos(boton);
-      //se agrega un elemento vacio
-      var x = document.createElement("OPTION");
-      x.setAttribute("value", "");
-      var t = document.createTextNode("");
-      x.appendChild(t);
-      document.getElementById(boton).appendChild(x);
-      //se agregan los elementos obtenidos en el servidor
-      for (i = 0; i < parsed.length; i++) {
-        var x = document.createElement("OPTION");
-        x.setAttribute("value", parsed[i][valor]);
-        var t = document.createTextNode(parsed[i][etiqueta]);
-        x.appendChild(t);
-        document.getElementById(boton).appendChild(x);
-      }
+      //se agregan los elementos
+      llenarSelect('#'+boton,valor,etiqueta,parsed);
       parar();
     } catch(error) {
       mensajeError(error);
@@ -464,10 +460,35 @@ async function permisos(){
     window.location.replace("index.php");
   }
 }
+async function cargaPlantas(){
+  try {
+    var url='RestApi/GET/'+getApi+'?plantas=true';
+    var result = await conexion("GET",url,"");
+    var parsed =JSON.parse(result);
+    llenarSelect('#planta',"PlantaID","Nombre",parsed);
+  } catch (e) {
+    mensajeError(e);
+  }
+}
+
+async function cargaMotivos(campo,tipo){
+  try {
+    var url='RestApi/GET/'+getApi+'?razones='+tipo;
+    var result = await conexion("GET",url,"");
+    var parsed =JSON.parse(result);
+    llenarSelect(campo,"IdRazon","Descripcion",parsed);
+  } catch (e) {
+    mensajeError(e);
+  }
+}
 
 $(document).ready(function(){
   //Por default los botones y la tabla deben de estar desactivado
+  cargaMotivos('#MotivoA','1');
+  cargaMotivos('#MotivoM','3');
+  cargaMotivos('#MotivoE','2');
   const url='RestApi/GET/'+getApi+'?fechasLotes=true';
+  cargaPlantas();
   ActualizarFechasLotes(url);
   permisos();
   $("#scrollingtable").hide();

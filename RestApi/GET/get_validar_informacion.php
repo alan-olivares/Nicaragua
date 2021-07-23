@@ -13,7 +13,13 @@ if($row[0]=='1'){
       $area=$_GET["area"];
       $fila = "exec sp_AA_getFilas '$area'";
       imprimir($fila,$conn);
-
+    }else if(ISSET($_GET['plantas'])){
+      $bodegas = "SELECT * from AA_Plantas";
+      imprimir($bodegas,$conn);
+    }else if(ISSET($_GET['bodegas'])){
+      $planta=$_GET["bodegas"];
+      $bodegas = "SELECT AlmacenId,Nombre from AA_Almacen where PlantaID=$planta";
+      imprimir($bodegas,$conn);
     }else if(ISSET($_GET['bodega'])){
       $bodega=$_GET["bodega"];
       $costados = "exec sp_AA_getCostados '$bodega'";
@@ -30,63 +36,11 @@ if($row[0]=='1'){
       //Nos regresa la tabla en forma de json
       $Rack=$_GET["Rack"];
       $tabla = "exec sp_BarrPallet '$Rack'";
-
-      $stmtTabla = sqlsrv_query( $conn , $tabla);
-      if($stmtTabla){
-        $result = "[";
-        while( $row = sqlsrv_fetch_array( $stmtTabla, SQLSRV_FETCH_NUMERIC) ) {
-          if($row[6]==null){$row[6]= '';}else{$row[6]= $row[6]->format('Y-m-d');}
-          if($row[7]==null){$row[7]= '';}else{$row[7]= $row[7]->format('Y-m-d');}
-          if($row[3]==null){$row[3]= "\"\"";}
-          if($row[4]==null){$row[4]= "\"\"";}
-          if($row[8]==null){$row[8]= "\"\"";}
-          if($row[9]==null){$row[9]= "\"\"";}
-          if($row[12]==null){$row[12]= "\"\"";}
-          if($row[2]==null){$row[2]= "\"\"";}
-          $result=$result. "{\"Consecutivo\":".$row[3].","."\"IDLote\":".$row[2].",".
-            "\"Capacidad\":".$row[4].","."\"Revisado\":\"".$row[6]."\","."\"Relleno\":\"".$row[7]."\",".
-            "\"Año\":".$row[8].","."\"NoTapa\":".$row[9].","."\"Uso\":\"".$row[10]."\","."\"Edad\":\"".$row[11]."\",".
-            "\"Recepcion\":".$row[12].","."\"Alcohol\":\"".$row[13]."\","."\"Estado\":\"".$row[14]."\"},";
-
-        }
-        if(strlen($result)>1){
-          $result = substr($result, 0, -1);
-        }
-        $result=$result."]";
-        echo $result;
-
-        sqlsrv_free_stmt($stmtTabla);
-      }else{
-        echo $GeneralError;
-      }
-
+      imprimir($tabla,$conn);
     }else if(ISSET($_GET['consecutivo'])){
       $Consecutivo=$_GET["consecutivo"];
       $barril = "exec sp_BarrilUbicacion '$Consecutivo'";
-      $stmtBarril = sqlsrv_query( $conn , $barril);
-      if($stmtBarril){
-        $result = "[";
-
-        while( $row = sqlsrv_fetch_array( $stmtBarril, SQLSRV_FETCH_NUMERIC) ) {
-          if($row[3]==null){$row[3]= '';}else{$row[3]= $row[3]->format('Y-m-d');}
-          if($row[4]==null){$row[4]= '';}else{$row[4]= $row[4]->format('Y-m-d');}
-          if($row[0]==null){$row[0]= "\"\"";}
-          if($row[2]==null){$row[2]= "\"\"";}
-          if($row[5]==null){$row[5]= "\"\"";}
-          if($row[1]==null){$row[1]= "\"\"";}
-          if($row[10]==null){$row[10]= "\"\"";}
-          $result=$result. "{\"Consecutivo\":".$row[0].","."\"NoTapa\":".$row[1].",".
-            "\"Capacidad\":".$row[2].","."\"Revisado\":\"".$row[3]."\","."\"Relleno\":\"".$row[4]."\",".
-            "\"Año\":".$row[5].","."\"Estado\":\"".$row[6]."\","."\"Uso\":\"".$row[7]."\","."\"Edad\":\"".$row[8]."\",".
-            "\"Alcohol\":\"".$row[9]."\",\"Recepcion\":".$row[10].","."\"Ubicación\":\"".$row[11]."\"}";
-        }
-
-        $result=$result."]";
-        echo $result;
-        sqlsrv_free_stmt($stmtBarril);
-      }else{
-        echo $GeneralError;
-      }
+      imprimir($barril,$conn);
 
     }else if(ISSET($_GET['tapa'])){
       $tapa=$_GET["tapa"];
@@ -125,6 +79,9 @@ if($row[0]=='1'){
     }else if(ISSET($_GET['fechasLotes'])){//Obtenemos informacion de los lotes por la fecha
       $fecha = "select DISTINCT(convert(varchar, Fecha, 23)) as Fecha from WM_LoteBarrica";
       imprimir($fecha,$conn);
+    }else if(ISSET($_GET['razones'])){//Obtenemos informacion de los lotes por la fecha
+      $razones = "SELECT * from ADM_Razones where IdCaso=".$_GET['razones'];
+      imprimir($razones,$conn);
     }
   }else{
     echo '..Error.. No tienes acceso a esta area';

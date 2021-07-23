@@ -13,6 +13,7 @@
       <link href="css/style.css" rel="stylesheet">
       <link rel="stylesheet" href="/resources/demos/style.css">
       <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+      <link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
    </head>
    <body >
       <script src="js/revisar_sesion.js"></script>
@@ -97,6 +98,9 @@
                   <li class="siete">
                      <a href="disenoAlmacen.html"><i class="fa fa-building"></i> <span class="nav-label">Diseñar almacenes</span></a>
                   </li>
+                  <li class="nueve">
+                     <a href="AjustesInventario.html"><i class="fa fa-edit"></i> <span class="nav-label">Ajustes de inventario</span></a>
+                  </li>
                   <li class="tres-cuatro">
                      <a href="#"><i class="fa fa-gear"></i> <span class="nav-label">Administración</span><span class="fa arrow"></span></a>
                      <ul class="nav nav-second-level">
@@ -145,19 +149,13 @@
             <div class="row wrapper border-bottom white-bg page-heading " >
                <div class="col-md-12 text-center  d-flex justify-content-center " >
                   <div class="form-inline text-center d-flex justify-content-center"  >
+                    <h5>
+                       <label>  Planta:  </label>
+                       <select class="form-control b-r-xl" onchange="getInfo(this,'bodegas','Nombre','AlmacenId','bodega');" id="planta"></select>
+                    </h5>
                      <h5>
                         <label>  Bodega:  </label>
                         <select class="form-control b-r-xl" onchange="getInfo(this,'bodega','Costados','ID','Costado');" id="bodega">
-                           <option value=""></option>
-                           <?php
-                              while( $row = sqlsrv_fetch_array( $stmtBodegas, SQLSRV_FETCH_NUMERIC))
-                              {
-                              ?>
-                           <option value="<?php echo $row[0]?>"><?php echo utf8_encode($row[1])?></option>
-                           <?php
-                              }
-                              sqlsrv_free_stmt( $stmtBodegas);
-                              ?>
                         </select>
                      </h5>
                      <h5><label>  Costado:   </label>
@@ -295,6 +293,15 @@
                </div>
             </div>
             <div class="col-md-12 text-center  d-flex justify-content-center" >
+               <div class="col-md-4 text-center">
+                  <h5>
+                     <label>  Motivo:   </label>
+                     <select class="form-control" required="true" id="MotivoA" >
+                     </select>
+                  </h5>
+               </div>
+            </div>
+            <div class="col-md-12 text-center  d-flex justify-content-center" >
                <button class="button2 btn btn-primary cerrar b-r-xl" >Cancelar</button>
                <button class="button2 btn btn-primary b-r-xl" onclick="GuardarAgregar();" >Guardar</button>
             </div>
@@ -308,7 +315,7 @@
                   </select>
                </h5>
                <h5><label>  Costado:   </label>
-                  <select class="form-control " name="CostadoM"  id="CostadoM" onchange="getInfo(this,'area','ID','ID','FilasM');">
+                  <select class="form-control " name="CostadoM"  id="CostadoM" onchange="getInfo(this,'area','Filas','ID','FilasM');">
                   </select>
                </h5>
             </div>
@@ -325,6 +332,15 @@
                   <select class="form-control" name="NivelesM" id="NivelesM" onchange="">
                   </select>
                </h5>
+            </div>
+            <div class="col-md-12 text-center  d-flex justify-content-center" >
+               <div class="col-md-10 text-center">
+                  <h5>
+                     <label>  Motivo:   </label>
+                     <select class="form-control" required="true" id="MotivoM" >
+                     </select>
+                  </h5>
+               </div>
             </div>
             <div class="col-md-12 text-center  d-flex justify-content-center" >
                <div class="table-responsive col-md-12 centro" >
@@ -453,6 +469,15 @@
             <div class="col-md-4 text-center" >
                <h5><label>  Año alcohol:   </label>
                   <input type="text" class="form-control" required="true" name="Aalcohol" id="Aalcohol" disabled>
+               </h5>
+            </div>
+         </div>
+         <div class="col-md-12 text-center  d-flex justify-content-center" >
+            <div class="col-md-4 text-center">
+               <h5>
+                  <label>  Motivo:   </label>
+                  <select class="form-control" required="true" id="MotivoE" >
+                  </select>
                </h5>
             </div>
          </div>

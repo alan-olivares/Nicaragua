@@ -9,23 +9,28 @@ if($row[0]=='1'){
   include '../revisar_permisos.php';
   if(strpos($permisos,',4,') !== false){
     $configuracion ="select IdConfig,Descripcion,Val1 from CM_Config";
-    $stmtConfiguracion = sqlsrv_query( $conn , $configuracion);
-    if($stmtConfiguracion){
-      $result = array();
-      do {
-        while ($row = sqlsrv_fetch_array($stmtConfiguracion, SQLSRV_FETCH_ASSOC)){
-          $result[] = $row;
-        }
-      } while (sqlsrv_next_result($stmtConfiguracion));
-
-      sqlsrv_free_stmt($stmtConfiguracion);
-      echo json_encode($result, JSON_UNESCAPED_UNICODE);
-    }
+    imprimir($configuracion,$conn);
   }else{
     echo '..Error.. No tienes acceso a esta area';
   }
 }else{
   echo '..Error.. Acceso no autorizado';
+}
+
+function imprimir($query,$conn){
+  $stmt = sqlsrv_query( $conn , $query);
+  if($stmt){
+    $result = array();
+    do {
+        while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)){
+           $result[] = $row;
+        }
+    } while (sqlsrv_next_result($stmt));
+    echo json_encode($result, JSON_UNESCAPED_UNICODE);
+    sqlsrv_free_stmt($stmt);
+  }else{
+    echo $GeneralError;
+  }
 }
 sqlsrv_close($conn); //Close the connnectiokn first
 ?>

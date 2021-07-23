@@ -7,14 +7,11 @@
       <link href="css/bootstrap.min.css" rel="stylesheet">
       <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
       <link rel="icon" href="img\TBRE.ico">
-      <link href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" rel="stylesheet">
-      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+      <link rel="stylesheet" href="css/jquery-ui.css">
       <link href="css/animate.css" rel="stylesheet">
       <link href="css/style.css" rel="stylesheet">
-      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
       <link rel="stylesheet" href="/resources/demos/style.css">
+      <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
    </head>
    <body>
       <script src="js/revisar_sesion.js"></script>
@@ -99,6 +96,9 @@
                   <li class="active siete">
                      <a href="disenoAlmacen.html"><i class="fa fa-building"></i> <span class="nav-label">Diseñar almacenes</span></a>
                   </li>
+                  <li class="nueve">
+                     <a href="AjustesInventario.html"><i class="fa fa-edit"></i> <span class="nav-label">Ajustes de inventario</span></a>
+                  </li>
                   <li class="tres-cuatro">
                      <a href="#"><i class="fa fa-gear"></i> <span class="nav-label">Administración</span><span class="fa arrow"></span></a>
                      <ul class="nav nav-second-level">
@@ -113,9 +113,9 @@
             <div class="row border-bottom">
                <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
                   <div class="navbar-header">
-                     <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                     <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#" onclick="cambiarTamano();" id="menu"><i class="fa fa-bars"></i> </a>
                   </div>
-                  <h2 class="nav navbar-top-links titulo">Revisión de lotes</h2>
+                  <h2 class="nav navbar-top-links titulo">Diseño de almacenes</h2>
                   <ul class="nav navbar-top-links navbar-right">
                      <li class="dropdown uno">
                         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -140,43 +140,95 @@
                </nav>
             </div>
             <div class="row wrapper border-bottom white-bg page-heading">
-               <div class="col-md-12 d-flex justify-content-center table-responsive text-center ">
-                  <div class="table-responsive col-md-12 centro scrollingtable2">
-                     <table class="table table-bordered cell-border animated" id="barriles">
-                        <thead>
-                           <tr>
-                              <th>Número</th>
-                              <th>Bodega</th>
-                              <th>Fecha alcohol</th>
-                              <th>Alcohol</th>
-                              <th>Uso</th>
-                              <th>Cantidad</th>
-                              <th>Litros</th>
-                           </tr>
-                        </thead>
-                        <tbody></tbody>
-                     </table>
-                  </div>
-               </div>
-               <div class="sk-spinner sk-spinner-three-bounce">
-                  <div class="sk-bounce1"></div>
-                  <div class="sk-bounce2"></div>
-                  <div class="sk-bounce3"></div>
-               </div>
+              <div class="col-md-8 text-center  d-flex" >
+                 <div class="form-inline text-center d-flex justify-content-center"  >
+                   <h5>
+                      <label>  Planta:  </label>
+                      <select class="form-control b-r-xl" onchange="CargarSecciones(this,0);" id="planta"></select>
+                   </h5>
+                    <h5>
+                       <label>  Bodega:  </label>
+                       <select class="form-control b-r-xl" onchange="CargarSecciones(this,1);" id="bodega"></select>
+                    </h5>
+                    <h5><label>  Costado:   </label>
+                       <select class="form-control b-r-xl" name="Costado"  id="Costado" onchange="CargarSecciones(this,2);">
+                       </select>
+                    </h5>
+                    <h5><label>  Filas:   </label>
+                       <select class="form-control b-r-xl" name="Filas" id="Filas" onchange="CargarSecciones(this,3);">
+                       </select>
+                    </h5>
+                    <h5><label>  Torres:   </label>
+                       <select class="form-control b-r-xl" name="Torres"  id="Torres" onchange="CargarSecciones(this,4);">
+                       </select>
+                    </h5>
+                 </div>
+              </div>
+              <div class="col-md-4 text-center  d-flex justify-content-center " id="table-wrapper">
+                <div class="" id="scrollingtableMini"  style="min-width:90%;">
+                  <table class="table-bordered cell-border" id="detalles">
+                    <thead></thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="col-md-10" style="margin-bottom:30px;" id="divPrincipal">
+                <canvas id="plano" style="border:1px solid #c3c3c3;" height="425" width="1200" >
+                  Esté navegador no soporta la función de dibujo con canvas, por favor intenta instalar otro navegador compartible
+                </canvas>
+              </div>
+              <div class="justify-content-center text-center col-md-2" >
+                <div class="col-md-12" >
+                  <label>  Nombre:   </label>
+                  <input type="text" class="form-control b-r-xl" required="true" id="nombre" onchange="cambiarNombre(this);" disabled>
+                </div>
+                <div class="col-md-12" >
+                  <label>  Ancho:   </label>
+                  <input class="touchspin" type="text"  id="ancho" onchange="cambioAncho(this);" disabled>
+                </div>
+                <div class="col-md-12" >
+                  <label>  Alto:   </label>
+                  <input class="touchspin" type="text"  id="alto" onchange="cambioAlto(this);" disabled>
+                </div>
+                <div class="col-md-12" >
+                  <button class="button5 btn btn-primary b-r-xl col-md-6" onclick='agregarNuevo();' id="nuevo" disabled>Nuevo</button>
+                  <button class="button5 btn btn-primary b-r-xl col-md-6" onclick="guardarDatos();" id="guardar" disabled>Guardar</button>
+                </div>
+                <button class="button5 btn btn-danger b-r-xl" id="eliminar" onclick="eliminarObjeto();" disabled>Eliminar</button>
+                <button class="button5 btn btn-primary b-r-xl" id="ver" onclick="verBarriles();" disabled>Barriles</button>
+              </div>
             </div>
-            <div class="footer">
+            <div class="footer" style="margin-top:30px;">
                <div>
                   <strong>Todos los derechos reservados | </strong>SER Licorera 2014
+               </div>
+            </div>
+            <div id="Dialog" title="Lista de barriles" class="animated">
+               <div>
+                  <div class="col-md-12 text-center  d-flex justify-content-center" >
+                     <div class="table-responsive col-md-12 centro" >
+                        <table class="table table-bordered table-hover display"  id="barrilesVacios">
+                           <thead>
+                           </thead>
+                           <tbody></tbody>
+                        </table>
+                     </div>
+                  </div>
+                  <div class="sk-spinner sk-spinner-three-bounce">
+                     <div class="sk-bounce1"></div>
+                     <div class="sk-bounce2"></div>
+                     <div class="sk-bounce3"></div>
+                  </div>
                </div>
             </div>
          </div>
       </div>
       <!-- Mainly scripts -->
       <script src="js/jquery-3.1.1.min.js"></script>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-      <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+      <script src="js/jquery-ui.js"></script>
+      <script src="js/jquery.dataTables.min.js"></script>
+      <script src="js/plugins/dataTables/datatables.min.js"></script>
+      <script src="js/plugins/dataTables/dataTables.bootstrap4.min.js"></script>
       <script src="js/json2html.min.js"></script>
       <script src="js/popper.min.js"></script>
       <script src="js/bootstrap.js"></script>
@@ -186,8 +238,13 @@
       <script src="js/inspinia.js"></script>
       <script src="js/plugins/pace/pace.min.js"></script>
       <script src="js/funciones_generales.js"></script>
+      <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
+      <!-- TouchSpin -->
+      <script src="js/plugins/touchspin/jquery.bootstrap-touchspin.min.js"></script>
+
       <script>
-         const getApi="get_revision.php";
+         const getApi="get_disenoAlmacenes.php";
+         const postApi="post_disenoAlmacen.php";
          $( function() {
            var options={
              open: function() {
@@ -209,7 +266,9 @@
                effect: "drop",
                duration: 800
              },
-             maxHeight: 570
+             maxHeight: 540,
+             minHeight: 500,
+             minWidth: 600
            };
 
            Dialog = $( "#Dialog" ).dialog(options);
@@ -219,58 +278,453 @@
 
 
          } );
+         async function guardarDatos(){
+           var campo=(CAT>0)?valores[CAT-1].boton:'planta';
+           //alert(OPCION+'--'+$('#'+campo).val()+"--"+JSON.stringify(objetos));
+           //alert(document.getElementById(campo).value+ "---"+CAT);
+           try {
+             var result=await conexion("POST", 'RestApi/POST/'+postApi, "tipo="+OPCION+"&id="+$('#'+campo).val()+"&data="+JSON.stringify(objetos));
+             await mensajeSimple(result);
+             CargarSecciones(document.getElementById(campo),CAT);
+           } catch (e) {
+             mensajeError(e);
+           }
+         }
+         function cambiarTamano(){
+           setTimeout(function() {
+             BB=canvas.getBoundingClientRect();
+             offsetX=BB.left;
+             offsetY=BB.top;
+             ctx.canvas.width  = document.getElementById('divPrincipal').clientWidth;
+             ctx.canvas.height = document.getElementById('divPrincipal').clientHeight;
+             WIDTH = canvas.width;
+             HEIGHT = canvas.height;
+             draw();
+           }, 500);
+         }
 
-         async function CargarTabla(){
+         var canvas = document.getElementById("plano");
+         var ctx = canvas.getContext("2d");
+         ctx.canvas.width  = document.getElementById('divPrincipal').clientWidth;
+         ctx.canvas.height = document.getElementById('divPrincipal').clientHeight;
+         var BB=canvas.getBoundingClientRect();
+         var offsetX=BB.left;
+         var offsetY=BB.top;
+         var WIDTH = canvas.width;
+         var HEIGHT = canvas.height;
+         var objetos = [];
+         var seleccionado=-1;
+         var OPCION="";
+         var CAT=-1;
+         const valores=[{tipo:'bodegas',etiqueta:'Descripcion',valor:'AlmacenID',boton:'bodega'},
+           {tipo:'areas',etiqueta:'Nombre',valor:'AreaId',boton:'Costado'},
+           {tipo:'filas',etiqueta:'Nombre',valor:'SeccionID',boton:'Filas'},
+           {tipo:'torres',etiqueta:'Nombre',valor:'PosicionID',boton:'Torres'},
+           {tipo:'niveles',etiqueta:'Nombre',valor:'NivelID',boton:'Niveles'}];
+
+         // drag related variables
+         var dragok = false;
+         var startX;
+         var startY;
+
+         // listen for mouse events
+         canvas.onmousedown = myDown;
+         canvas.onmouseup = myUp;
+         canvas.onmousemove = myMove;
+         canvas.ondblclick= myDoubleDown;
+
+         // draw a single rect
+         function rect(r) {
+           ctx.beginPath();
+           ctx.fillStyle = r.fill;
+           ctx.fillRect(r.x,r.y,r.width,r.height);
+           ctx.fillStyle = "black";
+           var tamano=parseInt(r.width/((r.Nombre!=null)?r.Nombre.length:4));
+           ctx.font = tamano+'px sans-serif';
+           ctx.fillText(r.Nombre, r.x+3, r.height / 2 + r.y);
+           ctx.closePath();
+         }
+
+         // clear the canvas
+         function clear() {
+           ctx.clearRect(0, 0, WIDTH, HEIGHT);
+         }
+         // redraw the scene
+         function draw() {
+           clear();
+           // redraw each shape in the objetos[] array
+           for(var i=0;i<objetos.length;i++){
+             if(objetos[i].borrar==false)
+                rect(objetos[i]);
+           }
+         }
+         async function verBarriles(){
            try {
              empezar();
-             const url='RestApi/GET/'+getApi;
+             Dialog.dialog( "open" );
+             var url='RestApi/GET/'+getApi+'?'+obtenerDatos();
              var result = await conexion("GET",url,"");
              var parsed =JSON.parse(result);
-             var transform = {"tag":"table", "children":[
-               {"tag":"tbody","children":[
-                 {"tag":"tr","children":[
-                   {"tag":"td","html":"${Num}"},
-                   {"tag":"td","html":"${Bod}"},
-                   {"tag":"td","html":"${Fecha_Li}"},
-                   {"tag":"td","html":"${Alcohol}"},
-                   {"tag":"td","html":"${Barril}"},
-                   {"tag":"td","html":"${Cantidad}"},
-                   {"tag":"td","html":"${Lts}"},
-                 ]}
-               ]}
-             ]};
-             $('#barriles > tbody').html(json2html.transform(parsed,transform));
-             Recargar();
+             crearTablaJson(parsed,"#barrilesVacios");
              parar();
-           } catch(error) {
-             alert(error);
+           } catch (e) {
+             mensajeError(e);
+           }
+         }
+         function obtenerDatos(){
+           var datos="";
+           var campo=objetos[seleccionado].id;
+           if($("#planta").val()===""){ return ""; }else{ datos+="plantas="+$("#planta").val(); }
+           if($("#bodega").val()!==""){ datos+="&bodegas="+$("#bodega").val(); }else{ datos+="&bodegas="+campo;  campo="";}
+           if($("#Costado").val()!==""){ datos+="&areas="+$("#Costado").val(); }else{ datos+="&areas="+campo; campo="";}
+           if($("#Filas").val()!==""){ datos+="&filas="+$("#Filas").val(); }else{ datos+="&filas="+campo; campo="";}
+           if($("#Torres").val()!==""){ datos+="&torres="+$("#Torres").val(); }else{ datos+="&torres="+campo; campo="";}
+           if(campo!==""){ datos+="&niveles="+campo; }else{ datos+="&niveles=null";}
+           return datos;
+         }
+
+         function myDoubleDown(e){
+           e.preventDefault();
+           e.stopPropagation();
+           var mx=parseInt(e.clientX-offsetX);
+           var my=parseInt(e.clientY-offsetY);
+           for(var i=0;i<objetos.length;i++){
+             var s=objetos[i];
+             if(mx>=s.x && mx<=(s.x+s.width) && my>=s.y && my<=(s.y+s.height)){
+               if(s.id!=-1){
+                 $('#'+valores[CAT].boton).val(s.id).change();
+               }else{
+                 mensajeError('Guarda los cambios para poder acceder a este objeto');
+               }
+             }
            }
          }
 
-         function Recargar(){
-           var table = $('#barriles').DataTable({
-             responsive: false,
-             "bPaginate": false,
-             "paging":   false,
-             "ordering": false,
-             "info":     false,
-             searching: true,
-             "language": {
-               "emptyTable": "No se encontraron solicitudes",
-               searchPlaceholder: "Busca algún dato aquí",
-               search: "",
+         // handle mousedown events
+         function myDown(e){
+
+           // tell the browser we're handling this mouse event
+           e.preventDefault();
+           e.stopPropagation();
+           try {
+             // get the current mouse position
+             var mx=parseInt(e.clientX-offsetX);
+             var my=parseInt(e.clientY-offsetY);
+
+             // test each shape to see if mouse is inside
+             dragok=false;
+             for(var i=0;i<objetos.length;i++){
+               var s=objetos[i];
+               s.fill="#CBCBCB";
+               if(mx>=s.x && mx<=(s.x+s.width) && my>=s.y && my<=(s.y+s.height)){
+                 // if yes, set that rects isDragging=true
+                 dragok=true;
+                 objetos[i].fill="#444444";
+                 objetos[i].isDragging=true;
+                 activar(s,i);
+               }
              }
-           });
-           $('#barriles tbody').on( 'click', 'tr', function (e) {
-             var data = table.row( this ).data();
-             if( e.toElement.cellIndex==null) {
-               CargarDialogo(data[0]);
+             if(!dragok){
+               desactivar();
              }
-           });
+             // save the current mouse position
+             startX=mx;
+             startY=my;
+             draw();
+           } catch (e) {
+             mensajeError(e);
+           }
+
+         }
+
+         // handle mouseup events
+         function myUp(e){
+           // tell the browser we're handling this mouse event
+           e.preventDefault();
+           e.stopPropagation();
+
+           // clear all the dragging flags
+           dragok = false;
+           for(var i=0;i<objetos.length;i++){
+             objetos[i].isDragging=false;
+           }
+         }
+
+
+         // handle mouse moves
+         function myMove(e){
+           // if we're dragging anything...
+           if (dragok){
+             // tell the browser we're handling this mouse event
+             e.preventDefault();
+             e.stopPropagation();
+             // get the current mouse position
+             var mx=parseInt(e.clientX-offsetX);
+             var my=parseInt(e.clientY-offsetY);
+             // calculate the distance the mouse has moved
+             // since the last mousemove
+             var dx=mx-startX;
+             var dy=my-startY;
+             // move each rect that isDragging
+             // by the distance the mouse has moved
+             // since the last mousemove
+             for(var i=0;i<objetos.length;i++){
+               var s=objetos[i];
+               //s.fill="#CBCBCB";
+               if(s.isDragging){
+                 s.x+=dx;
+                 s.y+=dy;
+                 //s.fill="#444444";
+               }
+             }
+             // redraw the scene with the new rect positions
+             draw();
+             // reset the starting mouse position for the next mousemove
+             startX=mx;
+             startY=my;
+           }
+         }
+
+         function activar(s,index){
+           $('#nombre').attr("disabled", false);
+           $('#eliminar').attr("disabled", false);
+           $('#ancho').attr("disabled", false);
+           $('#alto').attr("disabled", false);
+           $('#ver').attr("disabled", false);
+           $('#ancho').val(s.width);
+           $('#alto').val(s.height);
+           $('#nombre').val(s.Nombre);
+           seleccionado=index;
+         }
+
+         function desactivar(){
+           $('#nombre').attr("disabled", true);
+           $('#eliminar').attr("disabled", true);
+           $('#alto').attr("disabled", true);
+           $('#ancho').attr("disabled", true);
+           $('#ver').attr("disabled", true);
+           $('#nombre').val('');
+           $('#alto').val('');
+           $('#ancho').val('');
+           seleccionado=-1;
+           for(var i=0;i<objetos.length;i++){
+             objetos[i].fill="#CBCBCB";
+           }
+         }
+         function cambioAncho(campo){
+           if(seleccionado!=-1){
+             objetos[seleccionado].width=parseInt(campo.value);
+             draw();
+           }
+         }
+         function cambioAlto(campo){
+           if(seleccionado!=-1){
+             objetos[seleccionado].height=parseInt(campo.value);
+             draw();
+           }
+         }
+
+         function agregarNuevo(){
+           var cant=getLength(objetos)+1;
+           if(OPCION==='Niveles'){
+             objetos.push({Nombre:"Nivel "+cant,id:-1,borrar:false});
+             var nuevo=objetos;
+             annadirNiveles(nuevo);
+           }else if(OPCION==='Torres'){
+             objetos.push({Nombre:"Torre "+cant,id:-1,borrar:false});
+             var nuevo=objetos;
+             annadirTorres(nuevo);
+           }else{
+             objetos.push({
+               x:0,
+               y:0,
+               width:100,
+               height:100,
+               fill:"#CBCBCB",
+               isDragging:false,
+               Nombre:OPCION+" "+cant,
+               id:-1,
+               borrar:false
+             });
+           }
+           desactivar();
+           draw();
+           if(OPCION==='Niveles' && getLength(objetos)>=6){
+             $('#nuevo').attr("disabled", true);
+           }
+         }
+         function getLength(json){
+           var cont=0;
+           for (var i = 0; i < json.length; i++) {
+             if(!json[i].borrar){
+               cont++;
+             }
+           }
+           return cont;
+         }
+
+         function eliminarObjeto(){
+           //objetos.splice(seleccionado, 1);
+           objetos[seleccionado].borrar=true;
+           objetos[seleccionado].width=0;
+           objetos[seleccionado].height=0;
+           desactivar();
+           draw();
+           $('#nuevo').attr("disabled", false);
+         }
+
+         function cambiarNombre(campo){
+           objetos[seleccionado].Nombre=campo.value;
+           draw();
+         }
+
+
+
+         async function CargarSecciones(campo,tipo){
+           try {
+             limpiarCampos(valores[tipo].boton);
+             if(campo.value!==""){
+               empezar();
+               desactivar();
+               CAT=tipo;
+               OPCION=valores[tipo].boton;
+               $('#nuevo').attr("disabled", false);
+               $('#guardar').attr("disabled", false);
+               if(tipo>0){
+                 var url='RestApi/GET/'+getApi+'?detalleBodega='+$("#bodega").val();
+                 var result = await conexion("GET",url,"");
+                 var parsed =JSON.parse(result);
+                 crearTablaJson(parsed,"#detalles");
+               }
+               var url='RestApi/GET/'+getApi+'?'+valores[tipo].tipo+'='+campo.value;
+               var result = await conexion("GET",url,"");
+               var parsed =JSON.parse(result);
+               llenarSelect('#'+valores[tipo].boton,valores[tipo].valor,valores[tipo].etiqueta,parsed);
+               if(valores[tipo].boton==='Costado' || valores[tipo].boton==='Filas' || valores[tipo].boton==='bodega'){
+                 for (var i = 0; i < parsed.length; i++) {
+                   objetos.push({
+                     x:parsed[i].X,
+                     y:parsed[i].Y,
+                     width:parsed[i].Largo,
+                     height:parsed[i].Alto,
+                     fill:"#CBCBCB",
+                     isDragging:false,
+                     Nombre:parsed[i].Nombre,
+                     id:parsed[i].SeccionID || parsed[i].AreaId || parsed[i].AlmacenID,
+                     borrar:false
+                   });
+                 }
+               }else if(valores[tipo].boton==='Torres'){
+                 annadirTorres(parsed);
+               }else if(valores[tipo].boton==='Niveles'){
+                 annadirNiveles(parsed);
+               }
+               //drawAll();
+               draw();
+               parar();
+             }else{
+               clear();
+               desactivar();
+               $('#nuevo').attr("disabled", true);
+               $('#guardar').attr("disabled", true);
+             }
+           } catch(error) {
+             mensajeError(error);
+           }
+         }
+         function annadirTorres(json){
+           objetos=[];
+           var con=0;
+           for (var i = 0; i < json.length; i++) {
+             objetos.push({
+               x:(WIDTH/getLength(json))*con,
+               y:100,
+               width: Math.min((WIDTH/getLength(json))-10,100),
+               height:Math.min((WIDTH/getLength(json))-10,100),
+               fill:"#CBCBCB",
+               isDragging:false,
+               Nombre:json[i].Nombre,
+               id:json[i].PosicionID || json[i].id,
+               borrar:json[i].borrar || false
+             });
+             if(!json[i].borrar || false){
+               con++;
+             }
+           }
+         }
+         function annadirNiveles(json,id){
+           objetos=[];
+           var con=0;
+           if(getLength(json)>=6){
+             $('#nuevo').attr("disabled", true);
+           }
+           for (var i = 0; i < json.length; i++) {
+             if(!json[i].borrar || false){
+               con++;
+             }
+             objetos.push({
+               x:300,
+               y:HEIGHT-Math.min((HEIGHT/getLength(json))-10,150)*con,
+               width:200,
+               height:Math.min((HEIGHT/getLength(json))-10,150),
+               fill:"#CBCBCB",
+               isDragging:false,
+               Nombre:json[i].Nombre,
+               id:json[i].NivelID || json[i].id,
+               borrar:json[i].borrar || false
+             });
+           }
+         }
+
+         //Se limpian los campos cuando el usario decide buscar en otros selects
+         function limpiarCampos(select) {
+           objetos=[];
+           switch (select) {
+             case 'bodega':
+               $("#bodega").empty();
+               $("#Costado").empty();
+               $("#Filas").empty();
+               $("#Torres").empty();
+               $("#Niveles").empty();
+               $("#detalles > thead").empty();
+               $("#detalles > tbody").empty();
+               break;
+             case 'Costado':
+               $("#Costado").empty();
+               $("#Filas").empty();
+               $("#Torres").empty();
+               $("#Niveles").empty();
+               break;
+             case 'Filas':
+               $("#Filas").empty();
+               $("#Torres").empty();
+               $("#Niveles").empty();
+             break;
+             case 'Torres':
+               $("#Torres").empty();
+               $("#Niveles").empty();
+             break;
+             case 'Niveles':
+               $("#Niveles").empty();
+             break;
+             default:
+
+           }
+         }
+
+         async function cargaAlmacenes(){
+           try {
+             var url='RestApi/GET/'+getApi+'?plantas=true';
+             var result = await conexion("GET",url,"");
+             var parsed =JSON.parse(result);
+             llenarSelect('#planta',"PlantaID","Nombre",parsed);
+           } catch (e) {
+             mensajeError(e);
+           }
          }
 
          async function permisos(){
-           var perm=await revisarPermisos(["6"]);
+           var perm=await revisarPermisos(["7"]);
            if(!perm){
              window.location.replace("index.php");
            }
@@ -278,7 +732,18 @@
 
          $(document).ready(function(){
            permisos();
-           CargarTabla();
+           cargaAlmacenes();
+           document.getElementById('menu').click();
+           cambiarTamano();
+           $(".touchspin").TouchSpin({
+               min: 0,
+               max: 500,
+               step: 10,
+               boostat: 5,
+               maxboostedstep: 10,
+               buttondown_class: 'btn btn-white',
+               buttonup_class: 'btn btn-white'
+           });
          });
       </script>
    </body>

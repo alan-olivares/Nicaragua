@@ -12,18 +12,7 @@ if($row[0]=='1'){
               left join CM_Perfil p on u.IdPerfil=p.IdPerfil
               left join CM_Grupo g on u.IdGrupo=g.IdGrupo
               where Clave='$usuario'";
-    $stmtUser = sqlsrv_query( $conn , $user);
-    if($stmtUser){
-      $result = array();
-      do {
-        while ($row = sqlsrv_fetch_array($stmtUser, SQLSRV_FETCH_ASSOC)){
-          $result[] = $row;
-        }
-      } while (sqlsrv_next_result($stmtUser));
-
-      sqlsrv_free_stmt($stmtUser);
-      echo json_encode($result, JSON_UNESCAPED_UNICODE);
-    }
+    imprimir($user,$conn);
   }else if(ISSET($_GET['veriuser'])){
     $veriuser=$_GET["veriuser"];
     $user = "select COUNT(*) from CM_Usuario where Clave='$veriuser'";
@@ -36,6 +25,22 @@ if($row[0]=='1'){
 
 }else{
   echo '..Error.. Acceso no autorizado';
+}
+
+function imprimir($query,$conn){
+  $stmt = sqlsrv_query( $conn , $query);
+  if($stmt){
+    $result = array();
+    do {
+        while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)){
+           $result[] = $row;
+        }
+    } while (sqlsrv_next_result($stmt));
+    echo json_encode($result, JSON_UNESCAPED_UNICODE);
+    sqlsrv_free_stmt($stmt);
+  }else{
+    echo $GeneralError;
+  }
 }
 sqlsrv_close($conn); //Close the connnectiokn first
 ?>
