@@ -1,4 +1,5 @@
 ObtenerNotificaciones();
+const getNode='http://'+$(location).attr('hostname')+":1337/";
 revisarPermisosInterface();
 $(".scrollingtable2").css("height",screen.height-260);
 async function ObtenerNotificaciones(){
@@ -12,6 +13,14 @@ function FormatDate(fecha){
   if(fecha!=null){
     var res = fecha.split("-");
     return res[0]+"-"+res[1]+"-"+res[2];
+  }else{
+    return "";
+  }
+}
+function PickerToNormal(fecha){
+  if(fecha!=null){
+    var res = fecha.split("-");
+    return res[2]+"-"+res[1]+"-"+res[0];
   }else{
     return "";
   }
@@ -140,11 +149,22 @@ function mensajeError(error){
   });
 }
 
+async function permisos(valores){
+  var perm=await revisarPermisos(valores);
+  if(!perm){
+    if(localStorage['paginaI']!=null && !$(location).attr('pathname').includes(localStorage['paginaI'])){
+      window.location.replace(localStorage['paginaI']);
+    }else{
+      limpiar();
+    }
+  }
+}
+
 async function revisarPermisos(pagina){
   var permisos=await conexion("GET", 'RestApi/GET/get_permisos.php','');
   var reg=false;
   pagina.forEach(function(valor) {
-    if(permisos.includes(","+valor+",")){//el servidor separa cada permiso con una , así no habrá problema de repeticiones
+    if(permisos.includes(","+valor+",")){//el servidor separa cada permiso con una ,
       reg=true;
     }
   });
@@ -176,6 +196,8 @@ async function revisarPermisosInterface(){
   if(!permisos.includes(",7,")){$(".siete").remove()}
   if(!permisos.includes(",8,")){$(".ocho").remove()}
   if(!permisos.includes(",9,")){$(".nueve").remove()}
+  if(!permisos.includes(",10,")){$(".diez").remove()}
+  if(!permisos.includes(",11,")){$(".once").remove()}
   if(!permisos.includes(",3,") && !permisos.includes(",4,")){$(".tres-cuatro").remove()}
   if(!permisos.includes(",1,") && !permisos.includes(",2,")){$(".uno-dos").remove()}
   if(!permisos.includes(",2,") && !permisos.includes(",5,")){$(".dos-cinco").remove()}
@@ -213,10 +235,12 @@ function conexion(method, url,params) {
     });
 }
 function llenarSelect(select,valor,texto,json){
-  $(select).append($('<option>', {
-    value: "",
-    text: ""
-  }));
+  if($(select).is(':empty')){
+    $(select).append($('<option>', {
+      value: "",
+      text: ""
+    }));
+  }
   for (i = 0; i < json.length; i++) {
     $(select).append($('<option>', {
       value: json[i][valor],
@@ -240,7 +264,7 @@ function crearTablaJson(json,tabla){
     for (var i = 0; i < json.length; i++) {
       content+="<tr>";
       keys.forEach(function(key) {
-        content+='<td style="max-width:100%;white-space:nowrap;">'+json[i][key]+'</td>';
+        content+='<td style="max-width:100%;white-space:nowrap;">'+(json[i][key]==null?'':json[i][key])+'</td>';
       });
       content+="</tr>";
     }
@@ -279,6 +303,52 @@ function setSelectedValue(selectObj, valueToSet) {
   }
 }
 
+function fomatoNumero(numero){
+  if(numero==null)
+    return '';
+  if(numero==='')
+    return '';
+  if(numero===undefined)
+    return '';
+  var can=parseFloat(numero);
+  return ((Math.round(can * 100) / 100).toFixed(3).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+}
+//Llenado de pdf
+function ponerEncabezadoPdf(doc,titulo,iso){
+  doc.setFontSize(11);
+  doc.text("Fecha: "+PickerToNormal($('#fecha').val()),480,20);
+  doc.text("Trazabilidad de Barriles y Rones Envejecidos",300,60);
+  doc.addImage(document.getElementById('imagenLogo'), 10, 10);
+  doc.text(titulo,40,110);
+  doc.text(iso,480,110);
+}
+function ponerTablasPdf(doc,tablas,inicio){
+  var res;
+  var options = {
+    createdCell: function (cell, data) {
+      cell.styles.fillColor = '#ffffff';
+      cell.styles.textColor = "black";
+    },
+    theme: 'grid',
+    tableWidth: 'auto',
+    columnWidth: 'auto',
+    margin: {
+      top: 80
+    },
+    styles: {
+      overflow: 'linebreak',
+      fillColor: "#F5F5F6",
+      textColor:"black"
+    },
+    fontSize:9,
+    startY: inicio + 20
+   };
+  for (var i = 0; i < tablas.length; i++) {
+    res = doc.autoTableHtmlToJson(document.getElementById(tablas[i]));
+    doc.autoTable(res.columns, res.data, options);
+    options.startY=doc.autoTableEndPosY() + 20;
+  }
+}
 //limpia la sesión
 function limpiar() {
   localStorage['sesion_timer']="";

@@ -50,18 +50,18 @@
                         TBRE
                      </div>
                   </li>
-                  <li>
+                  <li class="once">
                      <a href="index.php"><i class="fa fa-area-chart"></i> <span class="nav-label">Operación del día</span></a>
                   </li>
-                  <li>
+                  <li class="diez">
                      <a href="#"><i class="fa fa-table"></i> <span class="nav-label">Reportes</span><span class="fa arrow"></span></a>
                      <ul class="nav nav-second-level">
-                        <li><a href="inventario.php">Inventario</a></li>
-                        <li><a href="barriles_plantel.php">Barriles en plantel</a></li>
-                        <li><a href="llenados.php">Barriles llenados</a></li>
-                        <li><a href="rellenados.php">Barriles rellenados</a></li>
-                        <li><a href="trasiego.php">Barriles trasegados</a></li>
-                        <li><a href="reparacion.php">Barriles reparados</a></li>
+                        <li><a href="inventario.html">Inventario</a></li>
+                        <li><a href="barriles_plantel.html">Barriles en plantel</a></li>
+                        <li><a href="llenados.html">Barriles llenados</a></li>
+                        <li><a href="rellenados.html">Barriles rellenados</a></li>
+                        <li><a href="trasiego.html">Barriles trasegados</a></li>
+                        <li><a href="RGerencia.html">Reporte de Gerencia</a></li>
                      </ul>
                   </li>
                   <li class="dos-cinco">
@@ -74,7 +74,7 @@
                   <li class="seis active">
                      <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Órdenes de trabajo</span><span class="fa arrow"></span></a>
                      <ul class="nav nav-second-level">
-                       <li>
+                       <li class="active">
                            <a href="#">Llenado<span class="fa arrow"></span></a>
                            <ul class="nav nav-third-level">
                                <li class="active"><a href="OLlenado.html">Orden Llenado</a></li>
@@ -164,94 +164,34 @@
                   </ul>
                </nav>
             </div>
-            <div class="tabs-container">
-               <ul class="nav nav-tabs d-flex justify-content-center" role="tablist">
-                  <li><a class="nav-link active" data-toggle="tab" href="#generar"> Generar órdenes</a></li>
-                  <li><a class="nav-link" data-toggle="tab" onclick="ActualizarOrnedes('hoy');" href="#ver">Ver órdenes</a></li>
-               </ul>
-               <div class="tab-content">
-                  <div role="tabpanel" id="generar" class="tab-pane active">
-                     <div class="panel panel-default" style="margin-top:0px;">
-                        <div class="row text-center  white-bg  d-flex justify-content-center" >
-                           <button class="button5 btn btn-primary b-r-xl" style="margin-bottom:20px;" onclick='CargarDialogo();'>Agregar ordenes</button>
-                        </div>
-                        <div class="col-md-12 d-flex justify-content-center table-responsive text-center " id="table-wrapper">
-                           <div class="table-responsive col-md-12 centro" id="scrollingtable">
-                              <table class="table table-bordered cell-border" id="lotes">
-                                 <thead>
-                                    <tr>
-                                       <th>Plantel</th>
-                                       <th>Uso</th>
-                                       <th>A</th>
-                                       <th>B</th>
-                                       <th>C</th>
-                                       <th>D</th>
-                                       <th>RC</th>
-                                       <th>RE</th>
-                                       <th>E</th>
-                                       <th>F</th>
-                                       <th>Total</th>
-                                    </tr>
-                                 </thead>
-                                 <tbody></tbody>
-                              </table>
-                              <div class="sk-spinner spinner1">
-                                 <div class="sk-bounce1"></div>
-                                 <div class="sk-bounce2"></div>
-                                 <div class="sk-bounce3"></div>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                  <div role="tabpanel" id="ver" class="tab-pane">
-                     <div class="row text-center  white-bg  d-flex justify-content-center">
-                        <div class="col-md-12 text-center  d-flex justify-content-center" >
-                           <div class="col-md-4 text-center"style="max-width:250px;" id="data_1">
-                              <h5>
-                                 <label>  Fecha de filtro:   </label>
-                                 <div class="input-group date">
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" id="FOrdenes" onchange="ActualizarOrnedes(this.value);" data-date-format='yy-mm-dd'>
-                                 </div>
-                              </h5>
-                           </div>
-                        </div>
-                        <div class="col-md-12 d-flex justify-content-center table-responsive text-center " id="table-wrapper">
-                           <div class="table-responsive col-md-12 centro" id="scrollingtable">
-                              <table class="table table-bordered cell-border" id="lotesOrden">
-                                 <thead>
-                                    <tr>
-                                       <th>Órden</th>
-                                       <th>Bodega</th>
-                                       <th>Cantidad</th>
-                                       <th>Paletas</th>
-                                       <th>Operador</th>
-                                       <th>Montacarguista</th>
-                                       <th>Supervisor</th>
-                                       <th>Estatus</th>
-                                       <th>Opción</th>
-                                    </tr>
-                                 </thead>
-                                 <tbody></tbody>
-                              </table>
-                              <div class="sk-spinner sk-spinner-three-bounce">
-                                 <div class="sk-bounce1"></div>
-                                 <div class="sk-bounce2"></div>
-                                 <div class="sk-bounce3"></div>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="col-md-12 ibox-content listaP">
-                           <h4>
-                              Selecciona los permisos que deseas agregar a este perfil
-                           </h4>
-                           <select class="form-control dual_select" id="permisos" name="duallistbox" multiple>
-                           </select>
-                           <button class="button5 btn btn-primary b-r-xl" style="margin-right:30px;margin-bottom:30px;" id="guardarPer" onclick="GuardarPermisos();">Guardar cambios</button>
-                        </div>
-                     </div>
-                  </div>
-               </div>
+            <div class="row wrapper border-bottom white-bg page-heading">
+              <div class="col-md-12 d-flex justify-content-center table-responsive text-center " id="table-wrapper">
+                 <div class="table-responsive col-md-12 centro" id="scrollingtable">
+                    <table class="table table-bordered cell-border" id="lotes">
+                       <thead>
+                          <tr>
+                             <th>Plantel</th>
+                             <th>Uso</th>
+                             <th>A</th>
+                             <th>B</th>
+                             <th>C</th>
+                             <th>D</th>
+                             <th>RC</th>
+                             <th>RE</th>
+                             <th>E</th>
+                             <th>F</th>
+                             <th>Total</th>
+                          </tr>
+                       </thead>
+                       <tbody></tbody>
+                    </table>
+                    <div class="sk-spinner spinner1">
+                       <div class="sk-bounce1"></div>
+                       <div class="sk-bounce2"></div>
+                       <div class="sk-bounce3"></div>
+                    </div>
+                 </div>
+              </div>
             </div>
             <div class="footer">
                <div>
@@ -530,22 +470,14 @@
                search: "",
              }
            });
-           $('#lotes tbody').on( 'click', 'tr', function (e) {
+           /*$('#lotes tbody').on( 'click', 'tr', function (e) {
              var data = table.row( this ).data();
              $(this).toggleClass('selected');
-           });
+           });*/
          }
-
-         async function permisos(){
-           var perm=await revisarPermisos(["6"]);
-           if(!perm){
-             window.location.replace("index.php");
-           }
-
-         }
-
+         
          $(document).ready(function(){
-           permisos();
+           permisos(["6"]);
            ActualizarFechasLotes('RestApi/GET/'+getApi+'?fechasLotes=true');
            CargarTabla();
          });

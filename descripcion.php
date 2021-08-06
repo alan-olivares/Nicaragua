@@ -5,6 +5,7 @@
    $alcohol=$_GET["alcohol"];
    $fecha=$_GET["fecha"];
    $codificacion=$_GET["codificacion"];
+   $aut=$_GET["aut"];
 
    include'general_connection.php';
    ?>

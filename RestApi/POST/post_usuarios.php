@@ -78,7 +78,7 @@ if($row[0]=='1'){
       $activo=$_POST["activo"];
       $grupo=$_POST["grupo"];
       $acceso=$_POST["acceso"];
-      $query="if not exists (select * from CM_Usuario where Clave='$user') "
+      $query="if not exists (select * from CM_Usuario where Clave='$user') ";
       if($perfil!==""){
         $query=$query."INSERT into CM_Usuario (IdFacultad, IdGrupo,Nombre, Estatus,Clave,Pass,IdPerfil) values ($acceso,'$grupo','$nombre',$activo,'$user',ENCRYPTBYPASSPHRASE('Pims.2011','$passn'),'$perfil')";
       }else{

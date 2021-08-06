@@ -39,7 +39,7 @@ while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC))
 ?>
 <tr>
 <td  style="text-align: center;"><?php echo $row[0]?></td>
-<td style="text-align: center;" ><?php if($row[1]==null){echo '';}else{echo $row[1]->format('Y-m-d');}?></td>
+<td style="text-align: center;" ><?php echo $row[1]?></td>
 <td style="text-align: center;" ><?php echo $row[2]?></td>
 <td style="text-align: center;" ><?php echo $row[3]?></td>
 <td style="text-align: center;"><?php echo $row[4]?></td>
@@ -83,7 +83,7 @@ while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC))
 {
 ?>
 <tr>
-  <td style="text-align: center;"><?php if($row[0]==null){echo '';}else{echo $row[0]->format('Y-m-d');}?></td>
+  <td style="text-align: center;"><?php echo $row[0]?></td>
   <td style="text-align: center;"><?php echo $row[1]?></td>
   <td style="text-align: center;"><?php echo $row[2]?></td>
   <td style="text-align: center;"><?php echo $row[3]?></td>
@@ -92,8 +92,8 @@ while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC))
   <td style="text-align: center;"><?php echo $row[6]?></td>
   <td style="text-align: right;"><?php echo number_format((float)str_replace(",","",$row[7]), 3, '.', ',')?></td>
   <td style="text-align: right;"><?php echo number_format((float)str_replace(",","",$row[8]), 3, '.', ',')?></td>
-  <td style="text-align: center;"><?php echo $row[9]->format('Y-m-d')?></td>
-  <td style="text-align: center;"><?php if($row[10]==null){echo '';}else{echo $row[10]->format('Y-m-d');}?></td>
+  <td style="text-align: center;"><?php echo $row[9]?></td>
+  <td style="text-align: center;"><?php echo $row[10]?></td>
 </tr>
 
 <?php

@@ -328,6 +328,14 @@ async function getInfo(sel,tipo,etiqueta,valor,boton){
 //Se limpian los campos cuando el usario decide buscar en otros selects
 function limpiarCampos(select) {
   switch (select) {
+    case 'bodega':
+      $("#bodega").empty();
+      $("#Costado").empty();
+      $("#Filas").empty();
+      $("#Torres").empty();
+      OcultarBotones();
+      $("#Niveles").empty();
+      break;
     case 'Costado':
       $("#Costado").empty();
       $("#Filas").empty();
@@ -454,12 +462,7 @@ $('#barriles tbody').on( 'click', 'tr', function () {
 });
 
 
-async function permisos(){
-  var perm=await revisarPermisos(["2"]);
-  if(!perm){
-    window.location.replace("index.php");
-  }
-}
+
 async function cargaPlantas(){
   try {
     var url='RestApi/GET/'+getApi+'?plantas=true';
@@ -484,13 +487,13 @@ async function cargaMotivos(campo,tipo){
 
 $(document).ready(function(){
   //Por default los botones y la tabla deben de estar desactivado
+  permisos(["2"]);
   cargaMotivos('#MotivoA','1');
   cargaMotivos('#MotivoM','3');
   cargaMotivos('#MotivoE','2');
   const url='RestApi/GET/'+getApi+'?fechasLotes=true';
   cargaPlantas();
   ActualizarFechasLotes(url);
-  permisos();
   $("#scrollingtable").hide();
   $("#Agregar").hide();
   $("#Quitar").hide();

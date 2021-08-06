@@ -47,18 +47,18 @@
                         TBRE
                      </div>
                   </li>
-                  <li>
+                  <li class="once">
                      <a href="index.php"><i class="fa fa-area-chart"></i> <span class="nav-label">Operación del día</span></a>
                   </li>
-                  <li>
+                  <li class="diez">
                      <a href="#"><i class="fa fa-table"></i> <span class="nav-label">Reportes</span><span class="fa arrow"></span></a>
                      <ul class="nav nav-second-level">
-                        <li><a href="inventario.php">Inventario</a></li>
-                        <li><a href="barriles_plantel.php">Barriles en plantel</a></li>
-                        <li><a href="llenados.php">Barriles llenados</a></li>
-                        <li><a href="rellenados.php">Barriles rellenados</a></li>
-                        <li><a href="trasiego.php">Barriles trasegados</a></li>
-                        <li><a href="reparacion.php">Barriles reparados</a></li>
+                        <li><a href="inventario.html">Inventario</a></li>
+                        <li><a href="barriles_plantel.html">Barriles en plantel</a></li>
+                        <li><a href="llenados.html">Barriles llenados</a></li>
+                        <li><a href="rellenados.html">Barriles rellenados</a></li>
+                        <li><a href="trasiego.html">Barriles trasegados</a></li>
+                        <li><a href="RGerencia.html">Reporte de Gerencia</a></li>
                      </ul>
                   </li>
                   <li class="dos-cinco">
@@ -71,10 +71,32 @@
                   <li class="seis">
                      <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Órdenes de trabajo</span><span class="fa arrow"></span></a>
                      <ul class="nav nav-second-level">
-                        <li><a href="OLlenado.html">Llenado</a></li>
-                        <li><a href="ORelleno.html">Relleno</a></li>
-                        <li><a href="revision.html">Revisión</a></li>
-                        <li><a href="OTrasiego.html">Trasiego</a></li>
+                       <li>
+                           <a href="#">Llenado<span class="fa arrow"></span></a>
+                           <ul class="nav nav-third-level">
+                               <li><a href="OLlenado.html">Orden Llenado</a></li>
+                               <li><a href="RLlenadoLlenada.html">Reporte de Llenado</a></li>
+                               <li><a href="RLlenadoMantenimineto.html">Reporte de Mantenimiento</a></li>
+                               <li><a href="RLlenadoRevisado.html">Reporte de Revisado</a></li>
+                           </ul>
+                       </li>
+                       <li>
+                           <a href="#">Relleno<span class="fa arrow"></span></a>
+                           <ul class="nav nav-third-level">
+                               <li><a href="ORelleno.html">Orden Relleno</a></li>
+                               <li><a href="RRellenoOperacion.html">Reporte de Operación</a></li>
+                           </ul>
+                       </li>
+                       <li><a href="revision.html">Revisión</a></li>
+                       <li>
+                           <a href="#">Trasiego<span class="fa arrow"></span></a>
+                           <ul class="nav nav-third-level">
+                                <li><a href="OTrasiego.html">Orden Trasiego</a></li>
+                                <li><a href="RTrasiegoHojaAnalisis.html">Hoja de Análisis de Trasiego</a></li>
+                                <li><a href="RTrasiegoVaciados.html">Barriles vaciados por trasiego</a></li>
+                                <li><a href="RTrasiegoRemision.html">Remisión blending</a></li>
+                           </ul>
+                       </li>
                      </ul>
                   </li>
                   <li class="ocho">
@@ -361,15 +383,9 @@
              }
            });
          }
-         async function permisos(){
-           var perm=await revisarPermisos(["1","2"]);
-           if(!perm){
-             window.location.replace("index.php");
-           }
-         }
-
+         
          $(document).ready(function(){
-           permisos();
+           permisos(["1","2"]);
            CargarTabla();
          });
       </script>

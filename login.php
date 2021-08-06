@@ -45,31 +45,33 @@
            while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC))
            {
              if($row[0]=='1'){
-               $tsql2 = "select u.Nombre,p.Descripcion from CM_Usuario u
-                 left join CM_Perfil p on p.IdPerfil=u.IdPerfil
-                 where u.Clave='$usuario'";
+               $tsql2 = "select top 1 u.Nombre,p.Descripcion,per.Pagina from CM_Usuario u
+               left join CM_Perfil p on p.IdPerfil=u.IdPerfil
+               left join CM_PerfilPermiso pp on pp.IdPerfil=p.IdPerfil
+               left join CM_Permiso per on per.IdPermiso=pp.IdPermiso where u.Clave='$usuario' order by per.Orden;";
                $stmt2 = sqlsrv_query( $conn , $tsql2);
-               while( $row2 = sqlsrv_fetch_array( $stmt2, SQLSRV_FETCH_NUMERIC))
+               $row2 = sqlsrv_fetch_array( $stmt2, SQLSRV_FETCH_NUMERIC);
+               if( $row2[2]!=null)
                {
                  ?>
       <script type="text/javascript">
          localStorage['nombre'] = '<?php echo utf8_encode($row2[0]);?>';
          localStorage['perfil'] = '<?php echo utf8_encode($row2[1]);?>';
+         localStorage['paginaI'] = '<?php echo utf8_encode($row2[2]);?>';
          localStorage['usuario'] = '<?php echo PHP_AES_Cipher::encrypt("Pims.2021","fedcba9876543210",$usuario);?>';
          localStorage['password'] = '<?php echo PHP_AES_Cipher::encrypt("Pims.2021","fedcba9876543210",$contra);?>';
          localStorage['sesion_timer']=new Date();
-         window.location.replace("index.php");
+         window.location.replace(localStorage['paginaI']);
       </script>
       <?php
-         }
+    }else{
+      ?>
+   <script type="text/javascript">
+      document.getElementById("estado").innerHTML = 'No tienes permisos para acceder al sitio';
+   </script>
+   <?php
+    }
          sqlsrv_free_stmt( $stmt2);
-         }else if($row[0]=='2'){
-         ?>
-      <script type="text/javascript">
-         document.getElementById("estado").innerHTML = 'No tienes permisos para acceder al sitio';
-      </script>
-      <?php
-         //header("Location: login.php");
          }else{
            ?>
       <script type="text/javascript">
