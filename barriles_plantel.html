@@ -272,8 +272,9 @@
             var parsed =JSON.parse(result);
             var content="";
             if(parsed.length>0){
+              var aut=btoa(localStorage['usuario'] + ":" + localStorage['password']);
               for (var i = 0; i < parsed.length; i++) {
-                content+='<tr><td style="text-align: center;color:blue;text-decoration: underline;"><a onclick="javascript:abrir(\'descripcion_bodegas.php?almacen='+parsed[i].AlmacenId+'&area='+parsed[i].AreaId+'&codificacion='+parsed[i].IdCodificacion+'\')">'+parsed[i].Num+'</a></td>'+
+                content+='<tr><td style="text-align: center;color:blue;text-decoration: underline;"><a onclick="javascript:abrir(\'descripcion_bodegas.php?almacen='+parsed[i].AlmacenId+'&area='+parsed[i].AreaId+'&codificacion='+parsed[i].IdCodificacion+'&aut='+aut+'\')">'+parsed[i].Num+'</a></td>'+
                 "</td><td>"+parsed[i].Plantel+"</td><td>"+parsed[i].Uso+"</td><td style='text-align: right;'>"+parsed[i].A+
                 "</td><td style='text-align: right;'>"+parsed[i].B+"</td></td><td style='text-align: right;'>"+parsed[i].C+
                 "</td></td><td style='text-align: right;'>"+parsed[i].D+"</td></td><td style='text-align: right;'>"+parsed[i].F+
@@ -314,15 +315,19 @@
           async function generar(tipo,boton){
             if($('#tabla2 tbody td').length>0){
               var l = $('#'+boton).ladda();
-              l.ladda('start');
-              var url=getNode+"?reporte=BPlantel";
-              //url=getNode+'?archivo='+result+'&fecha1='+document.getElementById('date1').value+'&fecha2='+document.getElementById('date2').value+'&tipo='+boton+'&reporte=lotes';
-              var valor=await conexion("GET",url,"");
-              let link = document.createElement("a");
-              link.download = "Reporte de Barriles por plantel ."+tipo;
-              link.href = valor;
-              link.click();
-              l.ladda('stop');
+              try {
+                l.ladda('start');
+                var url=getNode+"?reporte=barriles_plantel&tipo="+tipo;
+                var valor=await conexion("GET",url,"");
+                let link = document.createElement("a");
+                link.download = "Reporte de Barriles por plantel ."+tipo;
+                link.href = valor;
+                link.click();
+              } catch (e) {
+                mensajeError(e);
+              } finally {
+                l.ladda('stop');
+              }
             }else{
               mensajeError("No hay datos que exportar");
             }
@@ -425,7 +430,7 @@
           ]
         } );
           }
-          
+
          $(document).ready(function(){
            permisos(["10"]);
            cargarDatos();

@@ -2,6 +2,7 @@
 
 const servidor="http://localhost:80/Nicaragua/";
 const Excel = require('exceljs');
+const XlsxPopulate = require('xlsx-populate');
 var http = require('http');
 var express = require('express');
 var app = express();
@@ -38,6 +39,33 @@ app.get('/', function(req, res) {
         llenarRTrasiegoHojaAnalisis('RTrasiegoHojaAnalisis',req.query.fecha,req.query.tanque,res,req.query.tipo,id);
       }else if(req.query.reporte==='RRellenoOperacion'){
         llenarRRellenoOperacion('RRellenoOperacion',req.query.fecha,req.query.ope,res,req.query.tipo,id);
+      }else if(req.query.reporte==='inventario'){
+        var bodega=req.query.bodega;
+        var alcohol=req.query.alcohol;
+        var llenada=req.query.llenada;
+        var uso=req.query.uso;
+        llenarInventario('Inventario-BaPlantel',bodega,alcohol,llenada,uso,res,req.query.tipo,id);
+      }else if(req.query.reporte==='barriles_plantel'){
+        llenarBarrilesPlantel('Inventario-BaPlantel',res,req.query.tipo,id);
+      }else if(req.query.reporte==='llenados'){
+        llenarBarrilesLlenados('llenados',res,req.query.fecha1,req.query.fecha2,req.query.tipo,id);
+      }else if(req.query.reporte==='rellenados'){
+        llenarBarrilesReLlenados('rellenados',res,req.query.fecha1,req.query.fecha2,req.query.tipo,id)
+      }else if(req.query.reporte==='trasiego'){
+        llenarBarrilesTrasiego('trasiego',res,req.query.fecha1,req.query.fecha2,req.query.tipo,id)
+      }else if(req.query.reporte==='detalleBarril'){
+        var almamcen=req.query.almacen;
+        var area=req.query.area;
+        var seccion=req.query.seccion;
+        var alcohol=req.query.alcohol;
+        var cod=req.query.cod;
+        var fecha=req.query.fecha;
+        llenarDetalleBarril('detalleBarrilXSeccion',res,almamcen,area,seccion,alcohol,cod,fecha,req.query.tipo,id)
+      }else if(req.query.reporte==='detalleBarrilPlantel'){
+        var almacen=req.query.almacen;
+        var area=req.query.area;
+        var cod=req.query.cod;
+        llenarDetalleBarrilPlantel('detalleBarrilesPlantel',res,almacen,area,cod,req.query.tipo,id)
       }
     }else{
       res.send('..Error.. Problema con la autenticación');
@@ -85,7 +113,6 @@ function PickerToNormal(fecha){
   }
 }
 async function llenarRTrasiegoVaciados(archivo,fecha,tanque,res,tipo,id){
-  const XlsxPopulate = require('xlsx-populate');
   XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
     .then(async workbook => {
       const hoja="Principal";
@@ -170,7 +197,6 @@ function nuevoUsoVaciados(hoja,inicio){
 
 
 function llenarRTrasiegoRemision(archivo,fecha,tanque,res,tipo,id){
-  const XlsxPopulate = require('xlsx-populate');
   XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
     .then(async workbook => {
       const hoja="Principal";
@@ -200,7 +226,6 @@ function llenarRTrasiegoRemision(archivo,fecha,tanque,res,tipo,id){
 }
 
 async function llenarRTrasiegoHojaAnalisis(archivo,fecha,tanque,res,tipo,id){
-  const XlsxPopulate = require('xlsx-populate');
   XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
     .then(async workbook => {
       const hoja="Principal";
@@ -228,7 +253,6 @@ async function llenarRTrasiegoHojaAnalisis(archivo,fecha,tanque,res,tipo,id){
 }
 
 async function llenarRRellenoOperacion(archivo,fecha,operacion,res,tipo,id){
-  const XlsxPopulate = require('xlsx-populate');
   XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
     .then(async workbook => {
       const hoja="Principal";
@@ -312,7 +336,6 @@ function nuevoRowOperacion(hoja,inicio,json){
 }
 
 function llenarRLlenadoLlenada(archivo,fecha,res,tipo,id){
-  const XlsxPopulate = require('xlsx-populate');
   XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
     .then(async workbook => {
       const hoja="Principal";
@@ -388,7 +411,6 @@ function totalRowLlenado(hoja,inicio,uso,totalBarr,totalCapa){
 }
 
 function llenarRLlenadoMantenimineto(archivo,fecha,res,tipo,id){
-  const XlsxPopulate = require('xlsx-populate');
   XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
     .then(async workbook => {
       const hoja="Principal";
@@ -423,13 +445,12 @@ async function exportar(archivo,id,tipo,workbook,res){
     }, 5000);
 
   }else{
-    convertirArchivo(archivo,res,id,tipo);//El usuario lo quiere en pdf
+    convertirArchivo(archivo,res,id,tipo);//El usuario lo quiere en otro formato
   }
 }
 
 
 function llenarRLlenadoRevisado(archivo,fecha,res,tipo,id){
-  const XlsxPopulate = require('xlsx-populate');
   XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
     .then(async workbook => {
       const hoja="Principal";
@@ -494,7 +515,6 @@ function borrarFilas(inicio,cantidad,hoja){
 
 
 function llenarRGerencia(archivo,res,tipo,id){
-  const XlsxPopulate = require('xlsx-populate');
   XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
     .then(async workbook => {
       const hoja="Principal";
@@ -556,33 +576,302 @@ function sumarCamposGerencia(totalCapa,json){
   totalCapa[7]+=json['Birrectificado Honduras'];
   return totalCapa;
 }
-async function stringToJson(url){
-  try {
-    var datos;
-    datos=await conexion(url);
-    return JSON.parse(datos);
-  } catch (e) {
-    return [];
+//Inicia reporte en inventario.html
+function llenarInventario(archivo,bodega,alcohol,llenada,uso,res,tipo,id){
+  XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
+    .then(async workbook => {
+      const hoja="Principal";
+      var url=servidor+'RestApi/GET/get_Reportes.php?inventarioDeta=true&bodega='+bodega+'&alcohol='+alcohol+'&llenada='+llenada+'&uso='+uso;
+      var result = await conexion(url);
+      var parsed =JSON.parse(result);
+      await ponerEncabezadoInventario(bodega,alcohol,llenada,uso,workbook.sheet(hoja));
+      insertarTablaUnoInventario(parsed,workbook.sheet(hoja),13);
+      var inicio=parsed.length;
+      url=servidor+'RestApi/GET/get_Reportes.php?inventario=true&bodega='+bodega+'&alcohol='+alcohol+'&llenada='+llenada+'&uso='+uso;
+      result = await conexion(url);
+      parsed =JSON.parse(result);
+      insertarTablaDosInventario(parsed,workbook.sheet(hoja),inicio+17);
+      await exportar(archivo,id,tipo,workbook,res);
+    });
+}
+
+function insertarTablaUnoInventario(json,hoja,inicio){
+  convinarCeldas(hoja,["G"+(inicio-1)+":H"+(inicio-1),"I"+(inicio-1)+":J"+(inicio-1),"K"+(inicio-1)+":L"+(inicio-1),"M"+(inicio-1)+":N"+(inicio-1),"O"+(inicio-1)+":P"+(inicio-1)])
+  hoja.cell('G'+(inicio-1)).value([['Año Alcohol','','Alcohol','','Barril','','Barriles','','Litros','']]).style({"fill": "F5F5F6","horizontalAlignment":"center"});
+  for (var i = 0; i < json.length; i++) {
+    convinarCeldas(hoja,["G"+(i+inicio)+":H"+(i+inicio),"I"+(i+inicio)+":J"+(i+inicio),"K"+(i+inicio)+":L"+(i+inicio),"M"+(i+inicio)+":N"+(i+inicio),"O"+(i+inicio)+":P"+(i+inicio)])
+    hoja.cell('G'+(i+inicio)).value([[json[i].Fecha_Li,'',json[i].Alcohol,'',json[i].Barril,'']]).style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
+    hoja.cell('M'+(i+inicio)).value([[parseInt(json[i]['Total Barriles']),0]]).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0"});
+    hoja.cell('O'+(i+inicio)).value([[parseInt(json[i]['Total Litros']),0]]).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0.00"});
   }
 }
-function FormatDate(fecha,sep){
-  if(fecha!=null){
-    var res = fecha.split("-");
-    return res[2]+sep+res[1]+sep+res[0];
+function insertarTablaDosInventario(json,hoja,inicio){
+  var totales=[0,0,0,0,0,0,0,0,0];
+  hoja.cell('D'+(inicio-1)).value([['Número','Bodega','Fila','Año Alcohol','Alcohol','Uso','A','B','C','D','RC','E','F','Barriles','Litros']]).style({border:true,"borderColor": "000000","horizontalAlignment":"center"});
+  for (var i = 0; i < json.length; i++) {
+    hoja.cell('D'+(i+inicio)).value([[json[i].Num,json[i].Bod,json[i].Fila,json[i].Fecha_Li,json[i].Alcohol,json[i].Uso]]).style({"horizontalAlignment":"center"});
+    hoja.cell('J'+(i+inicio)).value([[json[i].A,json[i].B,json[i].C,json[i].D,json[i].RC,json[i].E,json[i].F,json[i].TotalBarriles]]).style({"numberFormat": "#,##0"});
+    hoja.cell('R'+(i+inicio)).value(json[i].totallitros).style({"numberFormat": "#,##0.00"});
+    totales[0]+=parseInt(json[i].A);
+    totales[1]+=parseInt(json[i].B);
+    totales[2]+=parseInt(json[i].C);
+    totales[3]+=parseInt(json[i].D);
+    totales[4]+=parseInt(json[i].RC);
+    totales[5]+=parseInt(json[i].E);
+    totales[6]+=parseInt(json[i].F);
+    totales[7]+=parseInt(json[i].TotalBarriles);
+    totales[8]+=parseFloat(json[i].totallitros);
+  }
+  hoja.cell('I'+(json.length+inicio)).value('Totales:').style({border:true,"borderColor": "000000","horizontalAlignment":"center"});
+  hoja.cell('J'+(json.length+inicio)).value([totales]).style({border:true,"borderColor": "000000","numberFormat": "#,##0"});
+  hoja.cell('R'+(json.length+inicio)).value(totales[8]).style({border:true,"borderColor": "000000","numberFormat": "#,##0.00"});
+
+}
+async function ponerEncabezadoInventario(bodega,alcohol,llenada,uso,hoja){
+  convinarCeldas(hoja,["I5:J5","M5:N5","K5:L5"]);
+  hoja.range("I5:J5").style({bottomBorder:true,"borderColor": "000000"});
+  hoja.range("M5:N5").style({bottomBorder:true,"borderColor": "000000"});
+  hoja.cell('D5').value('Inventario').style({ bold: true, "horizontalAlignment":"left" });
+  hoja.cell('H5').value('Bodega:').style({ bold: true, "horizontalAlignment":"right" });
+  hoja.cell('K5').value('Alcohol:').style({ bold: true, "horizontalAlignment":"right" });
+  hoja.cell('O5').value('Año:').style({ bold: true, "horizontalAlignment":"right" });
+  hoja.cell('Q5').value('Uso:').style({ bold: true, "horizontalAlignment":"right" });
+  if(bodega===''){
+    hoja.cell('I5').value('Todos');
   }else{
-    return "";
+    var url=servidor+'RestApi/GET/get_Reportes.php?almacenes='+bodega;
+    var result = await conexion(url);
+    var parsed =JSON.parse(result);
+    hoja.cell('I5').value(parsed[0].Nombre);
+  }
+  if(alcohol===''){
+    hoja.cell('M5').value('Todos');
+  }else{
+    var url=servidor+'RestApi/GET/get_Reportes.php?alcohol='+alcohol;
+    var result = await conexion(url);
+    var parsed =JSON.parse(result);
+    hoja.cell('M5').value(parsed[0].Descripcion);
+  }
+  if(llenada===''){
+    hoja.cell('P5').value('Todos').style({bottomBorder:true,"borderColor": "000000"});
+  }else{
+    hoja.cell('P5').value(llenada).style({bottomBorder:true,"borderColor": "000000"});
+  }
+  if(uso===''){
+    hoja.cell('R5').value('Todos').style({bottomBorder:true,"borderColor": "000000"});
+  }else{
+    var url=servidor+'RestApi/GET/get_Reportes.php?uso='+uso;
+    var result = await conexion(url);
+    var parsed =JSON.parse(result);
+    hoja.cell('R5').value(parsed[0].Codigo).style({bottomBorder:true,"borderColor": "000000"});
   }
 }
-function fomatoNumero(numero){
-  if(numero==null)
-    return '';
-  if(numero==='')
-    return '';
-  if(numero===undefined)
-    return '';
-  var can=parseFloat(numero);
-  return ((Math.round(can * 100) / 100).toFixed(3).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+//Termina reporte en inventario.html
+//Inicia reporte en barriles_plantel.html
+function llenarBarrilesPlantel(archivo,res,tipo,id){
+  XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
+    .then(async workbook => {
+      const hoja="Principal";
+      workbook.sheet(hoja).cell('D5').value('Inventario de barriles vacios en plantel').style({ bold: true, "horizontalAlignment":"left" });
+      var url=servidor+'RestApi/GET/get_Reportes.php?barriles_plantel=true';
+      var result = await conexion(url);
+      var parsed =JSON.parse(result);
+      insertarTablaUnoBarrilesPlantel(parsed,workbook.sheet(hoja),13);
+      await exportar(archivo,id,tipo,workbook,res);
+    });
 }
+function insertarTablaUnoBarrilesPlantel(json,hoja,inicio){
+  var totales=[0,0,0,0,0,0,0,0];
+  hoja.range("G"+(inicio-1)+":I"+(inicio-1)).merged(true);
+  hoja.cell('F'+(inicio-1)).value([['Número','Plantel','','','Uso','A','B','C','D','F','RC','RF','Totales']]).style({"fill": "F5F5F6","horizontalAlignment":"center"});
+  for (var i = 0; i < json.length; i++) {
+    hoja.range("G"+(i+inicio)+":I"+(i+inicio)).merged(true);
+    hoja.cell('F'+(i+inicio)).value([[json[i].Num,json[i].Plantel,'','',json[i].Uso]]).style({"horizontalAlignment":"center",border:true,"borderColor": "F5F5F6"});
+    hoja.cell('K'+(i+inicio)).value([[json[i].A,json[i].B,json[i].C,json[i].D,json[i].F,json[i].RC,json[i].RF,json[i].Total]]).style({"numberFormat": "#,##0",border:true,"borderColor": "F5F5F6"});
+    totales[0]+=parseInt(json[i].A);
+    totales[1]+=parseInt(json[i].B);
+    totales[2]+=parseInt(json[i].C);
+    totales[3]+=parseInt(json[i].D);
+    totales[4]+=parseInt(json[i].F);
+    totales[5]+=parseInt(json[i].RC);
+    totales[6]+=parseInt(json[i].RF);
+    totales[7]+=parseInt(json[i].Total);
+  }
+  hoja.cell('I'+(json.length+inicio)).value([['Totales:','']]).style({bold: true,border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
+  hoja.cell('K'+(json.length+inicio)).value([totales]).style({bold: true,border:true,"borderColor": "F5F5F6","numberFormat": "#,##0"});
+}
+
+//Termina reporte en barriles_plantel.html
+//Empieza reporte en llehandos.html
+function llenarBarrilesLlenados(archivo,res,fecha,fecha2,tipo,id){
+  XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
+    .then(async workbook => {
+      const hoja="Principal";
+      workbook.sheet(hoja).cell("H6").value(PickerToNormal(fecha));
+      workbook.sheet(hoja).cell("L6").value(PickerToNormal(fecha2));
+      var url=servidor+'RestApi/GET/get_Reportes.php?llenados=true&fecha1='+fecha+'&fecha2='+fecha2;
+      var result = await conexion(url);
+      var parsed =JSON.parse(result);
+      workbook.sheet(hoja).cell("E8").value([['Fecha','Fecha lote','Alcohol','Tanque','Uso','Barriles','Litros']]).style({"fill": "F5F5F6","horizontalAlignment":"center"});
+      for (var i = 0; i < parsed.length; i++) {
+        workbook.sheet(hoja).cell("E"+(i+9)).value([[parsed[i].Fecha,parsed[i].FechaLote,parsed[i].Alcohol,parsed[i].Tanque,parsed[i].Uso]]).style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
+        workbook.sheet(hoja).cell("J"+(i+9)).value(parseInt(parsed[i].T_Barril)).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0"});
+        workbook.sheet(hoja).cell("K"+(i+9)).value(parseInt(parsed[i].T_Barril)).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0.00"});
+      }
+      var inicio=parsed.length+12;
+      url=servidor+'RestApi/GET/get_Reportes.php?llenadosT2=true&fecha1='+fecha+'&fecha2='+fecha2;
+      result = await conexion(url);
+      parsed =JSON.parse(result);
+      var total=0;
+      workbook.sheet(hoja).cell("E"+(inicio-1)).value([['Etiqueta','Fecha','Tapa','Uso','Litros','Alcohol','Año Alcohol','Tanque']]).style({border:true,"borderColor": "000000","horizontalAlignment":"center"});
+      for (var i = 0; i < parsed.length; i++) {
+        workbook.sheet(hoja).cell("E"+(i+inicio)).value([[parsed[i].Etiqueta,parsed[i].Fecha,parsed[i].NoTapa,parsed[i].Uso,1,parsed[i].Alcohol,parsed[i]['Año Alcohol'],parsed[i].Tanque]]).style({"horizontalAlignment":"center"});
+        workbook.sheet(hoja).cell("I"+(i+inicio)).value(parseFloat(parsed[i].Capacidad)).style({"numberFormat": "#,##0.00","horizontalAlignment":"right"});
+        total+=parseFloat(parsed[i].Capacidad);
+      }
+      workbook.sheet(hoja).cell("H"+(parsed.length+inicio)).value(parsed.length).style({bold: true,border:true,"borderColor": "000000","numberFormat": "#,##0"});
+      workbook.sheet(hoja).cell("G"+(parsed.length+inicio)).value('Totales:').style({bold: true,border:true,"borderColor": "000000","horizontalAlignment":"right"});
+      workbook.sheet(hoja).cell("I"+(parsed.length+inicio)).value(total).style({bold: true,border:true,"borderColor": "000000","numberFormat": "#,##0.00"});
+      await exportar(archivo,id,tipo,workbook,res);
+    });
+
+}
+//Termina reporte en llehandos.html
+//Empieza reporte en rellenados.html
+function llenarBarrilesReLlenados(archivo,res,fecha,fecha2,tipo,id){
+  XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
+    .then(async workbook => {
+      const hoja="Principal";
+      workbook.sheet(hoja).cell("I6").value(PickerToNormal(fecha));
+      workbook.sheet(hoja).cell("M6").value(PickerToNormal(fecha2));
+      var url=servidor+'RestApi/GET/get_Reportes.php?rellenados=true&fecha1='+fecha+'&fecha2='+fecha2;
+      var result = await conexion(url);
+      var parsed =JSON.parse(result);
+      workbook.sheet(hoja).cell("G8").value([['N° Orden','Fecha ODT','Alcohol','Año Alcohol','Uso','Tipo','Total','Total litros']]).style({"fill": "F5F5F6","horizontalAlignment":"center"});
+      for (var i = 0; i < parsed.length; i++) {
+        workbook.sheet(hoja).cell("G"+(i+9)).value([[parsed[i].NoOrden,parsed[i].FechaOdT,parsed[i].Alcohol,parsed[i].Fecha_Ll,parsed[i].Uso,parsed[i].Estatus]]).style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
+        workbook.sheet(hoja).cell("M"+(i+9)).value(parseInt(parsed[i].Total)).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0"});
+        workbook.sheet(hoja).cell("N"+(i+9)).value(parseFloat(parsed[i].totalLts)).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0.00"});
+      }
+      var inicio=parsed.length+12;
+      url=servidor+'RestApi/GET/get_Reportes.php?rellenadosT2=true&fecha1='+fecha+'&fecha2='+fecha2;
+      result = await conexion(url);
+      parsed =JSON.parse(result);
+      var totalLitros=0;
+      var totalMerma=0;
+      workbook.sheet(hoja).cell("E"+(inicio-1)).value([['Fecha','N° Orden','Año','Alcohol','Tipo','Uso','Etiqueta','Litros','Merma','Último relleno','Relleno actual']]).style({border:true,"borderColor": "000000","horizontalAlignment":"center"});
+      for (var i = 0; i < parsed.length; i++) {
+        workbook.sheet(hoja).cell("E"+(i+inicio)).value([[parsed[i].Fecha,parsed[i].NoOrden,parsed[i]['Año'],parsed[i].Alcohol,parsed[i].Tipo,parsed[i].Uso,parsed[i].Etiqueta,0,0,parsed[i]['Ultimo relleno'],parsed[i]['Relleno Actual']]]).style({"horizontalAlignment":"center"});
+        workbook.sheet(hoja).cell("L"+(i+inicio)).value([[parseFloat(parsed[i].Litros),parseFloat(parsed[i].Merma)]]).style({"numberFormat": "#,##0.00","horizontalAlignment":"right"});
+        totalLitros+=parseFloat(parsed[i].Litros);
+        totalMerma+=parseFloat(parsed[i].Merma);
+      }
+      workbook.sheet(hoja).cell("I"+(parsed.length+inicio)).value(parsed.length).style({bold: true,border:true,"borderColor": "000000","numberFormat": "#,##0"});
+      workbook.sheet(hoja).cell("H"+(parsed.length+inicio)).value('Total B:').style({bold: true,border:true,"borderColor": "000000","horizontalAlignment":"right"});
+      workbook.sheet(hoja).cell("K"+(parsed.length+inicio)).value('Total Lts:').style({bold: true,border:true,"borderColor": "000000","horizontalAlignment":"right"});
+      workbook.sheet(hoja).cell("M"+(parsed.length+inicio)).value('Total Merma:').style({bold: true,border:true,"borderColor": "000000","horizontalAlignment":"right"});
+      workbook.sheet(hoja).cell("L"+(parsed.length+inicio)).value(totalLitros).style({bold: true,border:true,"borderColor": "000000","numberFormat": "#,##0.00"});
+      workbook.sheet(hoja).cell("N"+(parsed.length+inicio)).value(totalMerma).style({bold: true,border:true,"borderColor": "000000","numberFormat": "#,##0.00"});
+      await exportar(archivo,id,tipo,workbook,res);
+    });
+
+}
+//Termina reporte en rellenados.html
+//Inicia reporte en trasiego.html
+function llenarBarrilesTrasiego(archivo,res,fecha,fecha2,tipo,id){
+  XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
+    .then(async workbook => {
+      const hoja="Principal";
+      workbook.sheet(hoja).cell("H6").value(PickerToNormal(fecha));
+      workbook.sheet(hoja).cell("L6").value(PickerToNormal(fecha2));
+      var url=servidor+'RestApi/GET/get_Reportes.php?trasiego=true&fecha1='+fecha+'&fecha2='+fecha2;
+      var result = await conexion(url);
+      var parsed =JSON.parse(result);
+      workbook.sheet(hoja).range("J8:K8").merged(true);
+      workbook.sheet(hoja).cell("E8").value([['N° Orden','Fecha','Alcohol','Tanque','Cantidad Tanque','Total de Barriles','','Total Litros']]).style({"fill": "F5F5F6","horizontalAlignment":"center"});
+      for (var i = 0; i < parsed.length; i++) {
+        workbook.sheet(hoja).range("J"+(i+9)+":K"+(i+9)).merged(true);
+        workbook.sheet(hoja).cell("E"+(i+9)).value([[parsed[i].NoOrden,parsed[i].Fecha,parsed[i].Alcohol,parsed[i].Tanque]]).style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
+        workbook.sheet(hoja).cell("I"+(i+9)).value([[parseFloat(parsed[i].CantTanq),parseInt(parsed[i].TotalBarriles),0,parseFloat(parsed[i].TotalLts)]]).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0.00"});
+      }
+      var inicio=parsed.length+12;
+      url=servidor+'RestApi/GET/get_Reportes.php?trasiegoT2=true&fecha1='+fecha+'&fecha2='+fecha2;
+      result = await conexion(url);
+      parsed =JSON.parse(result);
+      var totalLitros=0;
+      workbook.sheet(hoja).cell("E"+(inicio-1)).value([['Número','Fecha','Alcohol','Etiqueta','Capacidad','Uso','Año Alcohol','Tanque']]).style({border:true,"borderColor": "000000","horizontalAlignment":"center"});
+      for (var i = 0; i < parsed.length; i++) {
+        workbook.sheet(hoja).cell("E"+(i+inicio)).value([[parsed[i].Num,parsed[i].Fecha,parsed[i].Alcohol,parsed[i].Etiqueta,0,parsed[i].Uso,parsed[i]['Año Alcohol'],parsed[i].Tanque]]).style({"horizontalAlignment":"center"});
+        workbook.sheet(hoja).cell("I"+(i+inicio)).value(parseFloat(parsed[i].Capacidad)).style({"numberFormat": "#,##0.00","horizontalAlignment":"right"});
+        totalLitros+=parseFloat(parsed[i].Capacidad);
+      }
+      workbook.sheet(hoja).range("E"+(parsed.length+inicio)+":F"+(parsed.length+inicio)).merged(true);
+      workbook.sheet(hoja).cell("G"+(parsed.length+inicio)).value([[parsed.length,0]]).style({bold: true,border:true,"borderColor": "000000","numberFormat": "#,##0"});
+      workbook.sheet(hoja).cell("E"+(parsed.length+inicio)).value('Total barriles:').style({bold: true,border:true,"borderColor": "000000","horizontalAlignment":"right"});
+      workbook.sheet(hoja).cell("H"+(parsed.length+inicio)).value('Total litros:').style({bold: true,border:true,"borderColor": "000000","horizontalAlignment":"right"});
+      workbook.sheet(hoja).cell("I"+(parsed.length+inicio)).value(totalLitros).style({bold: true,border:true,"borderColor": "000000","numberFormat": "#,##0.00"});
+      await exportar(archivo,id,tipo,workbook,res);
+    });
+
+}
+//Termina reporte en trasiego.html
+//Incia reporte en descripcion.php
+function llenarDetalleBarril(archivo,res,almacen,area,seccion,alcohol,cod,fecha,tipo,id){
+  XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
+    .then(async workbook => {
+      const hoja="Principal";
+      var url=servidor+'RestApi/GET/get_Reportes.php?detallesXBarril=true&almacen='+almacen+'&area='+area+'&seccion='+seccion+'&alcohol='+alcohol+'&codificacion='+cod+'&fecha='+fecha;
+      var result = await conexion(url);
+      var parsed =JSON.parse(result);
+      if(parsed.length>0){
+        var totalLitros=0;
+        workbook.sheet(hoja).cell("E8").value(parsed[0].Bod);
+        workbook.sheet(hoja).cell("J8").value(parsed[0].Costado);
+        workbook.sheet(hoja).cell("O8").value(parsed[0].Fila);
+        for (var i = 0; i < parsed.length; i++) {
+          workbook.sheet(hoja).cell("D"+(i+15)).value([[parsed[i].Num,parsed[i].Torre,parsed[i].Nivel,parsed[i].Lote,parsed[i].Alcohol,parsed[i].DiasAlco,parsed[i].Uso,parsed[i].Fec_Barril,parsed[i].DiasBarr,parsed[i].Edad,parsed[i].FechaRevisado,parsed[i].FechaRelleno,parsed[i].NoTapa,0,parsed[i].Etiqueta]]).style({"horizontalAlignment":"center"});
+          workbook.sheet(hoja).cell("Q"+(i+15)).value(parseFloat(parsed[i].CapacidadIni)).style({"numberFormat": "#,##0.00","horizontalAlignment":"right"});
+          totalLitros+=parseFloat(parsed[i].CapacidadIni);
+        }
+        workbook.sheet(hoja).cell("N"+(parsed.length+15)).value('Totales:').style({bold: true,border:true,"borderColor": "000000","horizontalAlignment":"right"});
+        workbook.sheet(hoja).cell("O"+(parsed.length+15)).value(parsed.length).style({bold: true,border:true,"borderColor": "000000","numberFormat": "#,##0"});
+        workbook.sheet(hoja).cell("Q"+(parsed.length+15)).value(totalLitros).style({bold: true,border:true,"borderColor": "000000","numberFormat": "#,##0.00"});
+      }
+      await exportar(archivo,id,tipo,workbook,res);
+    });
+}
+//Termina reporte en descripcion.php
+
+//Incia reporte en descripcion_bodegas.php
+function llenarDetalleBarrilPlantel(archivo,res,almacen,area,cod,tipo,id){
+  XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
+    .then(async workbook => {
+      const hoja="Principal";
+      var url=servidor+'RestApi/GET/get_Reportes.php?detallesBarrilesPlantel=true&almacen='+almacen+'&area='+area+'&codificacion='+cod;
+      var result = await conexion(url);
+      var parsed =JSON.parse(result);
+      if(parsed.length>0){
+        workbook.sheet(hoja).cell("E8").value(parsed[0].Bod);
+        workbook.sheet(hoja).cell("I8").value(parsed[0].Costado);
+        for (var i = 0; i < parsed.length; i++) {
+          workbook.sheet(hoja).cell("D"+(i+15)).value([[parsed[i].Num,parsed[i].Barril,parsed[i]['Año'],parsed[i].Fecha,parsed[i].DiasBarril,parsed[i].Edad,parsed[i].Estado,parsed[i].Etiqueta]]).style({"horizontalAlignment":"center"});
+        }
+        workbook.sheet(hoja).range("D"+(parsed.length+15)+":E"+(parsed.length+15)).merged(true);
+        workbook.sheet(hoja).cell("D"+(parsed.length+15)).value('Total barriles:').style({bold: true,border:true,"borderColor": "000000","horizontalAlignment":"right"});
+        workbook.sheet(hoja).cell("F"+(parsed.length+15)).value(parsed.length).style({bold: true,border:true,"borderColor": "000000","numberFormat": "#,##0"});
+      }
+      await exportar(archivo,id,tipo,workbook,res);
+    });
+}
+//Termina reporte en descripcion_bodegas.php
+function convinarCeldas(hoja,convinaciones){
+  for (var i = 0; i < convinaciones.length; i++) {
+    hoja.range(convinaciones[i]).merged(true);
+  }
+}
+
+
+
 function conexion(url) {
   var request = require('request');
   var result;

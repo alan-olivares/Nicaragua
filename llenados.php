@@ -11,6 +11,7 @@
       <link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
       <link href="css/animate.css" rel="stylesheet">
       <link href="css/style.css" rel="stylesheet">
+      <link href="css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
    </head>
    <body>
       <script src="js/revisar_sesion.js"></script>

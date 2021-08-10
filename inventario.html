@@ -11,6 +11,7 @@
       <link href="css/animate.css" rel="stylesheet">
       <link href="css/style.css" rel="stylesheet">
       <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+      <link href="css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
    </head>
    <body >
       <script src="js/revisar_sesion.js"></script>
@@ -187,7 +188,7 @@
                            <option value="">Todos</option>
                         </select>
                      </h5>
-                     <button class="btn btn-primary button3" onclick="cargarDatos();"><span class="glyphicon glyphicon-search"></span></button>
+                     <button class="ladda-button btn btn-primary button3" onclick="cargarDatos();" id="cargando" data-style="zoom-in"><span class="glyphicon glyphicon-search"></span></button>
                   </div>
                </div>
                <div class="col-md-12">
@@ -313,6 +314,7 @@
         const getApi="get_Reportes.php";
 
         async function cargarDatos(){
+          var l = $('#cargando').ladda();
           try {
             empezar();
             if(tabla1!=null){
@@ -320,6 +322,7 @@
               tabla2.destroy();
             }
             limpiarDatos();
+            l.ladda('start');
             var url='RestApi/GET/'+getApi+'?inventarioDeta=true&bodega='+$('#bodega').val()+'&alcohol='+$('#alcohol').val()+'&llenada='+$('#llenada').val()+'&uso='+$('#uso').val();
             var result = await conexion("GET",url,"");
             var parsed =JSON.parse(result);
@@ -353,7 +356,7 @@
             await mensajeError(error);
             limpiarDatos();
           }finally {
-            //parar();
+            l.ladda('stop');
           }
         }
         function limpiarDatos(){
@@ -387,7 +390,7 @@
              var l = $('#'+boton).ladda();
              l.ladda('start');
 
-             var url=getNode+"?reporte=inventario";
+             var url=getNode+'?reporte=inventario&bodega='+$('#bodega').val()+'&alcohol='+$('#alcohol').val()+'&llenada='+$('#llenada').val()+'&uso='+$('#uso').val()+'&tipo='+tipo;
              var valor=await conexion("GET",url,"");
              let link = document.createElement("a");
              link.download = "Reporte de inventario."+tipo;

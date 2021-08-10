@@ -11,6 +11,7 @@
       <link href="css/animate.css" rel="stylesheet">
       <link href="css/style.css" rel="stylesheet">
       <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+      <link href="css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
    </head>
    <body >
       <script src="js/revisar_sesion.js"></script>
@@ -169,7 +170,7 @@
                     <h5><label class="">Fecha Final:</label>
                        <input type="date" class="form-control" value="" id="date2" name="date2">
                     </h5>
-                     <button class="btn btn-primary button3" onclick="cargarDatos();"><span class="glyphicon glyphicon-search"></span></button>
+                     <button class="ladda-button btn btn-primary button3" onclick="cargarDatos();" id="cargando" data-style="zoom-in"><span class="glyphicon glyphicon-search"></span></button>
                   </div>
                </div>
                <div class="col-md-12">
@@ -212,13 +213,14 @@
                        <tbody></tbody>
                        <tfoot>
                          <tr>
-                           <th></th>
-                           <th></th>
-                           <th></th>
+                           <td></td>
+                           <td></td>
+                           <th>Totales:</th>
                            <th style="text-align: right;"></th>
-                           <th></th>
-                           <th></th>
-                           <th></th>
+                           <th style="text-align: right;"></th>
+                           <td></td>
+                           <td></td>
+                           <td></td>
                          </tr>
                        </tfoot>
                      </table>
@@ -281,12 +283,14 @@
         const getApi="get_Reportes.php";
 
         async function cargarDatos(){
+          var l = $('#cargando').ladda();
           try {
             empezar();
             if(tabla1!=null){
               tabla1.destroy();
               tabla2.destroy();
             }
+            l.ladda('start');
             limpiarDatos();
             var url='RestApi/GET/'+getApi+'?llenados=true&fecha1='+$('#date1').val()+'&fecha2='+$('#date2').val();
             var result = await conexion("GET",url,"");
@@ -319,7 +323,7 @@
             await mensajeError(error);
             limpiarDatos();
           }finally {
-            //parar();
+            l.ladda('stop');
           }
         }
         function limpiarDatos(){
@@ -337,15 +341,20 @@
          async function generar(tipo,boton){
            if($('#tabla1 tbody td').length>0){
              var l = $('#'+boton).ladda();
-             l.ladda('start');
+             try {
+               l.ladda('start');
+               var url=getNode+'?reporte=llenados&fecha1='+$('#date1').val()+'&fecha2='+$('#date2').val()+'&tipo='+tipo;
+               var valor=await conexion("GET",url,"");
+               let link = document.createElement("a");
+               link.download = "Reporte de Registro de barriles por llenado del "+PickerToNormal($('#date1').val())+" al "+PickerToNormal($('#date2').val())+"."+tipo;
+               link.href = valor;
+               link.click();
+             } catch (e) {
+               mensajeError(e);
+             }finally{
+               l.ladda('stop');
+             }
 
-             var url=getNode+"?reporte=inventario";
-             var valor=await conexion("GET",url,"");
-             let link = document.createElement("a");
-             link.download = "Reporte de inventario."+tipo;
-             link.href = valor;
-             link.click();
-             l.ladda('stop');
            }else{
              mensajeError("No hay datos que exportar");
            }
@@ -417,15 +426,15 @@
                           i : 0;
               };
               a = api.column( 4, { page: 'current'} ).data().reduce( function (a, b) {
-                  return intVal(a) + intVal(b);
+                  return intVal(a) + 1;
               }, 0 );
-              b= api.column( 5, { page: 'current'} ).data().reduce( function (a, b) {
+              b= api.column( 4, { page: 'current'} ).data().reduce( function (a, b) {
                   return intVal(a) + intVal(b);
               }, 0 );
 
               // Update footer
-              $( api.column(4).footer() ).html(fomatoNumero(a));
-              $( api.column(5).footer() ).html(fomatoNumero(b));
+              $( api.column(4).footer() ).html(fomatoNumero(b));
+              $( api.column(3).footer() ).html(a.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
           },
           responsive: true,
           "bPaginate": false,
@@ -478,7 +487,7 @@
           ]
         } );
           }
-          
+
          $(document).ready(function(){
            permisos(["10"]);
            limpiarDatos();

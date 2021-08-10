@@ -11,6 +11,7 @@
       <link href="css/animate.css" rel="stylesheet">
       <link href="css/style.css" rel="stylesheet">
       <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+      <link href="css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
    </head>
    <body >
       <script src="js/revisar_sesion.js"></script>
@@ -136,7 +137,7 @@
                   <div class="navbar-header">
                      <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
                   </div>
-                  <h2 class="nav navbar-top-links titulo">Registro de barriles por relleno</h2>
+                  <h2 class="nav navbar-top-links titulo">Registro de barriles por trasiego</h2>
                   <ul class="nav navbar-top-links navbar-right">
                      <li class="dropdown uno">
                         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -169,7 +170,7 @@
                     <h5><label class="">Fecha Final:</label>
                        <input type="date" class="form-control" value="" id="date2" name="date2">
                     </h5>
-                     <button class="btn btn-primary button3" onclick="cargarDatos();"><span class="glyphicon glyphicon-search"></span></button>
+                     <button class="ladda-button btn btn-primary button3" onclick="cargarDatos();" id="cargando" data-style="zoom-in"><span class="glyphicon glyphicon-search"></span></button>
                   </div>
                </div>
                <div class="col-md-12">
@@ -283,6 +284,7 @@
         const getApi="get_Reportes.php";
 
         async function cargarDatos(){
+          var l = $('#cargando').ladda();
           try {
             empezar();
             if(tabla1!=null){
@@ -294,10 +296,11 @@
             var result = await conexion("GET",url,"");
             var parsed =JSON.parse(result);
             var content="";
+            l.ladda('start');
             if(parsed.length>0){
               mostrarDatos();
               for (var i = 0; i < parsed.length; i++) {
-                content+="<tr><td>"+parsed[i].NoOrden+"</td><td>"+parsed[i].Fecha+"</td><td>"+parsed[i].Alcohol+"</td><td>"+parsed[i].Tanque+"</td><td>"+parsed[i]['CantTanq']+
+                content+="<tr><td>"+parsed[i].NoOrden+"</td><td>"+parsed[i].Fecha+"</td><td>"+parsed[i].Alcohol+"</td><td>"+parsed[i].Tanque+"</td><td style='text-align: right;'>"+parsed[i]['CantTanq']+
                 "</td><td style='text-align: right;'>"+parsed[i].TotalBarriles+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i].TotalLts)+"</td></tr>";
               }
               $('#tabla1 tbody').append(content);
@@ -322,7 +325,7 @@
             await mensajeError(error);
             limpiarDatos();
           }finally {
-            //parar();
+            l.ladda('stop');
           }
         }
         function limpiarDatos(){
@@ -336,19 +339,35 @@
           $('#tabla1').show();
           $('#tabla2').show();
         }
+        function desabilitar(){
+          $('#foto').prop("disabled", true);
+          $('#pdf').prop("disabled", true);
+          $('#excel').prop("disabled", true);
+        }
+        function habilitar(){
+          $('#foto').removeAttr('disabled');
+          $('#pdf').removeAttr('disabled');
+          $('#excel').removeAttr('disabled');
+        }
 
          async function generar(tipo,boton){
            if($('#tabla1 tbody td').length>0){
              var l = $('#'+boton).ladda();
-             l.ladda('start');
-
-             var url=getNode+"?reporte=inventario";
-             var valor=await conexion("GET",url,"");
-             let link = document.createElement("a");
-             link.download = "Reporte de inventario."+tipo;
-             link.href = valor;
-             link.click();
-             l.ladda('stop');
+             try {
+               l.ladda('start');
+               desabilitar();
+               var url=getNode+'?reporte=trasiego&fecha1='+$('#date1').val()+'&fecha2='+$('#date2').val()+'&tipo='+tipo;
+               var valor=await conexion("GET",url,"");
+               let link = document.createElement("a");
+               link.download = "Reporte de Registro de barriles por trasiego del "+PickerToNormal($('#date1').val())+" al "+PickerToNormal($('#date2').val())+"."+tipo;
+               link.href = valor;
+               link.click();
+             } catch (e) {
+               mensajeError(e);
+             } finally {
+               l.ladda('stop');
+               habilitar();
+             }
            }else{
              mensajeError("No hay datos que exportar");
            }
