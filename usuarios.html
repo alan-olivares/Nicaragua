@@ -139,7 +139,7 @@
                   <div class="navbar-header">
                      <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
                   </div>
-                  <h2 class="nav navbar-top-links " style="margin-left:150px;margin-right:50px">Usuarios y Perfiles</h2>
+                  <h2 class="nav navbar-top-links welcome-message" style="margin-left:150px;margin-right:50px">Usuarios y Perfiles</h2>
                   <ul class="nav navbar-top-links navbar-right">
                      <li class="dropdown uno">
                         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -199,18 +199,16 @@
                   </div>
                   <div role="tabpanel" id="divPerfil" class="tab-pane">
                      <div class="row text-center  white-bg  d-flex justify-content-center">
-                        <div class="col-md-6  text-center  d-flex justify-content-center" >
-                           <div class="col-md-8" >
+                        <div class="col-md-6  text-center justify-content-center row" >
+                           <div class="col-lg-8" >
                               <h5><label>  Selecciona un perfil:   </label>
                                  <select class="form-control" id="perfiles" onchange="ObtenerPermisosPorPerfil(this);">
                                  </select>
                               </h5>
                            </div>
-                           <div class="col-md-1" >
-                              <button class="btn btn-primary btn-circle btn-lg2" onclick='agregarPerfil.dialog("open");' type="button"><i class="fa fa-plus"></i></button>
-                           </div>
-                           <div class="col-md-1" >
-                              <button class="btn btn-danger btn-circle btn-lg2" id="borrar" onclick="BorrarPerfil();" type="button"><i class="fa fa-times"></i></button>
+                           <div class="col-lg-4 justify-content-center" >
+                              <button class="col-md-6 btn btn-primary btn-circle btn-lg2" onclick='agregarPerfil.dialog("open");' type="button"><i class="fa fa-plus"></i></button>
+                              <button class="col-md-6 btn btn-danger btn-circle btn-lg2" id="borrar" onclick="BorrarPerfil();" type="button"><i class="fa fa-times"></i></button>
                            </div>
                         </div>
                         <div class="col-md-12 ibox-content listaP">
@@ -317,7 +315,7 @@
                      </div>
                   </div>
                   <div class="col-md-12 text-center  d-flex justify-content-center" >
-                     <div class="col-md-4 text-center  d-flex justify-content-center" >
+                     <div class="col-md-6 text-center  d-flex justify-content-center" >
                         <h5>
                            <label>  Grupo:   </label>
                            <select class="form-control" id="grupoUE">
@@ -330,12 +328,12 @@
                            </select>
                         </h5>
                      </div>
-                     <div class="col-md-4 text-center  d-flex justify-content-center" >
+                     <div class="col-md-3 text-center  d-flex justify-content-center" >
                         <h5><label>  Acceso al sistema:   </label>
                            <input type="checkbox" id="accesoUE">
                         </h5>
                      </div>
-                     <div class="col-md-4 text-center  d-flex justify-content-center" >
+                     <div class="col-md-3 text-center  d-flex justify-content-center" >
                         <h5><label>  Activo/Desactivo:   </label>
                            <input type="checkbox" id="activoDesactivoUE">
                         </h5>
@@ -406,8 +404,7 @@
              open: function() {
                  $(this).closest(".ui-dialog")
                  .find(".ui-dialog-titlebar-close")
-                 .removeClass("ui-dialog-titlebar-close")
-                 .html("<span class='ui-button-icon-primary ui-icon ui-icon-closethick'></span>");
+                 .removeClass("ui-dialog-titlebar-close").addClass("b-r-xl btn btn-danger");
              },
              autoOpen: false,
              height: 'auto',
@@ -695,7 +692,7 @@
            $(".clear2").hide();
          }
          //Termina Funciones de permisos
-         
+
 
          $(document).ready(function(){
            //$('#contenedor').appendTo( $('#divPerfil') );

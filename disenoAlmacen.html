@@ -137,7 +137,7 @@
                   <div class="navbar-header">
                      <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#" onclick="cambiarTamano();" id="menu"><i class="fa fa-bars"></i> </a>
                   </div>
-                  <h2 class="nav navbar-top-links titulo">Diseño de almacenes</h2>
+                  <h2 class="nav navbar-top-links titulo welcome-message">Diseño de almacenes</h2>
                   <ul class="nav navbar-top-links navbar-right">
                      <li class="dropdown uno">
                         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -170,18 +170,18 @@
                    </h5>
                     <h5>
                        <label>  Bodega:  </label>
-                       <select class="form-control b-r-xl" onchange="CargarSecciones(this,1);" id="bodega"></select>
+                       <select class="form-control b-r-xl" onchange="CargarSecciones(this,1);" id="BODEGA"></select>
                     </h5>
                     <h5><label>  Costado:   </label>
-                       <select class="form-control b-r-xl" name="Costado"  id="Costado" onchange="CargarSecciones(this,2);">
+                       <select class="form-control b-r-xl" name="Costado"  id="COSTADO" onchange="CargarSecciones(this,2);">
                        </select>
                     </h5>
                     <h5><label>  Filas:   </label>
-                       <select class="form-control b-r-xl" name="Filas" id="Filas" onchange="CargarSecciones(this,3);">
+                       <select class="form-control b-r-xl" name="Filas" id="FILA" onchange="CargarSecciones(this,3);">
                        </select>
                     </h5>
                     <h5><label>  Torres:   </label>
-                       <select class="form-control b-r-xl" name="Torres"  id="Torres" onchange="CargarSecciones(this,4);">
+                       <select class="form-control b-r-xl" name="Torres"  id="TORRE" onchange="CargarSecciones(this,4);">
                        </select>
                     </h5>
                  </div>
@@ -338,11 +338,11 @@
          var seleccionado=-1;
          var OPCION="";
          var CAT=-1;
-         const valores=[{tipo:'bodegas',etiqueta:'Descripcion',valor:'AlmacenID',boton:'bodega'},
-           {tipo:'areas',etiqueta:'Nombre',valor:'AreaId',boton:'Costado'},
-           {tipo:'filas',etiqueta:'Nombre',valor:'SeccionID',boton:'Filas'},
-           {tipo:'torres',etiqueta:'Nombre',valor:'PosicionID',boton:'Torres'},
-           {tipo:'niveles',etiqueta:'Nombre',valor:'NivelID',boton:'Niveles'}];
+         const valores=[{tipo:'bodegas',etiqueta:'Descripcion',valor:'AlmacenID',boton:'BODEGA'},
+           {tipo:'areas',etiqueta:'Nombre',valor:'AreaId',boton:'COSTADO'},
+           {tipo:'filas',etiqueta:'Nombre',valor:'SeccionID',boton:'FILA'},
+           {tipo:'torres',etiqueta:'Nombre',valor:'PosicionID',boton:'TORRE'},
+           {tipo:'niveles',etiqueta:'Nombre',valor:'NivelID',boton:'NIVEL'}];
 
          // drag related variables
          var dragok = false;
@@ -397,10 +397,10 @@
            var datos="";
            var campo=objetos[seleccionado].id;
            if($("#planta").val()===""){ return ""; }else{ datos+="plantas="+$("#planta").val(); }
-           if($("#bodega").val()!==""){ datos+="&bodegas="+$("#bodega").val(); }else{ datos+="&bodegas="+campo;  campo="";}
-           if($("#Costado").val()!==""){ datos+="&areas="+$("#Costado").val(); }else{ datos+="&areas="+campo; campo="";}
-           if($("#Filas").val()!==""){ datos+="&filas="+$("#Filas").val(); }else{ datos+="&filas="+campo; campo="";}
-           if($("#Torres").val()!==""){ datos+="&torres="+$("#Torres").val(); }else{ datos+="&torres="+campo; campo="";}
+           if($("#BODEGA").val()!==""){ datos+="&bodegas="+$("#BODEGA").val(); }else{ datos+="&bodegas="+campo;  campo="";}
+           if($("#COSTADO").val()!==""){ datos+="&areas="+$("#COSTADO").val(); }else{ datos+="&areas="+campo; campo="";}
+           if($("#FILA").val()!==""){ datos+="&filas="+$("#FILA").val(); }else{ datos+="&filas="+campo; campo="";}
+           if($("#TORRE").val()!==""){ datos+="&torres="+$("#TORRE").val(); }else{ datos+="&torres="+campo; campo="";}
            if(campo!==""){ datos+="&niveles="+campo; }else{ datos+="&niveles=null";}
            return datos;
          }
@@ -548,12 +548,12 @@
 
          function agregarNuevo(){
            var cant=getLength(objetos)+1;
-           if(OPCION==='Niveles'){
-             objetos.push({Nombre:"Nivel "+cant,id:-1,borrar:false});
+           if(OPCION==='NIVEL'){
+             objetos.push({Nombre:"NIVEL "+cant,id:-1,borrar:false});
              var nuevo=objetos;
              annadirNiveles(nuevo);
-           }else if(OPCION==='Torres'){
-             objetos.push({Nombre:"Torre "+cant,id:-1,borrar:false});
+           }else if(OPCION==='TORRE'){
+             objetos.push({Nombre:"TORRE "+cant,id:-1,borrar:false});
              var nuevo=objetos;
              annadirTorres(nuevo);
            }else{
@@ -564,14 +564,14 @@
                height:100,
                fill:"#CBCBCB",
                isDragging:false,
-               Nombre:OPCION+" "+cant,
+               Nombre:OPCION.toUpperCase()+" "+cant,
                id:-1,
                borrar:false
              });
            }
            desactivar();
            draw();
-           if(OPCION==='Niveles' && getLength(objetos)>=6){
+           if(OPCION==='NIVEL' && getLength(objetos)>=6){
              $('#nuevo').attr("disabled", true);
            }
          }
@@ -613,7 +613,7 @@
                $('#nuevo').attr("disabled", false);
                $('#guardar').attr("disabled", false);
                if(tipo>0){
-                 var url='RestApi/GET/'+getApi+'?detalleBodega='+$("#bodega").val();
+                 var url='RestApi/GET/'+getApi+'?detalleBodega='+$("#BODEGA").val();
                  var result = await conexion("GET",url,"");
                  var parsed =JSON.parse(result);
                  crearTablaJson(parsed,"#detalles");
@@ -622,7 +622,7 @@
                var result = await conexion("GET",url,"");
                var parsed =JSON.parse(result);
                llenarSelect('#'+valores[tipo].boton,valores[tipo].valor,valores[tipo].etiqueta,parsed);
-               if(valores[tipo].boton==='Costado' || valores[tipo].boton==='Filas' || valores[tipo].boton==='bodega'){
+               if(valores[tipo].boton==='COSTADO' || valores[tipo].boton==='FILA' || valores[tipo].boton==='BODEGA'){
                  for (var i = 0; i < parsed.length; i++) {
                    objetos.push({
                      x:parsed[i].X,
@@ -636,9 +636,9 @@
                      borrar:false
                    });
                  }
-               }else if(valores[tipo].boton==='Torres'){
+               }else if(valores[tipo].boton==='TORRE'){
                  annadirTorres(parsed);
-               }else if(valores[tipo].boton==='Niveles'){
+               }else if(valores[tipo].boton==='NIVEL'){
                  annadirNiveles(parsed);
                }
                //drawAll();
@@ -702,32 +702,32 @@
          function limpiarCampos(select) {
            objetos=[];
            switch (select) {
-             case 'bodega':
-               $("#bodega").empty();
-               $("#Costado").empty();
-               $("#Filas").empty();
-               $("#Torres").empty();
-               $("#Niveles").empty();
+             case 'BODEGA':
+               $("#BODEGA").empty();
+               $("#COSTADO").empty();
+               $("#FILA").empty();
+               $("#TORRE").empty();
+               $("#NIVEL").empty();
                $("#detalles > thead").empty();
                $("#detalles > tbody").empty();
                break;
-             case 'Costado':
-               $("#Costado").empty();
-               $("#Filas").empty();
-               $("#Torres").empty();
-               $("#Niveles").empty();
+             case 'COSTADO':
+              $("#COSTADO").empty();
+              $("#FILA").empty();
+              $("#TORRE").empty();
+              $("#NIVEL").empty();
                break;
-             case 'Filas':
-               $("#Filas").empty();
-               $("#Torres").empty();
-               $("#Niveles").empty();
+             case 'FILA':
+                $("#FILA").empty();
+                $("#TORRE").empty();
+                $("#NIVEL").empty();
              break;
-             case 'Torres':
-               $("#Torres").empty();
-               $("#Niveles").empty();
+             case 'TORRE':
+                $("#TORRE").empty();
+                $("#NIVEL").empty();
              break;
-             case 'Niveles':
-               $("#Niveles").empty();
+             case 'NIVEL':
+               $("#NIVEL").empty();
              break;
              default:
 

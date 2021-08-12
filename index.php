@@ -140,7 +140,7 @@
                <div class="navbar-header">
                   <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
                </div>
-               <h2 class="nav navbar-top-links titulo">TBRE - Operación del día</h2>
+               <h2 class="nav navbar-top-links titulo welcome-message">TBRE - Operación del día</h2>
                <ul class="nav navbar-top-links navbar-right">
                   <li class="dropdown uno">
                      <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">

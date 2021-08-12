@@ -137,7 +137,7 @@
                   <div class="navbar-header">
                      <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
                   </div>
-                  <h2 class="nav navbar-top-links" style="margin-left:60px;">Detalle de Operaciones Llenado</h2>
+                  <h2 class="nav navbar-top-links navbar-header welcome-message" style="margin-left:60px;">Detalle de Operaciones Llenado</h2>
                   <ul class="nav navbar-top-links navbar-right">
                      <li class="dropdown uno">
                         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -161,15 +161,17 @@
                   </ul>
                </nav>
             </div>
-            <div class="row wrapper border-bottom white-bg page-heading d-flex justify-content-center" id="contenido">
-              <div class="col-md-12  d-flex">
-                <img class="col-md-4" src="img/logo-ser-licorera-blanco.jpg" border="0" id="imagenLogo">
-                <h2 class="col-md-6" style="margin-top:40px;">Trazabilidad de Barriles y Rones Envejecidos</h2>
-              </div>
-              <div class="col-md-12  d-flex">
-                <h2 style="margin-top:10px;">Reporte Diario de Operación de Llenado</h2>
-                <div style="z-index: 10;  position: absolute;  right: 10px;  top: 0;">
-                  <h2 style="margin-top:10px;">FSI 82.4.6.1</h2>
+            <div class="row wrapper border-bottom white-bg page-heading d-flex justify-content-centertable-responsive">
+              <div class="col-md-12">
+                <div class=" col-md-12 row">
+                  <img class="col-lg-5" src="img/logo-ser-licorera-blanco.jpg" border="0" id="imagenLogo">
+                  <h2 class="col-lg-7 font-bold flex-row-reverse row" style="margin-top:40px;">Trazabilidad de Barriles y Rones Envejecidos</h2>
+                </div>
+                <div class=" col-md-12 row">
+                  <h2 class="col-lg-6" style="margin-top:10px;">Reporte Diario de Operación de Llenado</h2>
+                  <div class="col-lg-6 flex-row-reverse row" >
+                    <h2 style="margin-top:10px;">FSI 82.4.6.1</h2>
+                  </div>
                 </div>
               </div>
               <div class="col-md-12 d-flex justify-content-center text-center">
@@ -267,7 +269,6 @@
                content+=obtenerHeader(uso);
                usos.push(uso);
                for (var i = 0; i < parsed.length; i++) {
-
                  if(tanque!==parsed[i]['Tanque']){
                    content+='</tbody><tfoot><tr><td></td><td style="font-weight: bold;">'+uso+' Total: '+totalBarr+'</td><td style="font-weight: bold;">TOTAL LTS</td><td style="text-align: right; font-weight: bold;">'+fomatoNumero(totalCapa)+'</td></tr></tfoot></table>'
                    content=content.replaceAll('***+++***',fomatoNumero(totalTanq));
@@ -313,7 +314,7 @@
            return '<tr><td>'+json.Etiqueta+'</td><td>'+json.NoTapa+'</td><td>'+json.Uso+'</td><td style="text-align: right;">'+json.Capacidad+' lts</td></tr>';
          }
          function nuevoTanque(json){
-           return '<div class="col-md-12  d-flex justify-content-center" style="margin-top:20px; margin-bottom:20px;"><table class="col-md-9 table-bordered cell-border"><tbody>'+
+           return '<div class="col-md-12 table-responsive" style="margin-top:20px; margin-bottom:20px;"><table class="col-md-12 table-bordered cell-border"><tbody>'+
            '<tr><td>Fecha</td><td>Fecha Recepción</td><td>Alcohol</td><td>Litros Recepción</td><td>Litros Consumo</td><td>Litros Llenada</td><td>Tanque</td></tr><tr>'+
            '<td>'+PickerToNormal($('#fecha').val())+'</td><td>'+json.FechaLote+'</td><td>'+json.Alcohol+'</td><td>'+fomatoNumero(json.RecepLitros)+'</td>'+
            '<td>'+json.Consumo+'</td><td>***+++***</td><td>'+json.Tanque+'</td></tr></tbody></table></div>';
@@ -361,7 +362,7 @@
              mensajeError(e)
            }
          }
-         
+
 
          $(document).ready(function(){
            //ObtenerDatos();

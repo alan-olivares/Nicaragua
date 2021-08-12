@@ -8,8 +8,14 @@ $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC);
 if($row[0]=='1'){
   include '../revisar_permisos.php';
   if(strpos($permisos,',4,') !== false){
-    $configuracion ="select IdConfig,Descripcion,Val1 from CM_Config";
-    imprimir($configuracion,$conn);
+    if(ISSET($_GET['configuracion'])){
+      $configuracion ="SELECT IdConfig,Descripcion,Val1 from CM_Config";
+      imprimir($configuracion,$conn);
+    }else if(ISSET($_GET['motivo'])){
+      $configuracion ="SELECT IdRazon,Descripcion from ADM_Razones where IdCaso=".$_GET['motivo'];
+      imprimir($configuracion,$conn);
+    }
+
   }else{
     echo '..Error.. No tienes acceso a esta area';
   }

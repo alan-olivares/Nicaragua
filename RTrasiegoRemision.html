@@ -137,7 +137,7 @@
                   <div class="navbar-header">
                      <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
                   </div>
-                  <h2 class="nav navbar-top-links" style="margin-left:60px;">ALMACEN DE ENVEJECIMIENTO</h2>
+                  <h2 class="nav navbar-top-links welcome-message" style="margin-left:60px;">Almacén de Envejecimiento</h2>
                   <ul class="nav navbar-top-links navbar-right">
                      <li class="dropdown uno">
                         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -161,13 +161,18 @@
                   </ul>
                </nav>
             </div>
-            <div class="row wrapper border-bottom white-bg page-heading d-flex justify-content-center" id="contenido">
-              <div class="col-md-12  d-flex">
-                <img class="col-md-4" src="img/logo-ser-licorera-blanco.jpg" border="0" >
-                <h2 class="col-md-6" style="margin-top:40px;">Trazabilidad de Barriles y Rones Envejecidos</h2>
-              </div>
-              <div class="col-md-12 text-center justify-content-center">
-                <h2 style="margin-top:10px;">Remisión Alcoholes de Entrega Blending</h2>
+            <div class="row wrapper border-bottom white-bg page-heading d-flex justify-content-center" style="margin-bottom:30px;">
+              <div class="col-md-12">
+                <div class=" col-md-12 row">
+                  <img class="col-lg-5" src="img/logo-ser-licorera-blanco.jpg" border="0" id="imagenLogo">
+                  <h2 class="col-lg-7 font-bold flex-row-reverse row" style="margin-top:40px;">Trazabilidad de Barriles y Rones Envejecidos</h2>
+                </div>
+                <div class=" col-md-12 row">
+                  <h2 class="col-lg-8" style="margin-top:10px;">Remisión Alcoholes de Entrega Blending</h2>
+                  <div class="col-lg-4 flex-row-reverse row" >
+                    <h2 style="margin-top:10px;">FSI - 61.1.9.4</h2>
+                  </div>
+                </div>
               </div>
               <div class="col-md-5 text-center d-flex justify-content-center">
                 <h5>
@@ -202,7 +207,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-md-12 d-flex justify-content-center row" style="margin-top:15px;">
+              <div class="col-md-12 table-responsive" style="margin-top:15px;">
                 <table class="table-bordered cell-border col-md-9" id="tablaPrincipal" >
                   <thead>
                     <tr>
@@ -400,7 +405,7 @@
              mensajeError(e);
            }
          }
-         
+
          $(document).ready(function(){
            permisos(["6"]);
            $('#tablaPrincipal').hide();

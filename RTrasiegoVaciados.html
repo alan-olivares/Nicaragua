@@ -137,7 +137,7 @@
                   <div class="navbar-header">
                      <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
                   </div>
-                  <h2 class="nav navbar-top-links" style="margin-left:60px;">Barriles vaciados por Trasiego</h2>
+                  <h2 class="nav navbar-top-links welcome-message" style="margin-left:60px;">Barriles vaciados por Trasiego</h2>
                   <ul class="nav navbar-top-links navbar-right">
                      <li class="dropdown uno">
                         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -161,36 +161,36 @@
                   </ul>
                </nav>
             </div>
-            <div class="row wrapper border-bottom white-bg page-heading d-flex justify-content-center" id="contenido">
-              <div class="col-md-12  d-flex">
-                <img class="col-md-4" src="img/logo-ser-licorera-blanco.jpg" border="0" id="imagenLogo">
-                <h2 class="col-md-6" style="margin-top:40px;">Trazabilidad de Barriles y Rones Envejecidos</h2>
-              </div>
-              <div class="col-md-12  d-flex justify-content-center">
-                <h2 style="margin-top:10px;">BARRILES VACIADOS POR TRASIEGO</h2>
-                <div style="z-index: 10;  position: absolute;  right: 10px;  top: 0;">
-                  <h2 style="margin-top:10px;">FSI - 82.4.9.8</h2>
+            <div class="row wrapper border-bottom white-bg page-heading" id="contenido">
+              <div class="col-md-12">
+                <div class=" col-md-12 row">
+                  <img class="col-lg-5" src="img/logo-ser-licorera-blanco.jpg" border="0" id="imagenLogo">
+                  <h2 class="col-lg-7 font-bold flex-row-reverse row" style="margin-top:40px;">Trazabilidad de Barriles y Rones Envejecidos</h2>
+                </div>
+                <div class=" col-md-12 row">
+                  <h2 class="col-lg-8" style="margin-top:10px;">Barriles vaciados por trasiego</h2>
+                  <div class="col-lg-4 flex-row-reverse row" >
+                    <h2 style="margin-top:10px;">FSI - 82.4.9.8</h2>
+                  </div>
                 </div>
               </div>
               <div class="col-md-12  d-flex justify-content-center">
                 <h2 style="margin-top:10px;">Exportación</h2>
               </div>
-              <div class="col-md-12  d-flex justify-content-center" style="margin-top:20px;">
-                <div class="col-md-5 d-flex">
-                  <div class="col-md-6">
+              <div class="col-md-12  d-flex justify-content-center text-center" style="margin-top:20px;">
+                <div class="col-md-6 row">
+                  <div class="col-lg-6 flex-row-reverse row">
                     <label>Barriles que van al Tanque: </label>
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-lg-6 ">
                     <select class="form-control b-r-xl" id="tanque" onchange="ObtenerDatos()"></select>
                   </div>
                 </div>
-                <div class="col-md-3">
-                </div>
-                <div class="col-md-4 d-flex">
-                  <div class="col-md-3">
+                <div class="col-md-6 row">
+                  <div class="col-lg-6 flex-row-reverse row">
                     <label>Fecha: </label>
                   </div>
-                  <div class="col-md-9">
+                  <div class="col-lg-6">
                     <input type="date" class="form-control b-r-xl" required="true" id="fecha" onchange="ObtenerDatos()">
                   </div>
                 </div>
@@ -281,9 +281,9 @@
                content+=nuevoUso();
                for (var i = 0; i < parsed.length; i++) {
                  if(anio!==parsed[i]['Año']){
-                   content+='</tbody><tfoot><tr><th></th><th></th><th>'+Barriles+' Barriles</th><th>Total tipo barril</th><th style="text-align: right;">'+fomatoNumero(capa)+'</th></tr></tfoot></table>';
-                   content+='<div class="col-md-10 d-flex justify-content-center" style="margin-bottom:20px; margin-top:10px;"><table class=" col-md-6" style="border:none !important;"><tbody>'+
-                   '<tr><th>'+BarrilesAnnio+'</th><th>Barriles</th><th>Total año '+anio+'</th><th style="text-align: right;">'+fomatoNumero(capaAnnio)+'</th></tr></tbody></table></div>';
+                   content+='</tbody><tfoot><tr><th></th><th></th><th>'+Barriles+' Barriles</th><th>Total tipo barril</th><th style="text-align: right;">'+fomatoNumero(capa)+'</th></tr></tfoot></table></div>';
+                   content+='<div class="col-md-12 d-flex justify-content-center" style="margin-bottom:20px; margin-top:10px;"><div class="table-responsive col-md-6"><table class=" col-md-12" style="border:none !important;"><tbody>'+
+                   '<tr><th>'+BarrilesAnnio+' Barriles</th><th>Total año '+anio+'</th><th style="text-align: right;">'+fomatoNumero(capaAnnio)+'</th></tr></tbody></table></div></div>';
                    content+=nuevoUso();
                    uso=parsed[i]['Uso'];
                    anio=parsed[i]['Año']
@@ -293,7 +293,7 @@
                    BarrilesAnnio=0;
                  }
                  if(uso!==parsed[i]['Uso']){
-                   content+='</tbody><tfoot><tr><th></th><th></th><th>'+Barriles+' Barriles</th><th>Total tipo barril</th><th style="text-align: right;">'+fomatoNumero(capa)+'</th></tr></tfoot></table>';
+                   content+='</tbody><tfoot><tr><th></th><th></th><th>'+Barriles+' Barriles</th><th>Total tipo barril</th><th style="text-align: right;">'+fomatoNumero(capa)+'</th></tr></tfoot></table></div>';
                    content+=nuevoUso();
                    uso=parsed[i]['Uso'];
                    capa=0;
@@ -306,14 +306,14 @@
                  Barriles++;
                  BarrilesAnnio++;
                }
-               content+='</tbody><tfoot><tr><th></th><th></th><th>'+Barriles+' Barriles</th><th>Total tipo barril</th><th style="text-align: right;">'+fomatoNumero(capa)+'</th></tr></tfoot></table>';
-               content+='<div class="col-md-10 d-flex justify-content-center" style="margin-bottom:20px; margin-top:10px;"><table class=" col-md-6" style="border:none !important;"><tbody>'+
-               '<tr><th>'+BarrilesAnnio+'</th><th>Barriles</th><th>Total año '+anio+'</th><th style="text-align: right;">'+fomatoNumero(capaAnnio)+'</th></tr></tbody></table></div>';
-               content+='<div class="col-md-10 d-flex justify-content-center" style="margin-bottom:20px;">'+
-               '<table class=" col-md-6" style="border:none !important;"><tbody>'+
-               '<tr><th>'+parsed.length+'</th><th>Barriles</th><th>Total General</th><th style="text-decoration: underline;text-align: right;">'+fomatoNumero(totalCapa)+'</th></tr>'+
-               '<tr><th></th><th></th><th>Total flujometros:</th><th style="text-align: right;">'+fomatoNumero(cantidad)+'</th></tr>'+
-               '<tr><th></th><th></th><th>Total merma:</th><th style="text-align: right;">'+fomatoNumero(totalCapa-cantidad)+'</th></tr></tbody></table></div>';
+               content+='</tbody><tfoot><tr><th></th><th></th><th>'+Barriles+' Barriles</th><th>Total tipo barril</th><th style="text-align: right;">'+fomatoNumero(capa)+'</th></tr></tfoot></table></div>';
+               content+='<div class="col-md-12 d-flex justify-content-center" style="margin-bottom:20px; margin-top:10px;"><div class="table-responsive col-md-6"><table class=" col-md-12" style="border:none !important;"><tbody>'+
+               '<tr><th>'+BarrilesAnnio+' Barriles</th><th>Total año '+anio+'</th><th style="text-align: right;">'+fomatoNumero(capaAnnio)+'</th></tr></tbody></table></div></div>';
+               content+='<div class="col-md-12 d-flex justify-content-center" style="margin-bottom:20px;">'+
+               '<div class="table-responsive col-md-6"><table class=" col-md-12" style="border:none !important;"><tbody>'+
+               '<tr><th>'+parsed.length+' Barriles</th><th>Total General</th><th style="text-decoration: underline;text-align: right;">'+fomatoNumero(totalCapa)+'</th></tr>'+
+               '<tr><td></td><th>Total flujometros:</th><th style="text-align: right;">'+fomatoNumero(cantidad)+'</th></tr>'+
+               '<tr><td></td><th>Total merma:</th><th style="text-align: right;">'+fomatoNumero(totalCapa-cantidad)+'</th></tr></tbody></table></div></div>';
                $('#divPrincipal').append(content);
              }else{
                $('#divPrincipal').empty();
@@ -327,7 +327,7 @@
          }
 
          function nuevoUso(){
-           return '<table class="table-bordered cell-border col-md-9" style="margin-top:30px;"><thead><tr><td>NoTapa</td><td>Alcohol</td><td>Fecha Alcohol</td><td>Uso</td><td>Litros</td></tr></thead><tbody>';
+           return '<div class="table-responsive col-md-9"><table class="table-bordered cell-border col-md-12" style="margin-top:30px;"><thead><tr><td>NoTapa</td><td>Alcohol</td><td>Fecha Alcohol</td><td>Uso</td><td>Litros</td></tr></thead><tbody>';
          }
          function obtenerTr(json){
            return '<tr><td>'+json.NoTapa+'</td><td>'+json.Alcohol+'</td><td>'+json.Fecha_Ll+'</td><td>'+json.Uso+'</td><td style="text-align: right;">'+fomatoNumero(json.Capacidad)+'</td></tr>';
@@ -379,7 +379,7 @@
              mensajeError(e);
            }
          }
-         
+
          $(document).ready(function(){
            permisos(["6"]);
            //ObtenerDatos();

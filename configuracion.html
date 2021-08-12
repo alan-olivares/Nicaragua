@@ -7,13 +7,9 @@
       <link href="css/bootstrap.min.css" rel="stylesheet">
       <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
       <link rel="icon" href="img\TBRE.ico">
-      <link href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" rel="stylesheet">
-      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+      <link rel="stylesheet" href="css/jquery-ui.css">
       <link href="css/animate.css" rel="stylesheet">
       <link href="css/style.css" rel="stylesheet">
-      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
       <link rel="stylesheet" href="/resources/demos/style.css">
       <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
    </head>
@@ -141,7 +137,7 @@
                   <div class="navbar-header">
                      <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
                   </div>
-                  <h2 class="nav navbar-top-links" style="margin-left:90px; margin-right:10px;">Configuración</h2>
+                  <h2 class="nav navbar-top-links welcome-message" style="margin-left:90px; margin-right:10px;">Configuración</h2>
                   <ul class="nav navbar-top-links navbar-right">
                      <li class="dropdown uno">
                         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -165,21 +161,67 @@
                   </ul>
                </nav>
             </div>
-            <div class="panel panel-default" style="margin-top:40px;">
-               <div class="panel-heading">
-                  <h4 class="panel-title">Configuración del sistema</h4>
-               </div>
-               <div class="panel-body">
-                  <div id="inputsDinamicos">
+
+            <div class="tabs-container">
+              <ul class="nav nav-tabs d-flex justify-content-center" role="tablist">
+                 <li><a class="nav-link active" data-toggle="tab" href="#conf">Configuración del sistema</a></li>
+                 <li><a class="nav-link" data-toggle="tab" href="#mov">Motivos de movimientos</a></li>
+              </ul>
+              <div class="tab-content" >
+                <div role="tabpanel" id="conf" class="tab-pane active">
+                  <div class="row text-center  white-bg text-center d-flex justify-content-center col-md-12">
+                    <div id="inputsDinamicos" class="col-md-12">
+                    </div>
+                    <div class="col-md-12 text-center  d-flex justify-content-center" >
+                       <h5><label>  Modificar campos:   </label>
+                          <input type="checkbox" onchange='OcultarPass(this);' id="cbox" style="margin-right:40px;">
+                       </h5>
+                    </div>
+                    <div class="col-md-12 text-center  d-flex justify-content-center" >
+                       <button class="button5 btn btn-primary b-r-xl" onclick="GuardarDatos();" style="margin-right:70px;">Guardar cambios</button>
+                    </div>
                   </div>
-                  <div class="col-md-12 text-center  d-flex justify-content-center" >
-                     <h5><label>  Modificar campos:   </label>
-                        <input type="checkbox" onchange='OcultarPass(this);' id="cbox" style="margin-right:40px;">
+                </div>
+                <div role="tabpanel" id="mov" class="tab-pane">
+                  <div class="row text-center  white-bg text-center d-flex justify-content-center">
+                    <div class="row col-md-10 d-flex justify-content-center">
+                      <div class="col-md-5" style="margin-top:20px;">
+                        <label>Eventos: </label>
+                        <select class="form-control" size="5" onchange="CargarRazones(this)" id="eventos">
+                          <option value="1">Agregar</option>
+                          <option value="2">Editar</option>
+                          <option value="3">Mover</option>
+                          <option value="4">Ajustes</option>
+                        </select>
+                      </div>
+                      <div class="col-md-5" style="margin-top:20px;">
+                        <label>Motivos: </label>
+                        <select class="form-control" size="5" id="razones" onchange="$('#del').prop('disabled', false);$('#upd').prop('disabled', false);" >
+                        </select>
+                      </div>
+                    </div>
+                    <div class="row col-md-10 d-flex justify-content-center">
+                      <div class="d-flex justify-content-center" style="margin-top:20px; margin-bottom:40px;">
+                        <button class="button2 btn btn-primary b-r-xl" onclick="prepararDialogo('Agregar')" id="add">Agregar</button>
+                        <button class="button2 btn btn-primary b-r-xl" onclick="prepararDialogo('Actualizar')" id="upd">Actualizar</button>
+                        <button class="button2 btn btn-danger b-r-xl" onclick="BorrarRazon();" id="del">Borrar</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="motivoTarea" title="Motivos" class="animated">
+               <div class="col-md-12 text-center  d-flex justify-content-center" >
+                  <div class="col-md-10 text-center " >
+                     <h5><label id="mensaje"></label>
+                        <input style="margin-top:20px;" type="text" class="form-control"  id="razonNueva" onchange="TextoCambio(this);">
                      </h5>
                   </div>
-                  <div class="col-md-12 text-center  d-flex justify-content-center" >
-                     <button class="button5 btn btn-primary b-r-xl" onclick="GuardarDatos();" style="margin-right:70px;">Guardar cambios</button>
-                  </div>
+               </div>
+               <div class="col-md-12 text-center" >
+                  <button class="button2 btn btn-primary cerrar b-r-xl">Cancelar</button>
+                  <button class="button2 btn btn-primary b-r-xl" onclick="enviarCaso(this.innerText);" id="enviar"></button>
                </div>
             </div>
             <div class="footer">
@@ -191,11 +233,7 @@
       </div>
       <!-- Mainly scripts -->
       <script src="js/jquery-3.1.1.min.js"></script>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-      <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
-      <script src="js/json2html.min.js"></script>
+      <script src="js/jquery-ui.js"></script>
       <script src="js/popper.min.js"></script>
       <script src="js/bootstrap.js"></script>
       <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
@@ -208,6 +246,7 @@
       <script>
          const getApi="get_configuracion.php";
          const postApi="post_configuracion.php";
+         //Empieza codigo de configuración del sistema
          function OcultarPass(valor){
            if(valor.checked){
              $(".campos").prop('disabled', false);
@@ -239,7 +278,7 @@
 
          async function ObtenerDatos(){
            try {
-             var url='RestApi/GET/'+getApi;
+             var url='RestApi/GET/'+getApi+"?configuracion=true";
              var result = await conexion("GET",url,"");
              var parsed =JSON.parse(result);
              var content="";
@@ -259,10 +298,152 @@
              await mensajeError(error);
            }
          }
-         
+         //Termina el código de configuración del sistema
+         //Empieza código de motivos
+         $( function() {
+           var options={
+             open: function() {
+                 $(this).closest(".ui-dialog")
+                 .find(".ui-dialog-titlebar-close")
+                 .removeClass("ui-dialog-titlebar-close").addClass("b-r-xl btn btn-danger");
+             },
+             autoOpen: false,
+             height: 'auto',
+             modal: true,
+             closeOnEscape: true,
+             show: {
+               effect: "puff",
+               duration: 800
+             },
+             hide: {
+               effect: "drop",
+               duration: 800
+             },
+             maxHeight: 570,
+             minWidth: 500,
+           };
+
+           motivoTarea = $( "#motivoTarea" ).dialog(options);
+         $( ".cerrar" ).button().on( "click", function() {
+           motivoTarea.dialog( "close" );
+         });
+
+
+         } );
+
+         async function CargarRazones(campo){
+           try {
+             $("#del").prop("disabled", true);
+             $("#upd").prop("disabled", true);
+             $("#add").prop("disabled", false);
+             var url='RestApi/GET/'+getApi+"?motivo="+campo.value;
+             var result = await conexion("GET",url,"");
+             var parsed =JSON.parse(result);
+             $('#razones').empty();
+             for (i = 0; i < parsed.length; i++) {
+               $('#razones').append($('<option>', {
+                 value: parsed[i]["IdRazon"],
+                 text: parsed[i]["Descripcion"]
+               }));
+             }
+           } catch (e) {
+             mensajeError(e);
+           }
+         }
+
+         async function AgregarRazon(){
+           try {
+             if($('#eventos').val()===''){
+               alert('Selecciona un evento primero');
+               return;
+             }
+             if($('#razonNueva').val()===''){
+               alert('Escribe una nueva razón primero');
+               return;
+             }
+             var url='RestApi/POST/'+postApi;
+             var result = await conexion("POST",url,"nuevoMotivo=true&evento="+$('#eventos').val()+"&razon="+$('#razonNueva').val());
+             mensajeSimple(result);
+             $('#razonNueva').val('')
+             CargarRazones(document.getElementById('eventos'))
+           } catch (e) {
+             mensajeError(e);
+           }finally{
+             motivoTarea.dialog( "close" );
+           }
+         }
+
+         function prepararDialogo(caso){
+            $('#razonNueva').val('');
+            $('#enviar').text(caso)
+           if(caso==='Actualizar'){
+             $('#mensaje').text('Ingresa la nueva descripción para este motivo');
+             $('#razonNueva').val($('#razones :selected').text());
+           }else if(caso==='Agregar'){
+             $('#mensaje').text('Ingresa el nuevo motivo a agregar para '+$('#eventos :selected').text());
+           }
+           motivoTarea.dialog( "open" );
+         }
+
+         function enviarCaso(caso){
+           if(caso==='Actualizar'){
+             ActualizarRazon();
+           }else if(caso==='Agregar'){
+             AgregarRazon();
+           }
+         }
+
+         async function ActualizarRazon(){
+           try {
+             if($('#eventos').val()===''){
+               alert('Selecciona un evento primero');
+               return;
+             }
+             if($('#razonNueva').val()===''){
+               alert('Escribe una nueva razón primero');
+               return;
+             }
+             var url='RestApi/POST/'+postApi;
+             var result = await conexion("POST",url,"updateMotivo=true&descripcion="+$('#razonNueva').val()+"&razon="+$('#razones').val());
+             mensajeSimple(result);
+             $('#razonNueva').val('')
+             CargarRazones(document.getElementById('eventos'))
+           } catch (e) {
+             mensajeError(e);
+           }finally{
+             motivoTarea.dialog( "close" );
+           }
+         }
+
+         async function BorrarRazon(){
+           try {
+             if($('#razones').val()===''){
+               alert('Selecciona un motivo primero');
+               return;
+             }
+             if(await mensajeOpcional('Estas seguro de elemininar el motivo: '+$('#razones :selected').text())){
+               var url='RestApi/POST/'+postApi;
+               var result = await conexion("POST",url,"borrarMotivo=true&razon="+$('#razones').val());
+               setTimeout(function() {
+                 mensajeSimple(result);
+               }, 500);
+               $('#razonNueva').val('');
+               CargarRazones(document.getElementById('eventos'))
+             }
+           } catch (e) {
+             setTimeout(function() {
+               mensajeError(e);
+             }, 500);
+           }
+         }
+         //Termina código de motivos
+
          $(document).ready(function(){
            permisos(["4"]);
            ObtenerDatos();
+           $("#add").prop("disabled", true);
+           $("#del").prop("disabled", true);
+           $("#upd").prop("disabled", true);
          });
       </script>
    </body>

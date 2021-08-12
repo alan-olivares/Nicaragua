@@ -139,7 +139,7 @@
                <div class="navbar-header">
                   <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
                </div>
-               <h2 class="nav navbar-top-links titulo">TBRE - Operación del día</h2>
+               <h2 class="nav navbar-top-links titulo welcome-message">TBRE - Operación del día</h2>
                <ul class="nav navbar-top-links navbar-right">
                   <li class="dropdown uno">
                      <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -363,7 +363,7 @@
          var today2  = new Date();
          var options2 = {year: "numeric", month: "long"};
          //document.getElementById("fechaActual").innerHTML = today2.toLocaleDateString("es-MX",options2);
-         
+
          $(document).ready(function() {
            permisos(["11"]);
              var dataset = [

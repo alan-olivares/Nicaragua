@@ -306,6 +306,6 @@ if($row[0]=='1'){
 function getValor($query,$conn){
   $stmt = sqlsrv_query( $conn , $query);
   $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC);
-  return $row[0];
+  return utf8_encode($row[0]);
 }
 ?>

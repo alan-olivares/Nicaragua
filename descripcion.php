@@ -115,8 +115,8 @@
                             <td style="text-align: center;"><?php echo $row[10]?></td>
                             <td style="text-align: right;"><?php echo $row[11]?></td>
                             <td style="text-align: center;"><?php echo $row[12]?></td>
-                            <td style="text-align: center;"><?php $row[13]?></td>
-                            <td style="text-align: center;"><?php $row[14]?></td>
+                            <td style="text-align: center;"><?php echo $row[13]?></td>
+                            <td style="text-align: center;"><?php echo $row[14]?></td>
                             <td style="text-align: center;"><?php echo $row[15]?></td>
                             <td style="text-align: right;"><?php echo number_format((float)str_replace(",","",$row[16]), 3, '.', ',')?></td>
                             <td style="text-align: center;"><?php echo $row[19]?></td>
@@ -200,7 +200,7 @@
                  var l = $('#'+boton).ladda();
                  l.ladda('start');
                  var url=getNode+"?reporte=detalleBarril&tipo="+tipo+"<?php echo "&almacen=$almacen&area=$area&seccion=$seccion&alcohol=$alcohol&cod=$codificacion&fecha=$fecha";?>";
-                 alert(url);
+
                  var valor=await conexion("GET",url,"");
                  let link = document.createElement("a");
                  link.download = "Detalle de barril por sección."+tipo;
@@ -346,6 +346,6 @@
    function getValor($query,$conn){
      $stmt = sqlsrv_query( $conn , $query);
      $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC);
-     return $row[0];
+     return utf8_encode($row[0]);
    }
    ?>

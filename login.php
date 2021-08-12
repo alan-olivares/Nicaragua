@@ -35,17 +35,16 @@
       </div>
       <?php
          if(ISSET($_POST['usuario'])){
+           include 'general_connection.php';
            $usuario=$_POST['usuario'];
            $contra=$_POST['password'];
-           include 'general_connection.php';
-           include 'RestApi/encriptacion.php';
            $tsql = "exec sp_getAcceso '$usuario' , '$contra'";
            $evento="";
            $stmt = sqlsrv_query( $conn , $tsql);
            while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC))
            {
              if($row[0]=='1'){
-               $tsql2 = "select top 1 u.Nombre,p.Descripcion,per.Pagina from CM_Usuario u
+               $tsql2 = "SELECT top 1 u.Nombre,p.Descripcion,per.Pagina from CM_Usuario u
                left join CM_Perfil p on p.IdPerfil=u.IdPerfil
                left join CM_PerfilPermiso pp on pp.IdPerfil=p.IdPerfil
                left join CM_Permiso per on per.IdPermiso=pp.IdPermiso where u.Clave='$usuario' order by per.Orden;";

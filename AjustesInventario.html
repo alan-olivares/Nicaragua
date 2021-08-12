@@ -14,6 +14,7 @@
       <link rel="stylesheet" href="/resources/demos/style.css">
       <link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">
       <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+      <link href="css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
    </head>
    <body>
       <script src="js/revisar_sesion.js"></script>
@@ -139,7 +140,7 @@
                   <div class="navbar-header">
                      <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
                   </div>
-                  <h2 class="nav navbar-top-links titulo">Ajustes de inventarios</h2>
+                  <h2 class="nav navbar-top-links titulo welcome-message">Ajustes de inventarios</h2>
                   <ul class="nav navbar-top-links navbar-right">
                      <li class="dropdown uno">
                         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -165,10 +166,12 @@
             </div>
             <div class="row wrapper border-bottom white-bg page-heading">
               <div class="col-md-12 text-center  d-flex" >
-                 <div class="form-inline text-center d-flex justify-content-center"  >
+                 <div class="form-inline text-center d-flex justify-content-center col-md-10"  >
                    <h5>
                       <label>  Año:  </label>
-                      <select class="form-control b-r-xl" id="annio" ></select>
+                      <select class="form-control b-r-xl" id="annio" >
+                        <option value="">Todos</option>
+                      </select>
                    </h5>
                    <div class="col-md-4 text-center" id="data_1">
                       <h5>
@@ -178,13 +181,16 @@
                    </div>
                     <h5>
                        <label>  Alcohol:  </label>
-                       <select class="form-control b-r-xl" id="alcohol"></select>
+                       <select class="form-control b-r-xl" id="alcohol">
+                         <option value="">Todos</option>
+                       </select>
                     </h5>
                     <h5><label>  Uso:   </label>
                        <select class="form-control b-r-xl" id="uso" >
+                         <option value="">Todos</option>
                        </select>
                     </h5>
-                    <button class="btn btn-primary b-r-xl" name="search" style="margin-top:20px;" onclick="CargarTabla();"><span class="glyphicon glyphicon-search"></span></button>
+                    <button class="ladda-button btn btn-primary button3" style="margin-top:20px;" onclick="CargarTabla();" id="carga" data-style="zoom-in"><span class="glyphicon glyphicon-search"></span></button>
                  </div>
               </div>
                <div class="col-md-9 d-flex justify-content-center table-responsive text-center " id="table-wrapper" >
@@ -249,6 +255,7 @@
       <script src="js/bootstrap.js"></script>
       <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
       <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+      <script src="js/plugins/ladda/ladda.jquery.min.js"></script>
       <!-- Custom and plugin javascript -->
       <script src="js/inspinia.js"></script>
       <script src="js/plugins/pace/pace.min.js"></script>
@@ -257,9 +264,11 @@
       <!-- TouchSpin -->
       <script src="js/plugins/touchspin/jquery.bootstrap-touchspin.min.js"></script>
       <script src="js/plugins/datapicker/bootstrap-datepicker.js"></script>
+
       <script>
          const getApi="get_ajustesInventario.php";
          const postApi="post_ajustesInventario.php";
+
 
          function cambioBarriles(campo){
            if(campo.value<=$('#barriles tr').length){
@@ -290,6 +299,7 @@
          }
          function borrarSeleccion(){
            $(".selected").removeClass("selected");
+           cambiarEstado();
          }
 
          async function solicitarCambios(estado){
@@ -339,6 +349,7 @@
              const url='RestApi/GET/'+getApi+'?annio='+$('#annio').val()+'&alcohol='+$('#alcohol').val()+"&uso="+$('#uso').val()+"&fechas="+$('#FAlcohol').val();
              var result = await conexion("GET",url,"");
              var parsed =JSON.parse(result);
+             //crearTablaJson(parsed,'#barriles');
              if(table!=null){
                table.destroy();
              }
@@ -352,7 +363,7 @@
                "info":     false,
                searching: true,
                "language": {
-                 "emptyTable": "No balliles con la busqueda seleccionada",
+                 "emptyTable": "No hay barriles con la busqueda seleccionada",
                  searchPlaceholder: "Busca algún dato aquí",
                  search: "",
                },
@@ -367,9 +378,10 @@
                  { data: 'Ubicacion' }
                ]
              });
-             parar();
            } catch(error) {
              await mensajeError(error);
+           }finally {
+             parar();
            }
 
          }

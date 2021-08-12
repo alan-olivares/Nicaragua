@@ -33,7 +33,7 @@ sqlsrv_close($conn); //Close the connnectiokn first
 
 function operaciones($tipo,$campo,$id) {
   $query="";
-  if($tipo==='bodega'){
+  if($tipo==='BODEGA'){
     if($campo['borrar'] && $campo['id']!=-1){
       $query="DELETE from AA_Almacen where AlmacenID=".$campo['id'];
     }else if($campo['id']!=-1){
@@ -45,7 +45,7 @@ function operaciones($tipo,$campo,$id) {
       $campo['Nombre']."','".$campo['Nombre']."',(select isnull((select top 1 Consecutivo from AA_Almacen where PlantaID=$id order by Consecutivo desc),0)+1),
       '".$campo['x']."','".$campo['y']."','".$campo['height']."','".$campo['width']."')";
     }
-  }else if($tipo==='Costado'){
+  }else if($tipo==='COSTADO'){
     if($campo['borrar'] && $campo['id']!=-1){
       $query="DELETE from AA_Area where AreaId=".$campo['id'];
     }else if($campo['id']!=-1){
@@ -56,7 +56,7 @@ function operaciones($tipo,$campo,$id) {
       .$campo['Nombre']."',(select isnull((select top 1 Consecutivo from AA_Area where AlmacenId=$id order by Consecutivo desc),0)+1),
       '".$campo['x']."','".$campo['y']."','".$campo['height']."','".$campo['width']."')";
     }
-  }else if($tipo==='Filas'){
+  }else if($tipo==='FILA'){
     if($campo['borrar'] && $campo['id']!=-1){
       $query="DELETE from AA_Seccion where SeccionID=".$campo['id'];
     }else if($campo['id']!=-1){
@@ -67,7 +67,7 @@ function operaciones($tipo,$campo,$id) {
       (select isnull((select top 1 Consecutivo from AA_Seccion where AreaId=$id order by Consecutivo desc),0)+1),
       '".$campo['x']."','".$campo['y']."','".$campo['height']."','".$campo['width']."')";
     }
-  }else if($tipo==='Torres'){
+  }else if($tipo==='TORRE'){
     if($campo['borrar'] && $campo['id']!=-1){
       $query="DELETE from AA_Posicion where PosicionID=".$campo['id'];
     }else if($campo['id']!=-1){
@@ -78,7 +78,7 @@ function operaciones($tipo,$campo,$id) {
       (select isnull((select top 1 Consecutivo from AA_Seccion where SeccionID=$id order by Consecutivo desc),0)+1))";
     }
 
-  }else if($tipo==='Niveles'){
+  }else if($tipo==='NIVEL'){
     if($campo['borrar'] && $campo['id']!=-1){
       $query="exec sp_NivelOpe ".$campo['id'].",'', 2";//Operacion 2 elimina
     }else if($campo['id']!=-1){

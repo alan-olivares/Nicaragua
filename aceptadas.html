@@ -4,17 +4,15 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>TBRE</title>
+      <link href="css/jquery.dataTables.min.css" rel="stylesheet">
       <link href="css/bootstrap.min.css" rel="stylesheet">
       <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
       <link rel="icon" href="img\TBRE.ico">
-      <link href="https://cdn.datatables.net/1.10.23/css/jquery.dataTables.min.css" rel="stylesheet">
-      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+      <link rel="stylesheet" href="css/jquery-ui.css">
       <link href="css/animate.css" rel="stylesheet">
       <link href="css/style.css" rel="stylesheet">
-      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
       <link rel="stylesheet" href="/resources/demos/style.css">
+      <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
    </head>
    <body>
       <script src="js/revisar_sesion.js"></script>
@@ -140,7 +138,7 @@
                   <div class="navbar-header">
                      <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
                   </div>
-                  <h2 class="nav navbar-top-links titulo">Solicitudes aceptadas</h2>
+                  <h2 class="nav navbar-top-links titulo welcome-message">Solicitudes aceptadas</h2>
                   <ul class="nav navbar-top-links navbar-right">
                      <li class="dropdown uno">
                         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -256,19 +254,19 @@
       </div>
       <!-- Mainly scripts -->
       <script src="js/jquery-3.1.1.min.js"></script>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-      <script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
+      <script src="js/jquery-ui.js"></script>
+      <script src="js/jquery.dataTables.min.js"></script>
+      <script src="js/plugins/dataTables/datatables.min.js"></script>
+      <script src="js/plugins/dataTables/dataTables.bootstrap4.min.js"></script>
       <script src="js/json2html.min.js"></script>
       <script src="js/popper.min.js"></script>
       <script src="js/bootstrap.js"></script>
       <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
       <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-      <!-- Custom and plugin javascript -->
       <script src="js/inspinia.js"></script>
       <script src="js/plugins/pace/pace.min.js"></script>
       <script src="js/funciones_generales.js"></script>
+      <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
       <script>
          const getApi="get_solicitudes.php";
          $( function() {
@@ -276,8 +274,7 @@
              open: function() {
                  $(this).closest(".ui-dialog")
                  .find(".ui-dialog-titlebar-close")
-                 .removeClass("ui-dialog-titlebar-close")
-                 .html("<span class='fa fa-times'></span>");
+                 .removeClass("ui-dialog-titlebar-close").addClass("b-r-xl btn btn-danger");
              },
              autoOpen: false,
              height: 'auto',
@@ -385,7 +382,7 @@
            });
            $('#barriles tbody').on( 'click', 'tr', function (e) {
              var data = table.row( this ).data();
-             if( e.toElement.cellIndex==null) {
+             if( e.target._DT_CellIndex==undefined) {
                CargarDialogo(data[0]);
              }
            });
