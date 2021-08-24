@@ -1,5 +1,5 @@
-const getApi="get_validar_informacion.php";
-const postApi="post_validar_informacion.php";
+const getApi="get_VI_barriles.php";
+const postApi="post_VI_barriles.php";
 $( function() {
   var options={
     open: function() {
@@ -46,17 +46,16 @@ async function GuardarMover(){
     mensajeError("Por favor completa todos los datos");
   }else{
     var elements = document.getElementsByClassName("selected");
-
-    var check="";
     try{
+      var consecutivos=[];
       for (var i = elements.length-1; i >= 0; i--) {
         var eee=elements[i].querySelectorAll('td');
-        var url='RestApi/POST/'+postApi;
-        var params='evento=Mover&consecutivo='+eee[0].innerHTML+"&IdPallet="+document.getElementById("NivelesM").value+"&CBarriles="+(i+1)+"&motivo="+motivo;
-        var result=await conexion("POST", url,params);
-        check=result;
+        consecutivos.push(eee[0].innerHTML);
       }
-      await mensajeSimple(check);
+      var url='RestApi/POST/'+postApi;
+      var params='evento=Mover&consecutivos='+consecutivos+"&IdPallet="+document.getElementById("NivelesM").value+"&motivo="+motivo;
+      var result=await conexion("POST", url,params);
+      await mensajeSimple(result);
       dialogMover.dialog( "close" );
     }catch(error){
       mensajeError(error);
@@ -76,7 +75,7 @@ async function GuardarEditar(){
   if(eee[10].innerHTML !=='Vacío (Plantel)' && document.getElementById("estado").options[document.getElementById("estado").selectedIndex].text==='Vacío (Plantel)'){
     if(await mensajeOpcional('El barril se encuentra lleno, si lo quieres cambiar a vacío generará los datos de un barril vacío ¿Quieres continuar?')){
       try{
-        var params='evento=Editar&consecutivo='+eee[0].innerHTML+'&IdPallet='+document.getElementById("Niveles").value+'&CBarriles=0&restablecer=vacio&motivo='+motivo;
+        var params='evento=Editar&consecutivo='+eee[0].innerHTML+'&IdPallet='+document.getElementById("Niveles").value+'&restablecer=vacio&motivo='+motivo;
         var result=await conexion("POST", 'RestApi/POST/'+postApi,params);
         setTimeout(async function() {
           await mensajeSimple(result);
@@ -94,7 +93,7 @@ async function GuardarEditar(){
   }else if(eee[10].innerHTML ==='Vacío (Plantel)' && document.getElementById("estado").options[document.getElementById("estado").selectedIndex].text==='Lleno (Bodega)'){
     if(await mensajeOpcional('El barril se encuentra vacío, si lo quieres cambiar a lleno generará los datos del estado anterior ¿Quieres continuar?')){
       try{
-        var params='evento=Editar&consecutivo='+eee[0].innerHTML+'&IdPallet='+document.getElementById("Niveles").value+'&CBarriles=0&restablecer=pasado&motivo='+motivo;
+        var params='evento=Editar&consecutivo='+eee[0].innerHTML+'&IdPallet='+document.getElementById("Niveles").value+'&restablecer=pasado&motivo='+motivo;
         var result=await conexion("POST", 'RestApi/POST/'+postApi,params);
         setTimeout(async function() {
           await mensajeSimple(result);
@@ -146,7 +145,7 @@ async function GuardarEditar(){
       }
 
       if(campos!=""){
-        var params='evento=Editar&consecutivo='+eee[0].innerHTML+'&IdPallet='+document.getElementById("Niveles").value+'&CBarriles=0&'+campos+"motivo="+motivo;
+        var params='evento=Editar&consecutivo='+eee[0].innerHTML+'&IdPallet='+document.getElementById("Niveles").value+"&motivo="+motivo+'&restablecer=no&'+campos;
         result=await conexion("POST", 'RestApi/POST/'+postApi,params);
         await mensajeSimple(result);
         dialogEditar.dialog( "close" );
@@ -162,9 +161,8 @@ async function GuardarEditar(){
 async function GuardarAgregar(){
   if(document.getElementById('etiquetaA').value!=="" && document.getElementById("MotivoA").value!==""){
     if(!document.getElementById("ubicacionA").value.includes(document.getElementById("Niveles").value)){
-      //var query="UPDATE WM_Barrica SET IdPallet=(select IdPallet from WM_Pallet where RackLocID="+document.getElementById("Niveles").value+") where Consecutivo="+EtiquetaAConsecutivo(document.getElementById("etiquetaA").value);
       var url='RestApi/POST/'+postApi;
-      var params='evento=Agregar&consecutivo='+EtiquetaAConsecutivo(document.getElementById("etiquetaA").value)+
+      var params='evento=Agregar&consecutivos='+document.getElementById("concecutivoA").value+
       "&IdPallet="+document.getElementById("Niveles").value+"&CBarriles=1&motivo="+document.getElementById("MotivoA").value;
       try{
         var result=await conexion("POST", url,params);
@@ -199,7 +197,7 @@ async function BuscarBarril(){
       var result = await conexion("GET",url,"");
       var parsed =JSON.parse(result);
       if(parsed.length>0){
-        document.getElementById('etiquetaA').value=GenerarEtiqueta(parsed[0]['Consecutivo']);
+        document.getElementById('etiquetaA').value=GenerarEtiqueta(parsed[0]['Consecutivo'],'01');
         var campos=ObtenerCamposAgregarDialog();
         for (var i = 1; i < campos[0].length; i++) {
           document.getElementById(campos[0][i]).value=parsed[0][campos[1][i]];
@@ -226,7 +224,7 @@ function Agregar(){
   var elements = document.getElementsByClassName("selected");
   if(elements.length==1){
     var eee=elements[0].querySelectorAll('td');
-    document.getElementById("etiqueta").value =GenerarEtiqueta(eee[0].innerHTML);
+    document.getElementById("etiqueta").value =GenerarEtiqueta(eee[0].innerHTML,'01');
     setSelectedValue(document.getElementById("uso"), eee[6].innerHTML);
     setSelectedValue(document.getElementById("edad"), eee[7].innerHTML);
     document.getElementById("tapa").value=eee[5].innerHTML;
@@ -298,7 +296,7 @@ function Mover(){
     var table = document.getElementById("moverBarriles");
     for (var i = 0; i < elements.length; i++) {
       var eee=elements[i].querySelectorAll('td');
-      $(table).find('tbody').append("<tr><td>"+GenerarEtiqueta(eee[0].innerHTML)+"</td></tr>");
+      $(table).find('tbody').append("<tr><td>"+GenerarEtiqueta(eee[0].innerHTML,'01')+"</td></tr>");
     }
     dialogMover.dialog( "open" );
   }else {

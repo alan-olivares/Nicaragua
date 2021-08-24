@@ -8,7 +8,7 @@ $row = sqlsrv_fetch_array( $stmtIncio, SQLSRV_FETCH_NUMERIC);
 if($row[0]=='1'){
   include '../revisar_permisos.php';
   if(strpos($permisos,',1,') !== false){
-    $cantidad = "select COUNT(*) from ADM_Ajustes where Estado='1'";
+    $cantidad = "SELECT (select COUNT(*) from ADM_Ajustes where Estado='1')+(select COUNT(*) from ADM_AjustesTanques where Estado='1')";
     $stmtNumero = sqlsrv_query( $conn , $cantidad);
     $row2 = sqlsrv_fetch_array( $stmtNumero, SQLSRV_FETCH_NUMERIC);
     echo $row2[0];

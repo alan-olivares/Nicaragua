@@ -62,12 +62,15 @@
                         <li><a href="RGerencia.html">Reporte de Gerencia</a></li>
                      </ul>
                   </li>
-                  <li class="dos-cinco">
-                     <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">TBRE</span><span class="fa arrow"></span></a>
+                  <li class="dos">
+                     <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">Validar información</span><span class="fa arrow"></span></a>
                      <ul class="nav nav-second-level">
-                        <li class="dos"><a href="validar_informacion.php">Validar información</a></li>
-                        <li class="cinco"><a href="impresion.html">Impresión de etiquetas</a></li>
+                        <li><a href="VI_barriles.php">Barriles</a></li>
+                        <li><a href="VI_hoover.php">Tanques Hoover</a></li>
                      </ul>
+                  </li>
+                  <li class="cinco">
+                     <a href="impresion.html"><i class="fa fa-print"></i> <span class="nav-label">Impresión de etiquetas</span></a>
                   </li>
                   <li class="seis">
                      <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Órdenes de trabajo</span><span class="fa arrow"></span></a>
@@ -98,6 +101,7 @@
                                 <li><a href="RTrasiegoRemision.html">Remisión blending</a></li>
                            </ul>
                        </li>
+                       <li><a href="OTrasiegoHoover.html">Trasiego Hoover</a></li>
                      </ul>
                   </li>
                   <li class="ocho">
@@ -105,6 +109,7 @@
                      <ul class="nav nav-second-level collapse">
                         <li><a href="RAlcohol.html">Alcohol</a></li>
                         <li><a href="RBarriles.html">Barriles</a></li>
+                        <li><a href="RTanquesHoover.html">Tanques Hoover</a></li>
                      </ul>
                   </li>
                   <li class="active uno-dos">
@@ -163,30 +168,26 @@
                </nav>
             </div>
             <div class="row wrapper border-bottom white-bg page-heading">
+              <div class="col-md-12 text-center  d-flex justify-content-center" style="margin-top:20px;">
+                 <select class="col-md-3 b-r-xl form-control" id="tipo" onchange="CargarTabla(this.value);">
+                   <option value="1">Barriles</option>
+                   <option value="2">Tanques Hoover</option>
+                 </select>
+              </div>
                <div class="col-md-12 text-center  d-flex justify-content-center" >
                   <div class="form-inline text-center d-flex justify-content-center"  >
-                     <button class="button5 btn btn-w-m btn-danger autorizador b-r-xl" onclick="HacerTodas(3);">Rechazar todos</button>
+                     <button class="button5 btn btn-w-m btn-danger autorizador b-r-xl" onclick="HacerTodas(3);" >Rechazar todos</button>
                      <button class="button5 btn btn-w-m btn-danger autorizador b-r-xl" onclick="HacerTodas(2);">Aceptar todos</button>
-                     <button class="button5 btn btn-primary autorizador b-r-xl" onclick="Cambios(3);">Rechazar seleccionados</button>
-                     <button class="button5 btn btn-primary autorizador b-r-xl" onclick="Cambios(2);">Aceptar seleccionados</button>
+                     <button class="button5 btn btn-primary autorizador b-r-xl seleccion" onclick="Cambios(3);">Rechazar seleccionados</button>
+                     <button class="button5 btn btn-primary autorizador b-r-xl seleccion" onclick="Cambios(2);">Aceptar seleccionados</button>
                      <button class="button5 btn btn-w-m btn-danger Nautorizador b-r-xl" onclick="HacerTodas(3);">Cancelar todos</button>
-                     <button class="button5 btn btn-primary Nautorizador b-r-xl" onclick="Cambios(3);">Cancelar seleccionados</button>
+                     <button class="button5 btn btn-primary Nautorizador b-r-xl seleccion" onclick="Cambios(3);">Cancelar seleccionados</button>
                   </div>
                </div>
                <div class="col-md-12 d-flex justify-content-center table-responsive text-center ">
                   <div class="table-responsive col-md-12 centro">
                      <table class="table table-bordered cell-border" id="barriles">
                         <thead>
-                           <tr>
-                              <th>ID Solicitud</th>
-                              <th>Evento</th>
-                              <th>Consecutivo</th>
-                              <th>Fecha de solicitud</th>
-                              <th>Solicitante</th>
-                              <th>Estado</th>
-                              <th>Motivo</th>
-                              <th>Detalles</th>
-                           </tr>
                         </thead>
                         <tbody></tbody>
                      </table>
@@ -207,22 +208,9 @@
                <div>
                   <div class="col-md-12 text-center  d-flex justify-content-center" >
                      <div class="table-responsive col-md-12 centro" >
-                        <caption>Versión anterior</caption>
+                        <caption>Versión actual</caption>
                         <table class="table table-bordered table-hover display"  id="viejoBarril">
-                           <thead>
-                              <tr>
-                                 <th>Consecutivo</th>
-                                 <th>Capacidad</th>
-                                 <th>ID Pallet</th>
-                                 <th>Uso</th>
-                                 <th>Edad</th>
-                                 <th>Estado</th>
-                                 <th>F. Revisado</th>
-                                 <th>F. Relleno</th>
-                                 <th>Recepción</th>
-                                 <th>Alcohol</th>
-                              </tr>
-                           </thead>
+                           <thead></thead>
                            <tbody></tbody>
                         </table>
                      </div>
@@ -234,22 +222,9 @@
                   </div>
                   <div class="col-md-12 text-center  d-flex justify-content-center" >
                      <div class="table-responsive col-md-12 centro" >
-                        <caption>Versión actual</caption>
+                        <caption>Versión a confirmar</caption>
                         <table class="table table-bordered table-hover display"  id="nuevoBarril">
-                           <thead>
-                              <tr>
-                                 <th>Consecutivo</th>
-                                 <th>Capacidad</th>
-                                 <th>ID Pallet</th>
-                                 <th>Uso</th>
-                                 <th>Edad</th>
-                                 <th>Estado</th>
-                                 <th>F. Revisado</th>
-                                 <th>F. Relleno</th>
-                                 <th>Recepción</th>
-                                 <th>Alcohol</th>
-                              </tr>
-                           </thead>
+                           <thead></thead>
                            <tbody></tbody>
                         </table>
                      </div>
@@ -292,6 +267,7 @@
              width: 'auto',
              modal: true,
              closeOnEscape: true,
+             position:{ my: "center", at: "center top", of: '#barriles' },
              show: {
                effect: "puff",
                duration: 800
@@ -314,124 +290,127 @@
 
          async function CargarDialogo(idAjuste){
            try {
-             var url='RestApi/GET/'+getApi+'?idAjuste='+idAjuste+"&opc=1";
+             var url='RestApi/GET/'+getApi+'?idAjuste='+idAjuste+"&opc=1&tipo="+$('#tipo').val();
              var result = await conexion("GET",url,"");
-             AgregarDatos('viejoBarril',result);
-             url='RestApi/GET/'+getApi+'?idAjuste='+idAjuste+"&opc=2";
+             var parsed =JSON.parse(result);
+             crearTablaJson(parsed,'#viejoBarril');
+             url='RestApi/GET/'+getApi+'?idAjuste='+idAjuste+"&opc=2&tipo="+$('#tipo').val();
              result = await conexion("GET",url,"");
-             AgregarDatos('nuevoBarril',result);
+             parsed =JSON.parse(result);
+             crearTablaJson(parsed,'#nuevoBarril');
            } catch(error) {
              await mensajeError(error);
            }
            Dialog.dialog( "open" );
          }
-         function AgregarDatos(tabla,result){
-           var parsed =JSON.parse(result);
-           var transform = {"tag":"table", "children":[
-             {"tag":"tbody","children":[
-               {"tag":"tr","children":[
-                 {"tag":"td","html":"${Consecutivo}"},
-                 {"tag":"td","html":"${Capacidad}"},
-                 {"tag":"td","html":"${IdPallet}"},
-                 {"tag":"td","html":"${Uso}"},
-                 {"tag":"td","html":"${Edad}"},
-                 {"tag":"td","html":"${Estado}"},
-                 {"tag":"td","html":"${Revisado}"},
-                 {"tag":"td","html":"${Relleno}"},
-                 {"tag":"td","html":"${Recepcion}"},
-                 {"tag":"td","html":"${Alcohol}"},
-               ]}
-             ]}
-           ]};
-           $('#'+tabla+' > tbody').html(json2html.transform(parsed,transform));
-         }
+
          async function HacerTodas(estado){
            var op="rechazar";
            if(estado==2){
              op="aceptar";
            }
-           if(await mensajeOpcional('¿Estas seguro de que quieres '+op+' todas las solicitudes?')){
-             empezar();
-             try {
-               var result="";
-               var elements = document.querySelectorAll("#barriles tbody");
-               var eee=elements[0].querySelectorAll('td');
-               var col=document.getElementById('barriles').rows[0].cells.length;
-               for (var i = 0; i < (eee.length/col); i++) {
-                 var params='IdSolicitud='+eee[(col*i)].innerHTML+'&estado='+estado;
-                 var url='RestApi/POST/'+postApi;
-                 result = await conexion("POST",url,params);
-               }
-               setTimeout(async function() {
-                 await mensajeSimple(result);
-                 location.reload();
-               }, 500);
-             }catch(error){
-               setTimeout(async function() {
-                 mensajeError(error);
-               }, 500);
-             }
-             parar();
-
+           var ids=[];
+           var elements = document.querySelectorAll("#barriles tbody");
+           $( "#barriles tr" ).each(function() {
+             ids.push($( this ).children('td:first').text());//Se obtienen los valores de la primera posicion creando un arreglo de ids
+           });
+           if(ids==0){
+             mensajeError('No hay solicitudes para '+op);
+             return;
            }
-
+           if(await mensajeOpcional('¿Estas seguro de que quieres '+op+' todas las solicitudes?')){
+             EnviarDatos(ids,estado);
+           }
          }
+
+         async function EnviarDatos(ids,estado){
+           empezar();
+           try {
+             var params='ids='+ids+'&estado='+estado+"&tipo="+$('#tipo').val();
+             var url='RestApi/POST/'+postApi;
+             var result=await conexion("POST",url,params);
+             setTimeout(async function() {
+               mensajeSimple(result);
+               CargarTabla($('#tipo').val());
+               ObtenerNotificaciones();
+             }, 500);
+           }catch(error){
+             setTimeout(async function() {
+               mensajeError(error);
+             }, 500);
+           }finally{
+             parar();
+           }
+         }
+
 
          async function Cambios(estado){
            var op="rechazar";
            if(estado==2){
              op="aceptar";
            }
-           var elements = document.getElementsByClassName("selected");
-           if(elements.length>0){
-             if(await mensajeOpcional('¿Estas seguro de que quieres '+op+' estos cambios?')){
-               empezar();
-               try {
-                 var result="";
-                 for (var i = 0; i < elements.length; i++) {
-                   var eee=elements[i].querySelectorAll('td');
-                   var params='IdSolicitud='+eee[0].innerHTML+'&estado='+estado+'&Consecutivo='+eee[2].innerHTML;
-                   var url='RestApi/POST/'+postApi;
-                   result = await conexion("POST",url,params);
-
-                 }
-                 setTimeout(async function() {
-                   await mensajeSimple(result);
-                   location.reload();
-                 }, 500);
-
-               }catch(error){
-                 setTimeout(async function() {
-                   mensajeError(error);
-                 }, 500);
-               }
-               parar();
-             }
-           }else{
-             await mensajeError('Selecciona al menos una solicitud')
+           var ids=[];
+           $( ".selected" ).each(function() {
+             ids.push($( this ).children('td:first').text());//Se obtienen los valores de la primera posicion creando un arreglo de ids
+           });
+           if(ids.length==0){
+              mensajeError('Selecciona al menos una solicitud');
+              return;
            }
 
+           if(await mensajeOpcional('¿Estas seguro de que quieres '+op+' estos cambios?')){
+             EnviarDatos(ids,estado);
+           }
          }
-         async function CargarTabla(){
+
+         async function CargarTabla(valor){
            try {
+
              empezar();
-             const url='RestApi/GET/'+getApi+'?estado=1';
+             if(table!=null){
+               table.destroy();
+             }
+             $('#barriles > tbody').empty();
+             $('#barriles > thead').empty();
+             cambiarEstado();
+             var url='RestApi/GET/'+getApi+'?tipo='+valor+'&estado=1';
              var result = await conexion("GET",url,"");
              var parsed =JSON.parse(result);
-             var transform = {"tag":"table", "children":[
-               {"tag":"tbody","children":[
-                 {"tag":"tr","children":[
-                   {"tag":"td","html":"${IdAjuste}"},
-                   {"tag":"td","html":"${Evento}"},
-                   {"tag":"td","html":"${Consecutivo}"},
-                   {"tag":"td","html":"${FechaSolicitud}"},
-                   {"tag":"td","html":"${Solicitante}"},
-                   {"tag":"td","html":"${Estado}"},
-                   {"tag":"td","html":"${Descripcion}"},
-                   {"tag":"td","html":'<button class=" btn btn-primary b-r-xl" name="verBarr" id="verBarr">Ver</button>'},
+             var content="";
+             if(valor==='1'){
+               content="<tr><th>ID Solicitud</th><th>Evento</th><th>Consecutivo</th><th>Fecha de solicitud</th><th>Solicitante</th><th>Estado</th><th>Motivo</th><th>Detalles</th></tr>";
+               var transform = {"tag":"table", "children":[
+                 {"tag":"tbody","children":[
+                   {"tag":"tr","children":[
+                     {"tag":"td","html":"${IdAjuste}"},
+                     {"tag":"td","html":"${Evento}"},
+                     {"tag":"td","html":"${Consecutivo}"},
+                     {"tag":"td","html":"${FechaSolicitud}"},
+                     {"tag":"td","html":"${Solicitante}"},
+                     {"tag":"td","html":"${Estado}"},
+                     {"tag":"td","html":"${Descripcion}"},
+                     {"tag":"td","html":'<button class=" btn btn-primary b-r-xl" name="verBarr" id="verBarr">Ver</button>'},
+                   ]}
                  ]}
-               ]}
-             ]};
+               ]};
+             }else if(valor==='2'){
+               content="<tr><th>ID Solicitud</th><th>Evento</th><th>NoSerie</th><th>Fecha de solicitud</th><th>Solicitante</th><th>Estado</th><th>Motivo</th><th>Detalles</th></tr>";
+               var transform = {"tag":"table", "children":[
+                 {"tag":"tbody","children":[
+                   {"tag":"tr","children":[
+                     {"tag":"td","html":"${IdAjuste}"},
+                     {"tag":"td","html":"${Evento}"},
+                     {"tag":"td","html":"${NoSerie}"},
+                     {"tag":"td","html":"${FechaSolicitud}"},
+                     {"tag":"td","html":"${Solicitante}"},
+                     {"tag":"td","html":"${Estado}"},
+                     {"tag":"td","html":"${Descripcion}"},
+                     {"tag":"td","html":'<button class=" btn btn-primary b-r-xl" name="verBarr" id="verBarr">Ver</button>'},
+                   ]}
+                 ]}
+               ]};
+             }
+             $('#barriles > thead').append(content);
              $('#barriles > tbody').html(json2html.transform(parsed,transform));
              parar();
            } catch(error) {
@@ -440,9 +419,10 @@
            Recargar();
          }
 
+         var table=null;
 
          function Recargar(){
-           var table = $('#barriles').DataTable({
+           table = $('#barriles').DataTable({
              responsive: false,
              "bPaginate": false,
              "paging":   false,
@@ -455,14 +435,7 @@
                search: "",
              }
            });
-           $('#barriles tbody').on( 'click', 'tr', function (e) {
-             var data = table.row( this ).data();
-             if( e.target._DT_CellIndex==undefined) {
-               CargarDialogo(data[0]);
-             }else{
-               $(this).toggleClass('selected');
-             }
-           });
+
          }
 
          async function permisos(){
@@ -480,10 +453,26 @@
              $(".autorizador").hide();
            }
          }
+         function cambiarEstado(){
+           if(document.getElementsByClassName("selected").length>0){
+             $('.seleccion').attr("disabled", false);
+           }else{
+             $('.seleccion').attr("disabled", true);
+           }
+         }
 
          $(document).ready(function(){
            permisos();
-           CargarTabla();
+           CargarTabla('1');
+           $('#barriles tbody').on( 'click', 'tr', function (e) {
+             var $row = $(this).closest('tr');
+             if( e.target._DT_CellIndex==undefined) {
+               CargarDialogo($row.children('td:first').text());
+             }else{
+               $row.toggleClass('selected');
+               cambiarEstado();
+             }
+           });
          });
       </script>
    </body>

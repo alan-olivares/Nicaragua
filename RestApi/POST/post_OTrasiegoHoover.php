@@ -15,7 +15,7 @@ if($row[0]=='1'){
       $Uso=$_POST['Uso'];
       $Cantidad=$_POST['Cantidad'];
       $tanque=$_POST['tanque'];
-      $tsql = "exec sp_OrdenTrasInsert '$usuario' , '$bodega','$year','$Alcohol','$Uso',$Cantidad,$tanque,5";
+      $tsql = "exec sp_OrdenTrasInsert '$usuario' , '$bodega','$year','$Alcohol','$Uso',$Cantidad,$tanque,7";
       $stmt = sqlsrv_query( $conn , $tsql);
       if($stmt){
         echo 'Ordenes registradas con exito';

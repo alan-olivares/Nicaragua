@@ -64,12 +64,15 @@
                         <li><a href="RGerencia.html">Reporte de Gerencia</a></li>
                      </ul>
                   </li>
-                  <li class="dos-cinco">
-                     <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">TBRE</span><span class="fa arrow"></span></a>
+                  <li class="dos">
+                     <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">Validar información</span><span class="fa arrow"></span></a>
                      <ul class="nav nav-second-level">
-                        <li class="dos"><a href="validar_informacion.php">Validar información</a></li>
-                        <li class="cinco"><a href="impresion.html">Impresión de etiquetas</a></li>
+                        <li><a href="VI_barriles.php">Barriles</a></li>
+                        <li><a href="VI_hoover.php">Tanques Hoover</a></li>
                      </ul>
+                  </li>
+                  <li class="cinco">
+                     <a href="impresion.html"><i class="fa fa-print"></i> <span class="nav-label">Impresión de etiquetas</span></a>
                   </li>
                   <li class="seis">
                      <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Órdenes de trabajo</span><span class="fa arrow"></span></a>
@@ -100,6 +103,7 @@
                                 <li><a href="RTrasiegoRemision.html">Remisión blending</a></li>
                            </ul>
                        </li>
+                       <li><a href="OTrasiegoHoover.html">Trasiego Hoover</a></li>
                      </ul>
                   </li>
                   <li class="ocho">
@@ -107,6 +111,7 @@
                      <ul class="nav nav-second-level collapse">
                         <li><a href="RAlcohol.html">Alcohol</a></li>
                         <li><a href="RBarriles.html">Barriles</a></li>
+                        <li><a href="RTanquesHoover.html">Tanques Hoover</a></li>
                      </ul>
                   </li>
                   <li class="uno-dos">
@@ -168,17 +173,22 @@
               <div class="col-md-12 text-center  d-flex" >
                  <div class="form-inline text-center d-flex justify-content-center col-md-10"  >
                    <h5>
+                      <label>  Tipo:  </label>
+                      <select class="form-control b-r-xl" id="tipo" onchange="cambioTipo(this.value);">
+                        <option value="1">Barriles</option>
+                        <option value="2">Tanques Hoover</option>
+                      </select>
+                   </h5>
+                   <h5>
                       <label>  Año:  </label>
                       <select class="form-control b-r-xl" id="annio" >
                         <option value="">Todos</option>
                       </select>
                    </h5>
-                   <div class="col-md-4 text-center" id="data_1">
-                      <h5>
-                         <label>  Fecha Relleno:   </label>
-                         <input type="date" class="form-control b-r-xl" id="FAlcohol">
-                      </h5>
-                   </div>
+                   <h5>
+                      <label id="fechaLab">  Fecha Relleno:   </label>
+                      <input type="date" class="form-control b-r-xl" id="FAlcohol">
+                   </h5>
                     <h5>
                        <label>  Alcohol:  </label>
                        <select class="form-control b-r-xl" id="alcohol">
@@ -195,17 +205,8 @@
               </div>
                <div class="col-md-9 d-flex justify-content-center table-responsive text-center " id="table-wrapper" >
                   <div class="table-responsive col-md-12 centro" id="scrollingtable">
-                     <table class="display" id="barriles">
+                     <table class="table table-bordered cell-border animated" id="barriles">
                         <thead>
-                           <tr>
-                              <th>Consecutivo<i class="fa fa-sort"></i></th>
-                              <th>Alcohol<i class="fa fa-sort"></i></th>
-                              <th>Año<i class="fa fa-sort"></i></th>
-                              <th>Uso<i class="fa fa-sort"></i></th>
-                              <th>Relleno<i class="fa fa-sort"></i></th>
-                              <th>Litros<i class="fa fa-sort"></i></th>
-                              <th>Ubicación<i class="fa fa-sort"></i></th>
-                           </tr>
                         </thead>
                         <tbody></tbody>
                      </table>
@@ -214,10 +215,10 @@
                <div class="col-md-3 justify-content-center text-center">
                  <div class="col-md-12" >
                    <label>  Litros:   </label>
-                   <input class="touchspin" type="text"  id="litros" disabled>
+                   <input class="touchspinLitros" type="text"  id="litros" disabled>
                  </div>
                  <div class="col-md-12" >
-                   <label>  Barriles:   </label>
+                   <label id="tipoLab">  Barriles:   </label>
                    <input class="touchspin" type="text"  id="barrilesC" onchange="cambioBarriles(this);" disabled>
                  </div>
                  <div class="col-md-12">
@@ -271,11 +272,28 @@
 
 
          function cambioBarriles(campo){
-           if(campo.value<=$('#barriles tr').length){
+           if(campo.value<=$('#barriles tbody tr').length){
+             $('#barriles > tbody > tr').removeClass('selected');
              $('#barriles > tbody > tr:lt('+(campo.value)+')').addClass('selected');
              cambiarEstado();
            }else{
+             campo.value=$('#barriles > tbody > tr').length;
              mensajeError('La cantidad es mayor a la cantidad de barriles disponibles en la busqueda');
+           }
+         }
+         function cambioTipo(valor){
+           if(valor==="1"){
+             $('#uso').attr("disabled", false);
+             $('#alcohol').attr("disabled", false);
+             $('#annio').attr("disabled", false);
+             $('#tipoLab').html('Barriles');
+             $('#fechaLab').html('Fecha Relleno');
+           }else{
+             $('#uso').attr("disabled", true);
+             $('#alcohol').attr("disabled", true);
+             $('#annio').attr("disabled", true);
+             $('#tipoLab').html('Tanques Hoover');
+             $('#fechaLab').html('Fecha Llenado');
            }
          }
 
@@ -313,7 +331,8 @@
              return;
            }
            if(elements.length>0){
-             if(await mensajeOpcional('¿Estas seguro de que quieres hacer estos cambios en '+lengthSelec()+' barriles?')){
+             var caso=($('#barriles thead tr').children('th:first').text()==='NoSerie'?'tanques hoover':'barriles');
+             if(await mensajeOpcional('¿Estas seguro de que quieres hacer estos cambios en '+lengthSelec()+' '+caso+'?')){
                empezar();
                try {
                  var consecutivos=[];
@@ -321,22 +340,23 @@
                    consecutivos.push($( this ).children('td:first').text());//Se obtienen los valores de la primera posicion creando un arreglo de consecutivos
                  });
                  var url='RestApi/POST/'+postApi;
-                 var params='motivo='+$('#motivo').val()+'&consecutivos='+consecutivos+"&litros="+$('#litros').val();
+                 var params='caso='+caso+'&motivo='+$('#motivo').val()+'&ids='+consecutivos+"&litros="+$('#litros').val();
                  var result=await conexion("POST", url,params);
                  setTimeout(function() {
                    if(!result.includes(',')){
                      mensajeSimple('La tarea se realizo con exito');
                    }else{
-                     mensajeSimple('La tarea se realizo parcialmente donde los consecutivos '+result+' ya tienen tareas pendientes por ser aceptadas');
+                     mensajeSimple('La tarea se realizo parcialmente donde los '+caso+' '+result+' ya tienen tareas pendientes por ser aceptadas');
                    }
                  }, 500);
-
+                 ObtenerNotificaciones();
                }catch(error){
                  setTimeout(async function() {
                    mensajeError(error);
                  }, 500);
+               }finally{
+                 parar();
                }
-               parar();
              }
            }else{
              await mensajeError('Selecciona al menos un barril')
@@ -346,13 +366,13 @@
          async function CargarTabla(){
            try {
              empezar();
-             const url='RestApi/GET/'+getApi+'?annio='+$('#annio').val()+'&alcohol='+$('#alcohol').val()+"&uso="+$('#uso').val()+"&fechas="+$('#FAlcohol').val();
+             const url='RestApi/GET/'+getApi+'?tipo='+$('#tipo').val()+'&annio='+$('#annio').val()+'&alcohol='+$('#alcohol').val()+"&uso="+$('#uso').val()+"&fechas="+$('#FAlcohol').val();
              var result = await conexion("GET",url,"");
              var parsed =JSON.parse(result);
-             //crearTablaJson(parsed,'#barriles');
              if(table!=null){
                table.destroy();
              }
+             crearTablaJson(parsed,"#barriles");
              $('#barrilesC').attr("disabled", false);
              $('#barriles').show();
              table = $('#barriles').DataTable({
@@ -366,17 +386,7 @@
                  "emptyTable": "No hay barriles con la busqueda seleccionada",
                  searchPlaceholder: "Busca algún dato aquí",
                  search: "",
-               },
-               data: parsed,
-               columns: [
-                 { data: 'Consecutivo' },
-                 { data: 'Alcohol' },
-                 { data: 'Recepcion' },
-                 { data: 'Uso' },
-                 { data: 'Relleno' },
-                 { data: 'Capacidad' },
-                 { data: 'Ubicacion' }
-               ]
+               }
              });
            } catch(error) {
              await mensajeError(error);
@@ -416,6 +426,16 @@
                min: 0,
                max: 1000,
                step: 1,
+               boostat: 5,
+               maxboostedstep: 10,
+               buttondown_class: 'btn btn-white',
+               buttonup_class: 'btn btn-white'
+           });
+           $(".touchspinLitros").TouchSpin({
+               min: -1000,
+               max: 1000,
+               step: 0.1,
+               decimals: 2,
                boostat: 5,
                maxboostedstep: 10,
                buttondown_class: 'btn btn-white',

@@ -63,12 +63,15 @@
                         <li><a href="RGerencia.html">Reporte de Gerencia</a></li>
                      </ul>
                   </li>
-                  <li class="active dos-cinco">
-                     <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">TBRE</span><span class="fa arrow"></span></a>
+                  <li class="active dos">
+                     <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">Validar información</span><span class="fa arrow"></span></a>
                      <ul class="nav nav-second-level">
-                        <li class="active dos"><a href="validar_informacion.php">Validar información</a></li>
-                        <li class="cinco"><a href="impresion.html">Impresión de etiquetas</a></li>
+                        <li><a href="VI_barriles.php">Barriles</a></li>
+                        <li class="active"><a href="VI_hoover.php">Tanques Hoover</a></li>
                      </ul>
+                  </li>
+                  <li class="cinco">
+                     <a href="impresion.html"><i class="fa fa-print"></i> <span class="nav-label">Impresión de etiquetas</span></a>
                   </li>
                   <li class="seis">
                      <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Órdenes de trabajo</span><span class="fa arrow"></span></a>
@@ -99,6 +102,7 @@
                                 <li><a href="RTrasiegoRemision.html">Remisión blending</a></li>
                            </ul>
                        </li>
+                       <li><a href="OTrasiegoHoover.html">Trasiego Hoover</a></li>
                      </ul>
                   </li>
                   <li class="ocho">
@@ -106,6 +110,7 @@
                      <ul class="nav nav-second-level collapse">
                         <li><a href="RAlcohol.html">Alcohol</a></li>
                         <li><a href="RBarriles.html">Barriles</a></li>
+                        <li><a href="RTanquesHoover.html">Tanques Hoover</a></li>
                      </ul>
                   </li>
                   <li class="uno-dos">
@@ -139,7 +144,7 @@
                   <div class="navbar-header">
                      <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
                   </div>
-                  <h2 class="nav navbar-top-links titulo welcome-message">Validar información</h2>
+                  <h2 class="nav navbar-top-links titulo welcome-message">Validar información en tanques hoover</h2>
                   <ul class="nav navbar-top-links navbar-right">
                      <li class="dropdown uno">
                         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -207,21 +212,7 @@
             <div class="col-md-12 d-flex justify-content-center table-responsive text-center " id="table-wrapper">
                <div class="table-responsive col-md-12 centro scrollingtable animated" id="scrollingtable">
                   <table class="table table-bordered table-hover text-nowrap display" id="barriles">
-                     <thead>
-                        <tr>
-                           <th>Consecutivo</th>
-                           <th>Capacidad</th>
-                           <th>Revisado</th>
-                           <th>Relleno</th>
-                           <th>Año</th>
-                           <th>NoTapa</th>
-                           <th>Uso</th>
-                           <th>Edad</th>
-                           <th>Recepción</th>
-                           <th>Alcohol</th>
-                           <th>Estado</th>
-                        </tr>
-                     </thead>
+                     <thead></thead>
                      <tbody></tbody>
                   </table>
                </div>
@@ -238,10 +229,10 @@
             </div>
          </div>
       </div>
-      <div id="agregarDialog" title="Agregar barril" class="animated">
+      <div id="agregarDialog" title="Agregar tanque" class="animated">
          <div>
             <div class="col-md-12 text-center  d-flex justify-content-center" >
-               <h5><label>  Ingresa el consecutivo del barril:   </label>
+               <h5><label>  Ingresa el número de serie del tanque:   </label>
                   <input type="text" class="form-control" required="true" name="concecutivoA" id="concecutivoA">
                </h5>
                <h5><button class="btn btn-primary button3" name="search" id="search" onclick="BuscarBarril();"><span class="glyphicon glyphicon-search"></span></button></h5>
@@ -253,8 +244,8 @@
                   </h5>
                </div>
                <div class="col-md-4 text-center  d-flex justify-content-center" >
-                  <h5><label>  Tapa:   </label>
-                     <input type="text" class="form-control" required="true" name="tapaA" id="tapaA" disabled>
+                  <h5><label>  Capacidad:   </label>
+                     <input type="text" class="form-control" required="true" name="litrosA" id="capacidadA" disabled>
                   </h5>
                </div>
                <div class="col-md-4 text-center  d-flex justify-content-center" >
@@ -264,53 +255,19 @@
                </div>
             </div>
             <div class="col-md-12 text-center  d-flex justify-content-center" >
-               <div class="col-md-4 text-center  d-flex justify-content-center" >
-                  <h5><label>  Revisado:   </label>
-                     <input type="text" class="form-control" required="true" name="revisadoA" id="revisadoA" disabled>
+               <div class="col-md-3 text-center d-flex  justify-content-center" >
+                  <h5><label>  Llenado:   </label>
+                     <input type="text" class="form-control" required="true" id="llenadoA" disabled>
                   </h5>
                </div>
-               <div class="col-md-4 text-center  d-flex justify-content-center" >
-                  <h5><label>  Relleno:   </label>
-                     <input type="text" class="form-control" required="true" name="rellenoA" id="rellenoA" disabled>
-                  </h5>
-               </div>
-               <div class="col-md-4 text-center  d-flex justify-content-center" >
-                  <h5><label>  Año barrica:   </label>
-                     <input type="text" class="form-control" required="true" name="aBarricaA" id="aBarricaA" disabled>
-                  </h5>
-               </div>
-            </div>
-            <div class="col-md-12 text-center  d-flex justify-content-center" >
-               <div class="col-md-4 text-center  d-flex justify-content-center" >
-                  <h5><label>  Ubicación:   </label>
-                     <input rows="4" type="text" class="form-control" required="true" name="ubicacionA" id="ubicacionA" disabled>
-                  </h5>
-               </div>
-               <div class="col-md-4 text-center  d-flex justify-content-center" >
+               <div class="col-md-3 text-center  d-flex justify-content-center" >
                   <h5><label>  Estado:   </label>
                      <input type="text" class="form-control" required="true" name="estadoA" id="estadoA" disabled>
                   </h5>
                </div>
-               <div class="col-md-4 text-center  d-flex justify-content-center" >
-                  <h5><label>  Uso:   </label>
-                     <input type="text" class="form-control" required="true" name="usoA" id="usoA" disabled>
-                  </h5>
-               </div>
-            </div>
-            <div class="col-md-12 text-center  d-flex justify-content-center" >
-               <div class="col-md-4 text-center  d-flex justify-content-center" >
-                  <h5><label>  Edad:   </label>
-                     <input type="text" class="form-control" required="true" name="edadA" id="edadA" disabled>
-                  </h5>
-               </div>
-               <div class="col-md-4 text-center  d-flex justify-content-center" >
-                  <h5><label>  Alcohol:   </label>
-                     <input type="text" class="form-control" required="true" name="alcoholA" id="alcoholA" disabled>
-                  </h5>
-               </div>
-               <div class="col-md-4 text-center  d-flex justify-content-center" >
-                  <h5><label>  Recepción:   </label>
-                     <input type="text" class="form-control" required="true" name="recepcionA" id="recepcionA" disabled>
+               <div class="col-md-6 text-center  justify-content-center" >
+                  <h5><label>  Ubicación:   </label>
+                     <input rows="4" type="text" class="form-control" required="true" name="ubicacionA" id="ubicacionA" disabled>
                   </h5>
                </div>
             </div>
@@ -329,7 +286,7 @@
             </div>
          </div>
       </div>
-      <div id="moverDialog" title="Mover barriles" class="animated">
+      <div id="moverDialog" title="Mover tanque" class="animated">
          <div>
             <div class="col-md-12 text-center  d-flex justify-content-center" >
                <h5><label>  Bodega:  </label>
@@ -369,7 +326,7 @@
                   <table class="table table-bordered table-hover display" id="moverBarriles">
                      <thead>
                         <tr>
-                           <th>Etiqueta(s) a mover</th>
+                           <th>Tanque a mover</th>
                         </tr>
                      </thead>
                      <tbody></tbody>
@@ -382,54 +339,16 @@
             </div>
          </div>
       </div>
-      <div id="editarDialog" title="Editar barril" class="animated">
+      <div id="editarDialog" title="Editar tanque" class="animated">
          <div class="col-md-12 text-center  d-flex justify-content-center" >
             <div class="col-md-4 text-center " >
-               <h5><label>  Etiqueta:   </label>
+               <h5><label>  NoSerie:   </label>
                   <input type="text" class="form-control" required="true" name="etiqueta" id="etiqueta" disabled>
                </h5>
             </div>
             <div class="col-md-4 text-center " >
-               <h5>
-                  <label>  Uso:   </label>
-                  <select class="form-control" required="true" name="uso" id="uso">
-                     <?php
-                        $uso = "select IdCodificacion,Codigo from CM_Codificacion";
-                        $stmtUso = sqlsrv_query( $conn , $uso);
-                        while( $row = sqlsrv_fetch_array( $stmtUso, SQLSRV_FETCH_NUMERIC))
-                        {
-                        ?>
-                     <option value="<?php echo $row[0]?>"><?php echo utf8_encode($row[1])?></option>
-                     <?php
-                        }
-                        sqlsrv_free_stmt( $stmtUso);
-                        ?>
-                  </select>
-               </h5>
-            </div>
-            <div class="col-md-4 text-center " >
-               <h5>
-                  <label>  Edad:   </label>
-                  <select class="form-control" required="true" name="edad" id="edad">
-                     <?php
-                        $edad = "select * from CM_Edad";
-                        $stmtEdad = sqlsrv_query( $conn , $edad);
-                        while( $row = sqlsrv_fetch_array( $stmtEdad, SQLSRV_FETCH_NUMERIC))
-                        {
-                        ?>
-                     <option value="<?php echo $row[0]?>"><?php echo utf8_encode($row[1])?></option>
-                     <?php
-                        }
-                        sqlsrv_free_stmt( $stmtEdad);
-                        ?>
-                  </select>
-               </h5>
-            </div>
-         </div>
-         <div class="col-md-12 text-center  d-flex justify-content-center" >
-            <div class="col-md-4 text-center " >
-               <h5><label>  Tapa:   </label>
-                  <input type="text" class="form-control" required="true" name="tapa" id="tapa">
+               <h5><label>  Capacidad:   </label>
+                  <input type="text" class="form-control" required="true" name="litros" id="capacidad" disabled>
                </h5>
             </div>
             <div class="col-md-4 text-center " >
@@ -437,71 +356,38 @@
                   <input type="text" class="form-control" required="true" name="litros" id="litros">
                </h5>
             </div>
-            <div class="col-md-4 text-center " >
-               <h5><label>  Revisado:   </label>
-                  <input type="date" class="form-control" required="true" name="revisado" id="revisado">
-               </h5>
-            </div>
          </div>
          <div class="col-md-12 text-center  d-flex justify-content-center" >
-            <div class="col-md-4 text-center " >
-               <h5><label>  Relleno:   </label>
-                  <input type="date" class="form-control" required="true" name="relleno" id="relleno">
-               </h5>
-            </div>
-            <div class="col-md-4 text-center " >
-               <h5><label>  Año barrica:   </label>
-                  <input type="year" class="form-control" required="true" name="Abarrica" id="Abarrica" disabled>
-               </h5>
-            </div>
-            <div class="col-md-4 text-center " >
-               <h5>
-                  <label>  Estado:   </label>
-                  <select class="form-control" required="true" name="estado" id="estado">
-                     <?php
-                        $estados = "select IdEstado, Descripcion from CM_Estado";
-                        $stmtEstados = sqlsrv_query( $conn , $estados);
-                        while( $row = sqlsrv_fetch_array( $stmtEstados, SQLSRV_FETCH_NUMERIC))
-                        {
-                        ?>
-                     <option value="<?php echo $row[0]?>"><?php echo utf8_encode($row[1])?></option>
-                     <?php
-                        }
-                        sqlsrv_free_stmt( $stmtEstados);
-                        ?>
-                  </select>
-               </h5>
-            </div>
-         </div>
-         <div class="col-md-12 text-center  d-flex justify-content-center" >
-            <div class="col-md-4 text-center" id="data_1">
-               <h5>
-                  <label>  Fecha de llenado:   </label>
-                  <div class="input-group date">
-                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="LAlcohol" id="LAlcohol" onchange="CambiarLote();" data-date-format='yy-mm-dd'>
-                  </div>
-               </h5>
-            </div>
-            <div class="col-md-4 text-center" >
-               <h5><label>  LLenado y Alcohol:   </label>
-                  <select class="form-control" required="true" name="alcohol" id="alcohol" onchange="PonerAAlcohol();">
-                  </select>
-               </h5>
-            </div>
-            <div class="col-md-4 text-center" >
-               <h5><label>  Año alcohol:   </label>
-                  <input type="text" class="form-control" required="true" name="Aalcohol" id="Aalcohol" disabled>
-               </h5>
-            </div>
-         </div>
-         <div class="col-md-12 text-center  d-flex justify-content-center" >
-            <div class="col-md-4 text-center">
-               <h5>
-                  <label>  Motivo:   </label>
-                  <select class="form-control" required="true" id="MotivoE" >
-                  </select>
-               </h5>
-            </div>
+           <div class="col-md-4 text-center " >
+              <h5><label>  Llenado:   </label>
+                 <input type="date" class="form-control" name="relleno" id="llenado">
+              </h5>
+           </div>
+           <div class="col-md-4 text-center " >
+              <h5>
+                 <label>  Estado:   </label>
+                 <select class="form-control" required="true" name="estado" id="estado">
+                    <?php
+                       $estados = "select IdEstado, Descripcion from CM_Estado";
+                       $stmtEstados = sqlsrv_query( $conn , $estados);
+                       while( $row = sqlsrv_fetch_array( $stmtEstados, SQLSRV_FETCH_NUMERIC))
+                       {
+                       ?>
+                    <option value="<?php echo $row[0]?>"><?php echo utf8_encode($row[1])?></option>
+                    <?php
+                       }
+                       sqlsrv_free_stmt( $stmtEstados);
+                       ?>
+                 </select>
+              </h5>
+           </div>
+           <div class="col-md-4 text-center">
+              <h5>
+                 <label>  Motivo:   </label>
+                 <select class="form-control" required="true" id="MotivoE" >
+                 </select>
+              </h5>
+           </div>
          </div>
          <div class="col-md-12 text-center" >
             <button class="button2 btn btn-primary cerrar b-r-xl" onclick="" id="cerrar">Cancelar</button>
@@ -530,6 +416,6 @@
       <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
       <!-- Page-Level Scripts -->
       <script src="js/funciones_generales.js"></script>
-      <script src="js/funciones_validar_informacion.js"></script>
+      <script src="js/funciones_VI_hoover.js"></script>
    </body>
 </html>

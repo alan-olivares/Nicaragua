@@ -1,6 +1,4 @@
 <?php
-//$usuario=ISSET($_POST['usuario'])?$_POST['usuario']:"null";
-//$pass=ISSET($_POST['pass'])?$_POST['pass']:"null";
 include '../general_connection.php';
 $tsql = "exec sp_getAcceso '$usuario' , '$pass'";
 $stmt = sqlsrv_query( $conn , $tsql);
@@ -8,51 +6,75 @@ $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC);
 if($row[0]=='1'){//Si es un usuario registrado
   include '../revisar_permisos.php';
   if(strpos($permisos,',9,') !== false){
-    $consecutivos = explode(",", $_POST["consecutivos"]);
+    $caso=$_POST["caso"];
+    $ids = explode(",", $_POST["ids"]);
     $motivo=$_POST["motivo"];
-    $litros=$_POST["litros"];
-    $repetidos="";
-    foreach ($consecutivos as $consecutivo) {
-      //Verificar que el barril no tenga otras solicitudes pendientes
-      $queryCons="select COUNT(*) from ADM_Ajustes where IdBarrica=(select IdBarrica from WM_Barrica where Consecutivo='$consecutivo') AND Estado=1";
-      $resultCons = sqlsrv_query( $conn , $queryCons);
-      $row = sqlsrv_fetch_array( $resultCons, SQLSRV_FETCH_NUMERIC);
-      if($row[0]==0){
-        $query="INSERT into ADM_Ajustes (Evento,IdBarrica,FechaSolicitud,Solicitante,Estado,Codigo,IdRazon)
-                                values ('Ajuste litros',(select IdBarrica from WM_Barrica where Consecutivo='$consecutivo'),(SELECT GETDATE()),
-                                        (select IdUsuario from CM_Usuario where Clave = '$usuario'),1,'',$motivo); SELECT SCOPE_IDENTITY()";
-        $result = sqlsrv_query( $conn , $query);
-        sqlsrv_next_result($result);
-        sqlsrv_fetch($result);
-        $IdAjuste= (int)sqlsrv_get_field($result, 0);
-        $queryCons="SELECT IdPallet,IdLoteBarrica,IdCodificacion,IdEstado,Capacidad,CONVERT(varchar(10), FechaRevisado, 120) as FechaRevisado,
-        CONVERT(varchar(10), FechaRelleno, 120) as FechaRelleno, NoTapa from WM_Barrica where Consecutivo='$consecutivo'";
-        $resultCons = sqlsrv_query( $conn , $queryCons);
-        $rowDatosP = sqlsrv_fetch_array( $resultCons, SQLSRV_FETCH_NUMERIC);
+    $litros=($_POST["litros"]>0?'+'.$_POST["litros"]:$_POST["litros"]);
+    if($caso==='barriles'){
+      $repetidos="";
+      foreach ($ids as $consecutivo) {
+        //Verificar que el barril no tenga otras solicitudes pendientes
+        $queryCons="SELECT COUNT(*) from ADM_Ajustes where IdBarrica=(select IdBarrica from WM_Barrica where Consecutivo='$consecutivo') AND Estado=1";
+        if(getDato($conn , $queryCons)==0){
+          $query="INSERT into ADM_Ajustes (Evento,IdBarrica,FechaSolicitud,Solicitante,Estado,Codigo,IdRazon) values
+          ('Ajuste litros',(select IdBarrica from WM_Barrica where Consecutivo='$consecutivo'),(SELECT GETDATE()),(select IdUsuario from CM_Usuario where Clave = '$usuario'),1,'',$motivo); SELECT SCOPE_IDENTITY()";
+          $result = sqlsrv_query( $conn , $query);
+          sqlsrv_next_result($result);
+          sqlsrv_fetch($result);
+          $IdAjuste= (int)sqlsrv_get_field($result, 0);
 
-        $queryADM_logBAjuste1="INSERT into ADM_logBAjuste (IdAjuste,Op,IdPallet,IdLoteBarica,IdCodificacion,Consecutivo,IdEstado,Capacidad,
-        FechaRevisado,FechaRelleno,NoTapa) values ($IdAjuste, 1,$rowDatosP[0],$rowDatosP[1],$rowDatosP[2],$consecutivo,$rowDatosP[3],$rowDatosP[4],
-        CONVERT(DAte,'$rowDatosP[5]'), CONVERT(DAte,'$rowDatosP[6]'),$rowDatosP[7]);";
-        $resultADM_logBAjuste1 = sqlsrv_query( $conn , $queryADM_logBAjuste1);
-        $nuevaCapacidad=$rowDatosP[4]+$litros;
-        $queryADM_logBAjuste2="INSERT into ADM_logBAjuste (IdAjuste,Op,IdPallet,IdLoteBarica,IdCodificacion,Consecutivo,IdEstado,Capacidad,
-        FechaRevisado,FechaRelleno,NoTapa) values ($IdAjuste, 2,$rowDatosP[0],$rowDatosP[1],$rowDatosP[2],$consecutivo,$rowDatosP[3],$nuevaCapacidad,
-        CONVERT(DAte,'$rowDatosP[5]'), CONVERT(DAte,'$rowDatosP[6]'),$rowDatosP[7]);";
-        $resultADM_logBAjuste2 = sqlsrv_query( $conn , $queryADM_logBAjuste2);
-        if($resultADM_logBAjuste1 && $resultADM_logBAjuste2){//Si se guardo los 2 registros en ADM_logBAjuste
-          echo '';
-        }else{//Si hubo un error se borra cualquier registro
-          $query="DELETE from ADM_logBAjuste where IdAjuste='$IdAjuste'";
-          sqlsrv_query( $conn , $query);
-          $query="DELETE from ADM_Ajustes where IdAjuste='$IdAjuste'";
-          sqlsrv_query( $conn , $query);
+          $queryADM_logBAjuste1="INSERT into ADM_logBAjuste (IdAjuste,Op,IdPallet,IdLoteBarica,IdCodificacion,Consecutivo,IdEstado,Capacidad,
+          FechaRevisado,FechaRelleno,NoTapa) (select $IdAjuste, 1,IdPallet,IdLoteBarrica,IdCodificacion,$consecutivo,IdEstado,Capacidad,
+          FechaRevisado, FechaRelleno,NoTapa from WM_Barrica where Consecutivo='$consecutivo');";
+          $resultADM_logBAjuste1 = sqlsrv_query( $conn , $queryADM_logBAjuste1);
+          $queryADM_logBAjuste2="INSERT into ADM_logBAjuste (IdAjuste,Op,IdPallet,IdLoteBarica,IdCodificacion,Consecutivo,IdEstado,Capacidad,
+          FechaRevisado,FechaRelleno,NoTapa) (select $IdAjuste, 2,IdPallet,IdLoteBarrica,IdCodificacion,$consecutivo,IdEstado,Capacidad+$litros,
+          FechaRevisado, FechaRelleno,NoTapa from WM_Barrica where Consecutivo='$consecutivo');";
+          $resultADM_logBAjuste2 = sqlsrv_query( $conn , $queryADM_logBAjuste2);
+          if($resultADM_logBAjuste1 && $resultADM_logBAjuste2){//Si se guardo los 2 registros en ADM_logBAjuste
+            echo '';
+          }else{//Si hubo un error se borra cualquier registro
+            $query="DELETE from ADM_logBAjuste where IdAjuste='$IdAjuste'";
+            sqlsrv_query( $conn , $query);
+            $query="DELETE from ADM_Ajustes where IdAjuste='$IdAjuste'";
+            sqlsrv_query( $conn , $query);
+          }
+        }else{
           $repetidos=$repetidos.$consecutivo.",";
         }
-      }else{
-        $repetidos=$repetidos.$consecutivo.",";
       }
+      echo $repetidos;
+    }else if($caso==='tanques hoover'){
+      $repetidos="";
+      foreach ($ids as $NoSerie) {
+        //Verificar que el barril no tenga otras solicitudes pendientes
+        $queryCons="SELECT COUNT(*) from ADM_AjustesTanques where NoSerie='$NoSerie' AND Estado=1";
+        if(getDato($conn , $queryCons)==0){
+          $query="INSERT into ADM_AjustesTanques (Evento,NoSerie,FechaSolicitud,Solicitante,Estado,IdRazon)
+          values ('Ajuste litros',$NoSerie,(SELECT GETDATE()),(select IdUsuario from CM_Usuario where Clave = '$usuario'),1,$motivo); SELECT SCOPE_IDENTITY()";
+          $result = sqlsrv_query( $conn , $query);
+          sqlsrv_next_result($result);
+          sqlsrv_fetch($result);
+          $IdAjuste= (int)sqlsrv_get_field($result, 0);
+          $queryADM_logBAjuste1="INSERT into ADM_logTAjuste(IdAjuste,Op,NoSerie,IdPallet,Litros,FechaLLenado,IdEstado) (SELECT $IdAjuste,1,$NoSerie,IdPallet,Litros,FechaLLenado,IdEstado from WM_Tanques where NoSerie='$NoSerie');";
+          $resultADM_logBAjuste1 = sqlsrv_query( $conn , $queryADM_logBAjuste1);
+          $queryADM_logBAjuste2="INSERT into ADM_logTAjuste(IdAjuste,Op,NoSerie,IdPallet,Litros,FechaLLenado,IdEstado) (SELECT $IdAjuste,2,$NoSerie,IdPallet,Litros $litros,FechaLLenado,IdEstado from WM_Tanques where NoSerie='$NoSerie');";
+          $resultADM_logBAjuste2 = sqlsrv_query( $conn , $queryADM_logBAjuste2);
+          if($resultADM_logBAjuste1 && $resultADM_logBAjuste2){//Si se guardo los 2 registros en ADM_logTAjuste
+            echo '';
+          }else{//Si hubo un error se borra cualquier registro
+            $query="DELETE from ADM_logTAjuste where IdAjuste='$IdAjuste'";
+            sqlsrv_query( $conn , $query);
+            $query="DELETE from ADM_AjustesTanques where IdAjuste='$IdAjuste'";
+            sqlsrv_query( $conn , $query);
+          }
+        }else{
+          $repetidos=$repetidos.$NoSerie.",";
+        }
+      }
+      echo $repetidos;
     }
-    echo $repetidos;
+
   }else{
     echo '..Error.. No tienes permiso para solicitar cambios';
   }
@@ -61,5 +83,9 @@ if($row[0]=='1'){//Si es un usuario registrado
   echo '..Error.. Acceso no autorizado';
 }
 sqlsrv_close($conn); //Close the connnectiokn first
-
+function getDato($conn , $queryCons){
+  $resultCons = sqlsrv_query( $conn , $queryCons);
+  $row = sqlsrv_fetch_array( $resultCons, SQLSRV_FETCH_NUMERIC);
+  return (int)$row[0];
+}
 ?>

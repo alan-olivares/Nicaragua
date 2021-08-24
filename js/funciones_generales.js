@@ -10,7 +10,7 @@ async function ObtenerNotificaciones(){
   document.getElementById("letrero4").innerHTML="Tienes "+numero+" solicitudes pendientes";
 }
 function FormatDate(fecha){
-  if(fecha!=null){
+  if(fecha!=""){
     var res = fecha.split("-");
     return res[0]+"-"+res[1]+"-"+res[2];
   }else{
@@ -275,12 +275,13 @@ function crearTablaJson(json,tabla){
 
   return content;
 }
-function GenerarEtiqueta(consecutivo){
+
+function GenerarEtiqueta(consecutivo,tipo){
   var n = String(consecutivo).length;
   for (var i = n; i < 6; i++) {
     consecutivo="0"+consecutivo;
   }
-  return "0101"+consecutivo;
+  return "01"+tipo+consecutivo;
 }
 function EtiquetaAConsecutivo(etiqueta){
   etiqueta=etiqueta.substring(4,10);

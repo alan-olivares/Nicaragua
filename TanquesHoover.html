@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Tanques Hoover</title>
+      <link href="css/bootstrap.min.css" rel="stylesheet">
+      <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+      <link rel="icon" href="img\TBRE.ico">
+      <link href="css/plugins/dataTables/datatables.min.css" rel="stylesheet">
+      <link href="css/animate.css" rel="stylesheet">
+      <link href="css/style.css" rel="stylesheet">
+   </head>
+   <body class="gray-bg">
+      <script src="js/revisar_sesion.js"></script>
+      <div class="row wrapper border-bottom white-bg page-heading" >
+         <div class="table-responsive col-md-12">
+            <table class="table table-striped table-bordered table-hover" id="tabla2">
+               <thead>
+               </thead>
+               <tbody>
+               </tbody>
+            </table>
+         </div>
+      </div>
+      <script src="js/jquery-3.1.1.min.js"></script>
+      <script src="js/popper.min.js"></script>
+      <script src="js/bootstrap.js"></script>
+      <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+      <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+      <script src="js/plugins/dataTables/datatables.min.js"></script>
+      <script src="js/plugins/dataTables/dataTables.bootstrap4.min.js"></script>
+      <!-- Custom and plugin javascript -->
+      <script src="js/inspinia.js"></script>
+      <script src="js/plugins/pace/pace.min.js"></script>
+      <script src="js/funciones_generales.js"></script>
+      <script>
+        const getApi="get_RTanquesHoover.php";
+
+        async function ObtenerDatos(){
+          try {
+            var url='RestApi/GET/'+getApi+'?tanques=true';
+            var result = await conexion("GET",url,"");
+            var parsed =JSON.parse(result);
+            crearTablaJson(parsed,'#tabla2');
+            $('#tabla2').DataTable({
+                responsive: true,
+                "bPaginate": false,
+                "paging":   false,
+                "ordering": true,
+                "info":     false,
+                dom: '<"html5buttons"B>lTfgitp',
+                language: {
+                  searchPlaceholder: "Busca algún dato aquí",
+                  search: "",
+                },
+                buttons: [
+                    { extend: 'copy',text:'Copiar'},
+                    {extend: 'print',text:'Imprimir',
+                     customize: function (win){
+                            $(win.document.body).addClass('white-bg');
+                            $(win.document.body).css('font-size', '10px');
+
+                            $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size', 'inherit');
+                    }
+                    }
+                ]
+
+            });
+          } catch (e) {
+            mensajeError(e);
+          } finally {
+
+          }
+
+        }
+
+        $(document).ready(function(){
+          permisos(["8"]);
+          ObtenerDatos();
+        });
+
+      </script>
+   </body>
+</html>

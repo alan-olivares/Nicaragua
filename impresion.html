@@ -69,12 +69,15 @@
                         <li><a href="RGerencia.html">Reporte de Gerencia</a></li>
                      </ul>
                   </li>
-                  <li class="dos-cinco active">
-                     <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">TBRE</span><span class="fa arrow"></span></a>
+                  <li class="dos">
+                     <a href="#"><i class="fa fa-desktop"></i> <span class="nav-label">Validar información</span><span class="fa arrow"></span></a>
                      <ul class="nav nav-second-level">
-                        <li class="dos"><a href="validar_informacion.php">Validar información</a></li>
-                        <li class="cinco active"><a href="impresion.html">Impresión de etiquetas</a></li>
+                        <li><a href="VI_barriles.php">Barriles</a></li>
+                        <li><a href="VI_hoover.php">Tanques Hoover</a></li>
                      </ul>
+                  </li>
+                  <li class="cinco active">
+                     <a href="impresion.html"><i class="fa fa-print"></i> <span class="nav-label">Impresión de etiquetas</span></a>
                   </li>
                   <li class="seis">
                      <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Órdenes de trabajo</span><span class="fa arrow"></span></a>
@@ -105,6 +108,7 @@
                                 <li><a href="RTrasiegoRemision.html">Remisión blending</a></li>
                            </ul>
                        </li>
+                       <li><a href="OTrasiegoHoover.html">Trasiego Hoover</a></li>
                      </ul>
                   </li>
                   <li class="ocho">
@@ -112,6 +116,7 @@
                      <ul class="nav nav-second-level collapse">
                         <li><a href="RAlcohol.html">Alcohol</a></li>
                         <li><a href="RBarriles.html">Barriles</a></li>
+                        <li><a href="RTanquesHoover.html">Tanques Hoover</a></li>
                      </ul>
                   </li>
                   <li class="uno-dos">
@@ -175,17 +180,25 @@
                </div>
                <div class="panel-body">
                   <div class="col-md-12 text-center  d-flex justify-content-center" >
-                     <div class="col-md-4 text-center" >
+                    <div class="col-md-3 text-center" >
+                       <h5><label>  Tipo:   </label>
+                          <select class="form-control" id="tipo" onchange="cambioTipo(this);">
+                            <option value="01">Barril</option>
+                            <option value="02">Tanque Hoover</option>
+                          </select>
+                       </h5>
+                    </div>
+                     <div class="col-md-3 text-center" >
                         <h5><label>  N° de copias:   </label>
                            <input type="number" class="form-control" required="true" name="copias" id="copias">
                         </h5>
                      </div>
-                     <div class="col-md-4 text-center" >
+                     <div class="col-md-3 text-center" >
                         <h5><label>  Folio Inicial:   </label>
                            <input type="number" class="form-control" onchange="autoComplete(this);" required="true" name="Inicial" id="Inicial">
                         </h5>
                      </div>
-                     <div class="col-md-4 text-center" >
+                     <div class="col-md-3 text-center" >
                         <h5><label>  Folio Final:   </label>
                            <input type="number" class="form-control" required="true" name="Final" id="Final">
                         </h5>
@@ -210,7 +223,6 @@
       <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
       <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
       <script src="js/bootstrap-waitingfor.js"></script>
-      <script src="js/json2html.min.js"></script>
       <script src="js/popper.min.js"></script>
       <script src="js/bootstrap.js"></script>
       <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
@@ -225,11 +237,25 @@
 
          function autoComplete(self){
            document.getElementById('Final').value=self.value;
+           if(self.value<0 || self.value>999999){
+             mensajeError('El folio es incorrecto')
+             document.getElementById('Final').value=0;
+             document.getElementById('Inicial').value=0;
+           }
+         }
+
+         function cambioTipo(campo){
+           if(campo.value==='02'){
+             $( "#Final" ).prop( "disabled", true );
+           }else{
+             $( "#Final" ).prop( "disabled", false );
+           }
          }
 
          async function Generar(enca,cuer,opc){
            var encabezado= await ObtenerDatos(enca);
            var enviar=encabezado+'\n';
+           var tipo=$('#tipo').val();
            var cuerpo= await ObtenerDatos(cuer);
            var inicio=document.getElementById('Inicial').value;
            var fin=document.getElementById('Final').value;
@@ -241,14 +267,14 @@
            var fecha=new Date();
            if(opc){
              for (var i = inicio; i <= fin; i++) {
-               enviar+=cuerpo.replace('DT2', dateFormato(fecha,'/')).replace('DT1',GenerarEtiqueta(i)).replace('PQ1','PQ'+copias)+'\n\n';
+               enviar+=cuerpo.replace('DT2', dateFormato(fecha,'/')).replace('DT1',GenerarEtiqueta(i,tipo)).replace('PQ1','PQ'+copias)+'\n\n';
              }
            }else{
              var aux=cuerpo;
              var cont=0;
              for (var i = inicio; i <= fin; i++) {
                cont++;
-               aux=aux.replace(('DT'+cont),GenerarEtiqueta(i));
+               aux=aux.replace(('DT'+cont),GenerarEtiqueta(i,tipo));
                if(cont%8==0 || i==fin){
                  enviar+=aux.replace('PQ1','PQ'+copias)+'\n';
                  aux=cuerpo;
@@ -328,11 +354,12 @@
          }
 
          async function Registro(){
+           var tipo=$('#tipo').val();
            var inicio=document.getElementById('Inicial').value;
            var fin=document.getElementById('Final').value;
            try {
              for (var i = inicio; i <= fin; i++) {
-               var params='etiqueta='+GenerarEtiqueta(i);
+               var params='etiqueta='+GenerarEtiqueta(i,tipo);
                var result=await conexion("POST", 'RestApi/POST/'+postApi,params);
              }
            } catch (e) {
@@ -384,11 +411,11 @@
          var readCallback = function(readData) {
          	if(readData === undefined || readData === null || readData === "")
          	{
-         		mensajeError("No Response from Device");
+         		mensajeError("La impresora no está disponible");
          	}
          	else
          	{
-         		alert(readData);
+         		mensajeSimple(readData);
          	}
 
          }
