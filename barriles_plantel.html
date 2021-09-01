@@ -4,6 +4,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Reportes</title>
+      <link href="css/jquery.dataTables.min.css" rel="stylesheet">
       <link href="css/bootstrap.min.css" rel="stylesheet">
       <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
       <link rel="icon" href="img\TBRE.ico">
@@ -394,45 +395,7 @@
             searchPlaceholder: "Busca algún dato aquí",
             search: "",
           },
-          buttons: [
-              { extend: 'copy',text:'Copiar'},
-              {extend: 'csv',text:'CSV',title: 'Detalle Inventario',footer:true,customize: function (csv) {
-                var buffer = new ArrayBuffer(3);
-                var dataView = new DataView(buffer);
-                dataView.setUint8(0, 0xef);
-                dataView.setUint8(1, 0xbb);
-                dataView.setUint8(2, 0xbf);
-                var read = new Uint8Array(buffer);
-                var blob = new Blob([read, csv], {type: 'text/csv;charset=utf-8'});
-                return blob;
-              }},
-              {extend: 'excel',text:'Excel', title: 'Detalle Inventario',footer:true, customize: function( xlsx ) {
-
-                var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                //list of columns that should get a 1000 separator depending on local Excel installation
-                $('row c[r^="A"]', sheet).attr( 's', '' );
-                $('row c[r^="D"]', sheet).attr( 's', '' );
-              }},
-              {extend: 'pdf',text:'PDF', title: function(){ return "Detalle Inventario";},
-              footer:true,customize:function(doc){
-                doc.styles.tableHeader.fillColor='#1ab394';
-                doc.styles.title.alignment='left';
-                doc.styles.tableFooter.fillColor='#1ab394';
-                doc.styles.tableBodyEven ={alignment: 'center'};
-                doc.styles.tableBodyOdd ={alignment: 'center'};
-              }},
-
-              {extend: 'print',text:'Imprimir',
-               customize: function (win){
-                      $(win.document.body).addClass('white-bg');
-                      $(win.document.body).css('font-size', '10px');
-
-                      $(win.document.body).find('table')
-                              .addClass('compact')
-                              .css('font-size', 'inherit');
-              }
-              }
-          ]
+          buttons: [{ extend: 'copy',text:'Copiar'}]
         } );
           }
 

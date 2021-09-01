@@ -522,6 +522,7 @@
            $('#alto').val(s.height);
            $('#nombre').val(s.Nombre);
            seleccionado=index;
+           revisarTema();
          }
 
          function desactivar(){
@@ -537,6 +538,7 @@
            for(var i=0;i<objetos.length;i++){
              objetos[i].fill="#CBCBCB";
            }
+           revisarTema();
          }
          function cambioAncho(campo){
            if(seleccionado!=-1){

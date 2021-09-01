@@ -32,6 +32,10 @@
 .subrrayado{
   border-bottom:1px solid #333
 }
+.dark-mode {
+  background-color: black;
+  color: white;
+}
 .margen{
   border-style:
   inset;border-width:1px;
@@ -195,7 +199,7 @@
   position:relative;
 }
 #scrollingtable {
-  height:400px;
+  height:430px;
   overflow:auto;
   margin-top:10px;
   margin-bottom: 20px;
@@ -205,7 +209,9 @@
   height:86px;
   overflow:auto;
 }
-
+.seleccionado{
+   background-color: #b0bed9 !important;
+}
 .titulo{
   margin-left:120px;
 }
@@ -216,7 +222,6 @@
 }
 #table-wrapper table {
   width:100%;
-
 }
 #table-wrapper table thead th {
   position:sticky;
@@ -1118,6 +1123,7 @@ h5 {
 .navbar {
   border: 0;
 }
+
 .navbar-default {
   background-color: transparent;
   border-color: #2f4050;
@@ -1297,6 +1303,17 @@ ul.nav-second-level {
   width: 100%;
   align-items: inherit;
 }
+.navbar-static-top-dark {
+  background-color: #272727;
+  color:#8b8a8a;
+  padding: 0;
+  width: 100%;
+  align-items: inherit;
+}
+.navbar-static-top-dark .dropdown-menu {
+  right: 0;
+  left: auto;
+}
 .navbar-static-top .dropdown-menu {
   right: 0;
   left: auto;
@@ -1440,6 +1457,7 @@ body.mini-navbar .navbar-default .nav > li > .nav-second-level li a {
 .navbar-static-top {
   background: #f3f3f4;
 }
+
 .fixed-nav #wrapper {
   margin-top: 0;
 }
@@ -4988,6 +5006,28 @@ body.body-small .footer.fixed {
 .table > thead:first-child > tr:first-child > th {
   border-top: 0;
 }
+.table-bordered-dark {
+  border: 1px solid #EBEBEB;
+}
+.table-bordered-dark > thead > tr > th,
+.table-bordered-dark > thead > tr > td {
+  background-color: #353535;
+  border-bottom-width: 1px;
+}
+.table-bordered-dark > tbody > tr > th,
+.table-bordered-dark > tbody > tr > td {
+  background: #181818;
+  color:#9c9b9b;
+}
+.table-bordered-dark > thead > tr > th,
+.table-bordered-dark > tbody > tr > th,
+.table-bordered-dark > tfoot > tr > th,
+.table-bordered-dark > thead > tr > td,
+.table-bordered-dark > tbody > tr > td,
+.table-bordered-dark > tfoot > tr > td {
+  border: 1px solid #e7e7e7;
+}
+
 .table-bordered {
   border: 1px solid #EBEBEB;
 }
@@ -5004,6 +5044,7 @@ body.body-small .footer.fixed {
 .table-bordered > tfoot > tr > td {
   border: 1px solid #e7e7e7;
 }
+
 .table > thead > tr > th {
   border-bottom: 1px solid #DDDDDD;
   vertical-align: bottom;
@@ -5309,6 +5350,11 @@ table.table-mail tr td {
 .gray-bg,
 .bg-muted {
   background-color: #f3f3f4;
+}
+
+.gray-bg-dark,
+.bg-muted-dark {
+  background-color: #333333;
 }
 .white-bg {
   background-color: #ffffff;
@@ -8922,6 +8968,10 @@ body.rtls .footer.fixed {
   margin-left: 0;
 }
 body.rtls .navbar-static-top .dropdown-menu {
+  left: 0;
+  right: auto;
+}
+body.rtls .navbar-static-top-dark .dropdown-menu {
   left: 0;
   right: auto;
 }

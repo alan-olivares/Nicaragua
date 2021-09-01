@@ -1,13 +1,11 @@
 <?php
-//$usuario=ISSET($_GET['usuario'])?$_GET['usuario']:"null";
-//$pass=ISSET($_GET['pass'])?$_GET['pass']:"null";
 include '../general_connection.php';
 $tsql = "exec sp_getAcceso '$usuario' , '$pass'";
 $stmt = sqlsrv_query( $conn , $tsql);
 $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC);
 if($row[0]=='1'){
   if(ISSET($_GET['perfil'])){
-    $user = "select u.Nombre, u.Clave, g.Nombre as IdGrupo, p.Descripcion,cast(DECRYPTBYPASSPHRASE ('Pims.2011',Pass) as varchar(200)) as Password
+    $user = "select u.Nombre, u.Clave, g.Nombre as IdGrupo, p.Descripcion,cast(DECRYPTBYPASSPHRASE ('Pims.2011',Pass) as varchar(200)) as Password,u.Tema 
               from CM_Usuario u
               left join CM_Perfil p on u.IdPerfil=p.IdPerfil
               left join CM_Grupo g on u.IdGrupo=g.IdGrupo

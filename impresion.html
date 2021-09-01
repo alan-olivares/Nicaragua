@@ -182,7 +182,7 @@
                   <div class="col-md-12 text-center  d-flex justify-content-center" >
                     <div class="col-md-3 text-center" >
                        <h5><label>  Tipo:   </label>
-                          <select class="form-control" id="tipo" onchange="cambioTipo(this);">
+                          <select class="form-control b-r-xl" id="tipo" onchange="cambioTipo(this);">
                             <option value="01">Barril</option>
                             <option value="02">Tanque Hoover</option>
                           </select>
@@ -190,17 +190,17 @@
                     </div>
                      <div class="col-md-3 text-center" >
                         <h5><label>  N° de copias:   </label>
-                           <input type="number" class="form-control" required="true" name="copias" id="copias">
+                           <input type="number" class="form-control b-r-xl" required="true" name="copias" id="copias">
                         </h5>
                      </div>
                      <div class="col-md-3 text-center" >
                         <h5><label>  Folio Inicial:   </label>
-                           <input type="number" class="form-control" onchange="autoComplete(this);" required="true" name="Inicial" id="Inicial">
+                           <input type="number" class="form-control b-r-xl" onchange="autoComplete(this);" required="true" name="Inicial" id="Inicial">
                         </h5>
                      </div>
                      <div class="col-md-3 text-center" >
                         <h5><label>  Folio Final:   </label>
-                           <input type="number" class="form-control" required="true" name="Final" id="Final">
+                           <input type="number" class="form-control b-r-xl" required="true" name="Final" id="Final">
                         </h5>
                      </div>
                   </div>
@@ -250,6 +250,7 @@
            }else{
              $( "#Final" ).prop( "disabled", false );
            }
+           revisarTema();
          }
 
          async function Generar(enca,cuer,opc){

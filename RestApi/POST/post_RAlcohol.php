@@ -1,6 +1,4 @@
 <?php
-//$usuario=ISSET($_POST['usuario'])?$_POST['usuario']:"null";
-//$pass=ISSET($_POST['pass'])?$_POST['pass']:"null";
 include '../general_connection.php';
 $tsql = "exec sp_getAcceso '$usuario' , '$pass'";
 $stmt = sqlsrv_query( $conn , $tsql);

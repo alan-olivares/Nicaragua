@@ -4,8 +4,13 @@ $hora1=$_GET["hora1"];
 $hora2=$_GET["hora2"];
 $evento=$_GET["evento"];
 $tipo=$_GET["tipo"];
-
-include'general_connection.php';
+include 'general_connection.php';
+$tsql = "exec sp_getAcceso '$usuario' , '$pass'";
+$stmt = sqlsrv_query( $conn , $tsql);
+$row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC);
+if($row[0]=='1'){
+  include 'RestApi/revisar_permisos.php';
+  if(strpos($permisos,',11,') !== false){
 ?>
 <!DOCTYPE html>
 <html>
@@ -291,3 +296,11 @@ include'general_connection.php';
 </body>
 
 </html>
+<?php
+}else{
+echo 'No tienes permisos para acceder a esta area';
+}
+}else{
+echo 'La autenticación del usuario no se ha podido procesar';
+}
+?>

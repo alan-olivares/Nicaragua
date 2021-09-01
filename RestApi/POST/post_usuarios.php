@@ -1,6 +1,4 @@
 <?php
-//$usuario=ISSET($_POST['usuario'])?$_POST['usuario']:"null";
-//$pass=ISSET($_POST['pass'])?$_POST['pass']:"null";
 include '../general_connection.php';
 $tsql = "exec sp_getAcceso '$usuario' , '$pass'";
 $stmt = sqlsrv_query( $conn , $tsql);
@@ -80,9 +78,9 @@ if($row[0]=='1'){
       $acceso=$_POST["acceso"];
       $query="if not exists (select * from CM_Usuario where Clave='$user') ";
       if($perfil!==""){
-        $query=$query."INSERT into CM_Usuario (IdFacultad, IdGrupo,Nombre, Estatus,Clave,Pass,IdPerfil) values ($acceso,'$grupo','$nombre',$activo,'$user',ENCRYPTBYPASSPHRASE('Pims.2011','$passn'),'$perfil')";
+        $query=$query."INSERT into CM_Usuario (IdFacultad, IdGrupo,Nombre, Estatus,Clave,Pass,IdPerfil,Tema) values ($acceso,'$grupo','$nombre',$activo,'$user',ENCRYPTBYPASSPHRASE('Pims.2011','$passn'),'$perfil',1)";
       }else{
-        $query=$query."INSERT into CM_Usuario (IdFacultad,IdGrupo,Nombre, Estatus,Clave,Pass) values ($acceso,'$grupo','$nombre',$activo,'$user',ENCRYPTBYPASSPHRASE('Pims.2011','$passn'))";
+        $query=$query."INSERT into CM_Usuario (IdFacultad,IdGrupo,Nombre, Estatus,Clave,Pass,Tema) values ($acceso,'$grupo','$nombre',$activo,'$user',ENCRYPTBYPASSPHRASE('Pims.2011','$passn'),1)";
       }
       $resultCons = sqlsrv_query( $conn , $query);
       if($resultCons){
@@ -90,7 +88,7 @@ if($row[0]=='1'){
       }else{
         echo '..Error.. hubo un problema al intentar hacer la solucitud, por favor intenta más tarde';
       }
-    }else if(ISSET($_POST['userEdit'])){//Agregar nuevo usuario
+    }else if(ISSET($_POST['userEdit'])){//Editar usuario
       $passn=$_POST["passn"];
       $userEdit=$_POST["userEdit"];
       $perfil=$_POST["perfil"];
@@ -123,7 +121,7 @@ if($row[0]=='1'){
 }else{
   echo '..Error.. Acceso no autorizado';
 }
-sqlsrv_close($conn); //Close the connnectiokn first
+sqlsrv_close($conn);
 
 function ObtenerCantidad($queryCons,$conn){
   $resultCons = sqlsrv_query( $conn , $queryCons);

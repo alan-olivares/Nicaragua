@@ -55,6 +55,7 @@ async function GuardarMover(){
         var result=await conexion("POST", url,params);
         check=result;
       }
+      ObtenerNotificaciones();
       await mensajeSimple(check);
       dialogMover.dialog( "close" );
     }catch(error){
@@ -81,7 +82,7 @@ async function GuardarEditar(){
           await mensajeSimple(result);
           dialogEditar.dialog( "close" );
         }, 500);
-
+        ObtenerNotificaciones();
       }catch(error){
         setTimeout(async function() {
           mensajeError(error);
@@ -99,9 +100,10 @@ async function GuardarEditar(){
           await mensajeSimple(result);
           dialogEditar.dialog( "close" );
         }, 500);
+        ObtenerNotificaciones();
       }catch(error){
         setTimeout(async function() {
-          mensajeError(error);
+          mensajeError('Error, no se encontraron registros de éste tanque');
         }, 500);
       }
     }
@@ -122,6 +124,7 @@ async function GuardarEditar(){
         result=await conexion("POST", 'RestApi/POST/'+postApi,params);
         await mensajeSimple(result);
         dialogEditar.dialog( "close" );
+        ObtenerNotificaciones();
       }else{
         mensajeError("Cambia algún dato antes de guardar");
       }
@@ -141,6 +144,7 @@ async function GuardarAgregar(){
         var result=await conexion("POST", url,params);
         await mensajeSimple(result);
         dialogAgregar.dialog( "close" );
+        ObtenerNotificaciones();
       }catch(error){
         mensajeError(error);
       }
@@ -191,11 +195,19 @@ function Agregar(){
   dialogAgregar.dialog( "open" );
   BorrarCamposAgregarDialog();
 }
+function RevisarVacioActivo(valor){
+  var check=(valor==='Vacío (Plantel)');
+  $( "#litros" ).prop( "disabled", check );
+  $( "#llenado" ).prop( "disabled", check );
+  revisarTema();
+}
+
 //Inicializa y abre dialogo de editar
  async function Editar(){
   var elements = document.getElementsByClassName("selected");
   if(elements.length==1){
     var eee=elements[0].querySelectorAll('td');
+    RevisarVacioActivo(eee[4].innerHTML);
     document.getElementById("etiqueta").value =GenerarEtiqueta(eee[0].innerHTML,'02');
     document.getElementById("litros").value=eee[2].innerHTML;
     document.getElementById("capacidad").value=eee[1].innerHTML;
@@ -339,10 +351,10 @@ async function CargarTabla(sel){
 }
 //Se muestran los botones cuando el usuario haya buscado una tabla
 function MostrarBotones(){
-  if($('#barriles tbody td').length==0){
+  if($('#barriles tbody td').length==0 || $('#bodega :selected').text().includes('EMBARRILADO')){
     $("#Agregar").show();
   }
-  if($('#barriles tbody td').length>1){
+  if($('#barriles tbody td').length>0){
     $("#Mover").show();
     $("#Editar").show();
   }
@@ -376,6 +388,7 @@ function OcultarBotones(){
 
 $('#barriles tbody').on( 'click', 'tr', function () {
   $(this).toggleClass('selected');
+  $(this).children('td').toggleClass('seleccionado');
 });
 
 

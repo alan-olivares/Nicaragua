@@ -203,25 +203,27 @@
                      </h5>
                   </div>
                </div>
-            </div>
-            <div class="col-md-12 d-flex justify-content-center text-center ">
-               <button class="button6 btn btn-primary animated b-r-xl" onclick="Agregar();" id="Agregar">Agregar</button>
-               <button class="button6 btn btn-primary animated b-r-xl" onclick="Mover();" id="Mover">Mover</button>
-               <button class="button6 btn btn-primary animated b-r-xl" onclick="Editar();" id="Editar">Editar</button>
-            </div>
-            <div class="col-md-12 d-flex justify-content-center table-responsive text-center " id="table-wrapper">
-               <div class="table-responsive col-md-12 centro scrollingtable animated" id="scrollingtable">
-                  <table class="table table-bordered table-hover text-nowrap display" id="barriles">
-                     <thead></thead>
-                     <tbody></tbody>
-                  </table>
+               <div class="col-md-12 d-flex justify-content-center text-center ">
+                  <button class="button6 btn btn-primary animated b-r-xl" onclick="Agregar();" id="Agregar">Agregar</button>
+                  <button class="button6 btn btn-primary animated b-r-xl" onclick="Mover();" id="Mover">Mover</button>
+                  <button class="button6 btn btn-primary animated b-r-xl" onclick="Editar();" id="Editar">Editar</button>
+               </div>
+               <div class="col-md-12 d-flex justify-content-center table-responsive text-center " id="table-wrapper">
+                  <div class="table-responsive col-md-12 centro scrollingtable animated" id="scrollingtable">
+                     <table class="table table-bordered table-hover" id="barriles">
+                        <thead></thead>
+                        <tbody></tbody>
+                     </table>
+                  </div>
+               </div>
+
+               <div class="sk-spinner sk-spinner-three-bounce">
+                  <div class="sk-bounce1"></div>
+                  <div class="sk-bounce2"></div>
+                  <div class="sk-bounce3"></div>
                </div>
             </div>
-            <div class="sk-spinner sk-spinner-three-bounce">
-               <div class="sk-bounce1"></div>
-               <div class="sk-bounce2"></div>
-               <div class="sk-bounce3"></div>
-            </div>
+
             <div class="footer">
                <div>
                   <strong>Todos los derechos reservados | </strong>SER Licorera 2014
@@ -233,41 +235,41 @@
          <div>
             <div class="col-md-12 text-center  d-flex justify-content-center" >
                <h5><label>  Ingresa el número de serie del tanque:   </label>
-                  <input type="text" class="form-control" required="true" name="concecutivoA" id="concecutivoA">
+                  <input type="text" class="form-control b-r-xl" required="true" name="concecutivoA" id="concecutivoA">
                </h5>
-               <h5><button class="btn btn-primary button3" name="search" id="search" onclick="BuscarBarril();"><span class="glyphicon glyphicon-search"></span></button></h5>
+               <h5><button class="ladda-button btn btn-primary b-r-xl" style="margin-top: 21px;" id="search" onclick="BuscarBarril();"><span class="glyphicon glyphicon-search"></span></button></h5>
             </div>
             <div class="col-md-12 text-center  d-flex justify-content-center" >
                <div class="col-md-4 text-center  d-flex justify-content-center" >
                   <h5><label>  Etiqueta:   </label>
-                     <input type="text" class="form-control" required="true" name="etiquetaA" id="etiquetaA" disabled>
+                     <input type="text" class="form-control b-r-xl" required="true" name="etiquetaA" id="etiquetaA" disabled>
                   </h5>
                </div>
                <div class="col-md-4 text-center  d-flex justify-content-center" >
                   <h5><label>  Capacidad:   </label>
-                     <input type="text" class="form-control" required="true" name="litrosA" id="capacidadA" disabled>
+                     <input type="text" class="form-control b-r-xl" required="true" name="litrosA" id="capacidadA" disabled>
                   </h5>
                </div>
                <div class="col-md-4 text-center  d-flex justify-content-center" >
                   <h5><label>  Litros:   </label>
-                     <input type="text" class="form-control" required="true" name="litrosA" id="litrosA" disabled>
+                     <input type="text" class="form-control b-r-xl" required="true" name="litrosA" id="litrosA" disabled>
                   </h5>
                </div>
             </div>
             <div class="col-md-12 text-center  d-flex justify-content-center" >
                <div class="col-md-3 text-center d-flex  justify-content-center" >
                   <h5><label>  Llenado:   </label>
-                     <input type="text" class="form-control" required="true" id="llenadoA" disabled>
+                     <input type="text" class="form-control b-r-xl" required="true" id="llenadoA" disabled>
                   </h5>
                </div>
                <div class="col-md-3 text-center  d-flex justify-content-center" >
                   <h5><label>  Estado:   </label>
-                     <input type="text" class="form-control" required="true" name="estadoA" id="estadoA" disabled>
+                     <input type="text" class="form-control b-r-xl" required="true" name="estadoA" id="estadoA" disabled>
                   </h5>
                </div>
                <div class="col-md-6 text-center  justify-content-center" >
                   <h5><label>  Ubicación:   </label>
-                     <input rows="4" type="text" class="form-control" required="true" name="ubicacionA" id="ubicacionA" disabled>
+                     <input rows="4" type="text" class="form-control b-r-xl" required="true" name="ubicacionA" id="ubicacionA" disabled>
                   </h5>
                </div>
             </div>
@@ -275,7 +277,7 @@
                <div class="col-md-4 text-center">
                   <h5>
                      <label>  Motivo:   </label>
-                     <select class="form-control" required="true" id="MotivoA" >
+                     <select class="form-control b-r-xl" required="true" id="MotivoA" >
                      </select>
                   </h5>
                </div>
@@ -290,25 +292,25 @@
          <div>
             <div class="col-md-12 text-center  d-flex justify-content-center" >
                <h5><label>  Bodega:  </label>
-                  <select class="form-control" id="bodegaM" onchange="getInfo(this,'bodega','Costados','ID','CostadoM');">
+                  <select class="form-control b-r-xl" id="bodegaM" onchange="getInfo(this,'bodega','Costados','ID','CostadoM');">
                   </select>
                </h5>
                <h5><label>  Costado:   </label>
-                  <select class="form-control " name="CostadoM"  id="CostadoM" onchange="getInfo(this,'area','Filas','ID','FilasM');">
+                  <select class="form-control b-r-xl" name="CostadoM"  id="CostadoM" onchange="getInfo(this,'area','Filas','ID','FilasM');">
                   </select>
                </h5>
             </div>
             <div class="col-md-12 text-center  d-flex justify-content-center" >
                <h5><label>  Filas:   </label>
-                  <select class="form-control " name="FilasM" id="FilasM" onchange="getInfo(this,'fila','Torres','ID','TorresM');">
+                  <select class="form-control b-r-xl" name="FilasM" id="FilasM" onchange="getInfo(this,'fila','Torres','ID','TorresM');">
                   </select>
                </h5>
                <h5><label>  Torres:   </label>
-                  <select class="form-control " name="TorresM"  id="TorresM" onchange="getInfo(this,'torre','Niveles','RackLocID','NivelesM');">
+                  <select class="form-control b-r-xl" name="TorresM"  id="TorresM" onchange="getInfo(this,'torre','Niveles','RackLocID','NivelesM');">
                   </select>
                </h5>
                <h5><label>  Niveles:   </label>
-                  <select class="form-control" name="NivelesM" id="NivelesM" onchange="">
+                  <select class="form-control b-r-xl" name="NivelesM" id="NivelesM" onchange="">
                   </select>
                </h5>
             </div>
@@ -316,7 +318,7 @@
                <div class="col-md-10 text-center">
                   <h5>
                      <label>  Motivo:   </label>
-                     <select class="form-control" required="true" id="MotivoM" >
+                     <select class="form-control b-r-xl" required="true" id="MotivoM" >
                      </select>
                   </h5>
                </div>
@@ -342,31 +344,31 @@
       <div id="editarDialog" title="Editar tanque" class="animated">
          <div class="col-md-12 text-center  d-flex justify-content-center" >
             <div class="col-md-4 text-center " >
-               <h5><label>  NoSerie:   </label>
-                  <input type="text" class="form-control" required="true" name="etiqueta" id="etiqueta" disabled>
+               <h5><label>  Etiqueta:   </label>
+                  <input type="text" class="form-control b-r-xl" required="true" name="etiqueta" id="etiqueta" disabled>
                </h5>
             </div>
             <div class="col-md-4 text-center " >
                <h5><label>  Capacidad:   </label>
-                  <input type="text" class="form-control" required="true" name="litros" id="capacidad" disabled>
+                  <input type="text" class="form-control b-r-xl" required="true" name="litros" id="capacidad" disabled>
                </h5>
             </div>
             <div class="col-md-4 text-center " >
                <h5><label>  Litros:   </label>
-                  <input type="text" class="form-control" required="true" name="litros" id="litros">
+                  <input type="text" class="form-control b-r-xl" required="true" name="litros" id="litros">
                </h5>
             </div>
          </div>
          <div class="col-md-12 text-center  d-flex justify-content-center" >
            <div class="col-md-4 text-center " >
               <h5><label>  Llenado:   </label>
-                 <input type="date" class="form-control" name="relleno" id="llenado">
+                 <input type="date" class="form-control b-r-xl" name="relleno" id="llenado">
               </h5>
            </div>
            <div class="col-md-4 text-center " >
               <h5>
                  <label>  Estado:   </label>
-                 <select class="form-control" required="true" name="estado" id="estado">
+                 <select class="form-control b-r-xl" required="true" name="estado" id="estado">
                     <?php
                        $estados = "select IdEstado, Descripcion from CM_Estado";
                        $stmtEstados = sqlsrv_query( $conn , $estados);
@@ -384,7 +386,7 @@
            <div class="col-md-4 text-center">
               <h5>
                  <label>  Motivo:   </label>
-                 <select class="form-control" required="true" id="MotivoE" >
+                 <select class="form-control b-r-xl" required="true" id="MotivoE" >
                  </select>
               </h5>
            </div>

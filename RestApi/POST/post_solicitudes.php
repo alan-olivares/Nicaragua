@@ -100,7 +100,7 @@ if($row[0]=='1'){
     }
   }
   if($respuesta!==""){
-    echo '..Error.. Las solicitudes '.$respuesta." tuvieron problemas para ser aceptadas, por favor intenta de nuevo más tarde";
+    echo '..Error.. Las solicitudes '.$respuesta." tuvieron problemas para ser procesadas, por favor intenta de nuevo más tarde";
   }else{
     echo "Las solicitudes han sido actualizadas correctamente";
   }

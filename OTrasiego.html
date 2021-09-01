@@ -388,6 +388,7 @@
                  var eee=elements[i].querySelectorAll('td');
                  $('#generarOrdenes').find('tbody').append("<tr><td>"+eee[1].innerHTML+"</td><td>"+eee[2].innerHTML+"</td><td>"+eee[3].innerHTML+"</td><td>"+eee[4].innerHTML+"</td><td><input onchange='maximo(this,"+eee[5].innerHTML+");' type='number' style='max-width: 80px;' value='1'></input></td>"+opciones+"</tr>");
                }
+               revisarTema();
                generarOrdenes.dialog( "open" );
              }else{
                mensajeError('Selecciona al menos una opción');
@@ -439,6 +440,7 @@
                  var opc=(cargarTabla[i].Estatus!=='Por Asignar' && cargarTabla[i].Estatus!=='Asignada')?'disabled':'';
                  $("#lotesOrden > tbody").append("<tr><td class='IdOrden'>"+cargarTabla[i].IdOrden+"</td><td>"+cargarTabla[i].Bodega+"</td><td>"+cargarTabla[i].CantBarriles+"</td><td>"+cargarTabla[i].Paletas+"</td>"+escoger(operadorJ,cargarTabla[i].Op,'operador',opc)+escoger(montacaJ,cargarTabla[i].OpeMonta,'montaca',opc)+escoger(supervisorJ,cargarTabla[i].Supervidor,'supervisor',opc)+"<td class='Estatus'>"+cargarTabla[i].Estatus+"</td><td>"+boton+"</td></tr>");
                }
+               revisarTema();
                parar();
                $(".asignar").click(function() {
                  var $row = $(this).closest("tr");
@@ -518,6 +520,7 @@
            $('#lotes tbody').on( 'click', 'tr', function (e) {
              var data = table.row( this ).data();
              $(this).toggleClass('selected');
+             $(this).children('td').toggleClass('seleccionado');
            });
          }
 

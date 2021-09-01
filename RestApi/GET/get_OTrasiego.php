@@ -1,6 +1,4 @@
 <?php
-//$usuario=ISSET($_GET['usuario'])?$_GET['usuario']:"null";
-//$pass=ISSET($_GET['pass'])?$_GET['pass']:"null";
 include '../general_connection.php';
 $tsql = "exec sp_getAcceso '$usuario' , '$pass'";
 $stmt = sqlsrv_query( $conn , $tsql);
@@ -18,7 +16,7 @@ if($row[0]=='1'){
 
     }else if(ISSET($_GET['fechaOrdenes'])){//Obtenemos las ordenes dadas por una fecha en especifico
       $fecha=$_GET['fechaOrdenes'];
-      $ordenes = "exec sp_OrdenTras '$fecha'";
+      $ordenes = "exec sp_Orden 5,'$fecha'";
       imprimir($ordenes,$conn);
 
     }else if(ISSET($_GET['operador'])){//Operadores dado a un grupo

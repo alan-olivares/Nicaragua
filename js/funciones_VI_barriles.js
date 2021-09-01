@@ -57,6 +57,7 @@ async function GuardarMover(){
       var result=await conexion("POST", url,params);
       await mensajeSimple(result);
       dialogMover.dialog( "close" );
+      ObtenerNotificaciones();
     }catch(error){
       mensajeError(error);
     }
@@ -81,6 +82,7 @@ async function GuardarEditar(){
           await mensajeSimple(result);
           dialogEditar.dialog( "close" );
         }, 500);
+        ObtenerNotificaciones();
 
       }catch(error){
         setTimeout(async function() {
@@ -99,9 +101,10 @@ async function GuardarEditar(){
           await mensajeSimple(result);
           dialogEditar.dialog( "close" );
         }, 500);
+        ObtenerNotificaciones();
       }catch(error){
         setTimeout(async function() {
-          mensajeError(error);
+          mensajeError('Error, no se encontraron registros de éste barril');
         }, 500);
       }
     }
@@ -118,7 +121,7 @@ async function GuardarEditar(){
         return;
       }
     }
-    if(document.getElementById("alcohol").value===""){
+    if(document.getElementById("alcohol").value==="" && document.getElementById("estado").value!=='2'){
       mensajeError("Selecciona una opción de recepción y alcohol");
       return;
     }
@@ -149,6 +152,7 @@ async function GuardarEditar(){
         result=await conexion("POST", 'RestApi/POST/'+postApi,params);
         await mensajeSimple(result);
         dialogEditar.dialog( "close" );
+        ObtenerNotificaciones();
       }else{
         mensajeError("Cambia algún dato antes de guardar");
       }
@@ -163,11 +167,12 @@ async function GuardarAgregar(){
     if(!document.getElementById("ubicacionA").value.includes(document.getElementById("Niveles").value)){
       var url='RestApi/POST/'+postApi;
       var params='evento=Agregar&consecutivos='+document.getElementById("concecutivoA").value+
-      "&IdPallet="+document.getElementById("Niveles").value+"&CBarriles=1&motivo="+document.getElementById("MotivoA").value;
+      "&IdPallet="+document.getElementById("Niveles").value+"&motivo="+document.getElementById("MotivoA").value;
       try{
         var result=await conexion("POST", url,params);
         await mensajeSimple(result);
         dialogAgregar.dialog( "close" );
+        ObtenerNotificaciones();
       }catch(error){
         mensajeError(error);
       }
@@ -219,18 +224,33 @@ function Agregar(){
   dialogAgregar.dialog( "open" );
   BorrarCamposAgregarDialog();
 }
+function RevisarVacioActivo(valor){
+  var check=(valor==='Vacío (Plantel)');
+  $( "#litros" ).prop( "disabled", check );
+  $( "#revisado" ).prop( "disabled", check );
+  $( "#relleno" ).prop( "disabled", check );
+  $( "#LAlcohol" ).prop( "disabled", check );
+  $( "#alcohol" ).prop( "disabled", check );
+  $( "#tapa" ).prop( "disabled", check );
+  if(check)
+    $("#calendario").css("pointer-events", "none");
+  else
+    $("#calendario").css("pointer-events", "auto");
+  revisarTema();
+}
 //Inicializa y abre dialogo de editar
  async function Editar(){
   var elements = document.getElementsByClassName("selected");
   if(elements.length==1){
     var eee=elements[0].querySelectorAll('td');
+    RevisarVacioActivo(eee[10].innerHTML);
     document.getElementById("etiqueta").value =GenerarEtiqueta(eee[0].innerHTML,'01');
     setSelectedValue(document.getElementById("uso"), eee[6].innerHTML);
     setSelectedValue(document.getElementById("edad"), eee[7].innerHTML);
     document.getElementById("tapa").value=eee[5].innerHTML;
     document.getElementById("litros").value=eee[1].innerHTML;
-    document.getElementById("revisado").valueAsDate=new Date(eee[2].innerHTML);
-    document.getElementById("relleno").valueAsDate=new Date(eee[3].innerHTML);
+    document.getElementById("revisado").valueAsDate=new Date(NormalToPicker(eee[2].innerHTML));
+    document.getElementById("relleno").valueAsDate=new Date(NormalToPicker(eee[3].innerHTML));
     document.getElementById("Abarrica").value=eee[4].innerHTML;
     setSelectedValue(document.getElementById("estado"), eee[10].innerHTML);
     document.getElementById("Aalcohol").value=eee[8].innerHTML;
@@ -391,26 +411,19 @@ async function CargarTabla(sel){
       $("#Agregar").hide();
       $("#Mover").hide();
       $("#Editar").hide();
-      var transform = {"tag":"table", "children":[
-        {"tag":"tbody","children":[
-          {"tag":"tr","children":[
-            {"tag":"td","html":"${Consecutivo}"},
-            {"tag":"td","html":"${Capacidad}"},
-            {"tag":"td","html":"${Revisado}"},
-            {"tag":"td","html":"${Relleno}"},
-            {"tag":"td","html":"${Año}"},
-            {"tag":"td","html":"${NoTapa}"},
-            {"tag":"td","html":"${Uso}"},
-            {"tag":"td","html":"${Edad}"},
-            {"tag":"td","html":"${Recepcion}"},
-            {"tag":"td","html":"${Alcohol}"},
-            {"tag":"td","html":"${Estado}"},
-          ]}
-        ]}
-      ]};
-      $('#barriles > tbody').html(json2html.transform(parsed,transform));
-      MostrarBotones();
-      parar();
+      if(tabla!=null){
+        tabla.destroy();
+      }
+      if(parsed.length>10000){
+        if(await mensajeOpcional('Se encontraron '+parsed.length+' barriles en esta ubicación, lo que provocará que tome hasta varios minutos en cargar ¿Deseas continuar?')){
+          setTimeout(function() {recargarTabla(parsed,parsed.length);}, 500);
+        }else{
+          parar();
+        }
+      }else{
+        recargarTabla(parsed,parsed.length);
+      }
+      //parar();
     } catch(error) {
       mensajeError(error);
     }
@@ -418,9 +431,36 @@ async function CargarTabla(sel){
     OcultarBotones();
   }
 }
+var tabla=null;
+function recargarTabla(parsed,tamano){
+  crearTablaJson(parsed,'#barriles');
+  tabla=$('#barriles').DataTable({
+    responsive: true,
+    "bPaginate": false,
+    "paging":   (tamano>100),
+    "ordering": false,
+    "info":     false,
+    "lengthMenu": [ 100, 200, 300, 500],
+    searching: (tamano>100),
+    "language": {
+      "lengthMenu":     "Mostrar _MENU_ resultados",
+      "emptyTable": "No se encontraron barriles en ésta posición",
+      searchPlaceholder: "Busca algún dato aquí",
+      search: "",
+      "paginate": {
+        "first":      "Primera",
+        "last":       "Última",
+        "next":       "Siguiente",
+        "previous":   "Anterior"
+      },
+    }
+  });
+  MostrarBotones();
+  parar();
+}
 //Se muestran los botones cuando el usuario haya buscado una tabla
 function MostrarBotones(){
-  if(document.getElementById("barriles").rows.length<=9){
+  if(document.getElementById("barriles").rows.length<=9 || $('#bodega :selected').text().includes('EMBARRILADO')){
     $("#Agregar").show();
   }
   if(document.getElementById("barriles").rows.length>1){
@@ -457,6 +497,7 @@ function OcultarBotones(){
 
 $('#barriles tbody').on( 'click', 'tr', function () {
   $(this).toggleClass('selected');
+  $(this).children('td').toggleClass('seleccionado');
 });
 
 
@@ -497,13 +538,6 @@ $(document).ready(function(){
   $("#Quitar").hide();
   $("#Mover").hide();
   $("#Editar").hide();
-  $('#barriles').DataTable({
-    responsive: true,
-    "bPaginate": false,
-    "paging":   false,
-    "ordering": false,
-    "info":     false,
-    searching: false,
-  });
+
 
 });

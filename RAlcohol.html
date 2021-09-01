@@ -428,6 +428,7 @@
                  content+="</tr>";
                }
                $('#tablaPrincipal > tbody').append(content);
+               revisarTema();
                $('#agregarEn').show();
              }else{
                campo.value="";
@@ -540,6 +541,7 @@
              +'<button class="b-r-xl btn btn-danger" onclick="cancelarEnvio(this);">Cancelar</button></td>';
              content+="</tr>";
              $('#tablaPrincipal > tbody').append(content);
+             revisarTema();
            } catch (e) {
              mensajeError(e);
            }
@@ -562,6 +564,7 @@
                var $row = $(campo).closest('tr');
                $row.find('td').find("#descripcion").attr("disabled", false);
              }
+             revisarTema();
            } catch (e) {
              mensajeError(e);
            }
@@ -606,7 +609,7 @@
                content+='</tr>'
              }
              $('#alcoholesTabla > tbody').append(content);
-
+             revisarTema();
            } catch(error) {
              await mensajeError(error);
            }
@@ -720,6 +723,7 @@
                content+='</tr>'
              }
              $('#tanquesTabla > tbody').append(content);
+             revisarTema();
 
            } catch(error) {
              await mensajeError(error);

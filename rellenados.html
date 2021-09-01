@@ -170,12 +170,12 @@
                <div class="col-md-8 text-center  d-flex justify-content-center" >
                   <div class="form-inline text-center d-flex justify-content-center">
                     <h5><label class="">Fecha Inicial:</label>
-                       <input type="date" class="form-control" value="" id="date1" name="date1">
+                       <input type="date" class="form-control b-r-xl" value="" id="date1" name="date1">
                     </h5>
                     <h5><label class="">Fecha Final:</label>
-                       <input type="date" class="form-control" value="" id="date2" name="date2">
+                       <input type="date" class="form-control b-r-xl" value="" id="date2" name="date2">
                     </h5>
-                     <button class="ladda-button btn btn-primary button3" onclick="cargarDatos();" id="cargando" data-style="zoom-in"><span class="glyphicon glyphicon-search"></span></button>
+                     <button class="ladda-button btn btn-primary b-r-xl" style="margin-top: 21px;" onclick="cargarDatos();" id="cargando" data-style="zoom-in"><span class="glyphicon glyphicon-search"></span></button>
                   </div>
                </div>
                <div class="col-md-12">
@@ -314,6 +314,7 @@
               for (var i = 0; i < parsed.length; i++) {
                 content+="<tr><td>"+parsed[i].NoOrden+"</td><td>"+parsed[i].FechaOdT+"</td><td>"+parsed[i].Alcohol+"</td><td>"+parsed[i].Fecha_Ll+"</td><td>"+parsed[i].Uso+"</td><td>"+parsed[i].Estatus+"</td><td style='text-align: right;'>"+parsed[i].Total+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i].totalLts)+"</td></tr>";
               }
+              var tamano=parsed.length;
               $('#tabla1 tbody').append(content);
               url='RestApi/GET/'+getApi+'?rellenadosT2=true&fecha1='+$('#date1').val()+'&fecha2='+$('#date2').val();
               result = await conexion("GET",url,"");
@@ -325,7 +326,7 @@
                 +"</td><td>"+parsed[i]['Ultimo relleno']+"</td><td>"+parsed[i]['Relleno Actual']+"</td></tr>";
               }
               $('#tabla2 tbody').append(content);
-              recargarTablas();
+              recargarTablas(tamano,parsed.length);
             }else{
               limpiarDatos();
               alert('Las fechas seleccionadas no arrojaron resultados')
@@ -374,57 +375,29 @@
           var tabla1=null;
           var tabla2=null;
 
-          function recargarTablas(){
+          function recargarTablas(tamano1,tamano2){
+            var check1=(tamano1>100);
+            var check2=(tamano2>100);
             tabla1=$('#tabla1').DataTable({
                 responsive: true,
-                "bPaginate": false,
-                "paging":   false,
-                "ordering": false,
+                "bPaginate": check1,
+                "paging":   check1,
+                "ordering": check1,
                 "info":     false,
+                "lengthMenu": [ 100, 200, 300, 500],
                 dom: '<"html5buttons"B>lTfgitp',
                 language: {
                   searchPlaceholder: "Busca algún dato aquí",
                   search: "",
+                  "lengthMenu":     "Mostrar _MENU_ resultados",
+                  "paginate": {
+                    "first":      "Primera",
+                    "last":       "Última",
+                    "next":       "Siguiente",
+                    "previous":   "Anterior"
+                  },
                 },
-                buttons: [
-                    { extend: 'copy',text:'Copiar'},
-                    {extend: 'csv',text:'CSV',title: 'Inventario',customize: function (csv) {
-                      var buffer = new ArrayBuffer(3);
-                      var dataView = new DataView(buffer);
-                      dataView.setUint8(0, 0xef);
-                      dataView.setUint8(1, 0xbb);
-                      dataView.setUint8(2, 0xbf);
-                      var read = new Uint8Array(buffer);
-                      var blob = new Blob([read, csv], {type: 'text/csv;charset=utf-8'});
-                      return blob;
-                    }},
-                    {extend: 'excel',text:'Excel', title: 'Inventario', customize: function( xlsx ) {
-
-                      var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                      //list of columns that should get a 1000 separator depending on local Excel installation
-                      $('row c[r^="A"]', sheet).attr( 's', '' );
-                    }},
-                    {extend: 'pdf',text:'PDF', title: function(){ return "Inventario";},
-                    footer:true,customize:function(doc){
-                      doc.styles.tableHeader.fillColor='#1ab394';
-                      doc.styles.title.alignment='left';
-                      doc.styles.tableFooter.fillColor='#1ab394';
-                      doc.styles.tableBodyEven ={alignment: 'center'};
-                      doc.styles.tableBodyOdd ={alignment: 'center'};
-                    }},
-
-                    {extend: 'print',text:'Imprimir',
-                     customize: function (win){
-                            $(win.document.body).addClass('white-bg');
-                            $(win.document.body).css('font-size', '10px');
-
-                            $(win.document.body).find('table')
-                                    .addClass('compact')
-                                    .css('font-size', 'inherit');
-                    }
-                    }
-                ]
-
+                buttons: [{ extend: 'copy',text:'Copiar'},]
             });
             tabla2=$('#tabla2').DataTable( {"footerCallback": function ( row, data, start, end, display ) {
               var api = this.api(), data;
@@ -451,54 +424,24 @@
               $( api.column(9).footer() ).html(fomatoNumero(b));
           },
           responsive: true,
-          "bPaginate": false,
-          "paging":   false,
+          "bPaginate": check2,
+          "paging":   check2,
           "ordering": false,
           "info":     false,
+          "lengthMenu": [[ 100, 200, 300, 500,-1],[ "100", "200", "300", "500","Todos"]],
           dom: '<"html5buttons"B>lTfgitp',
           language: {
+            "lengthMenu":     "Mostrar _MENU_ resultados",
             searchPlaceholder: "Busca algún dato aquí",
             search: "",
+            "paginate": {
+              "first":      "Primera",
+              "last":       "Última",
+              "next":       "Siguiente",
+              "previous":   "Anterior"
+            },
           },
-          buttons: [
-              { extend: 'copy',text:'Copiar'},
-              {extend: 'csv',text:'CSV',title: 'Detalle Inventario',footer:true,customize: function (csv) {
-                var buffer = new ArrayBuffer(3);
-                var dataView = new DataView(buffer);
-                dataView.setUint8(0, 0xef);
-                dataView.setUint8(1, 0xbb);
-                dataView.setUint8(2, 0xbf);
-                var read = new Uint8Array(buffer);
-                var blob = new Blob([read, csv], {type: 'text/csv;charset=utf-8'});
-                return blob;
-              }},
-              {extend: 'excel',text:'Excel', title: 'Detalle Inventario',footer:true, customize: function( xlsx ) {
-
-                var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                //list of columns that should get a 1000 separator depending on local Excel installation
-                $('row c[r^="A"]', sheet).attr( 's', '' );
-                $('row c[r^="D"]', sheet).attr( 's', '' );
-              }},
-              {extend: 'pdf',text:'PDF', title: function(){ return "Detalle Inventario";},
-              footer:true,customize:function(doc){
-                doc.styles.tableHeader.fillColor='#1ab394';
-                doc.styles.title.alignment='left';
-                doc.styles.tableFooter.fillColor='#1ab394';
-                doc.styles.tableBodyEven ={alignment: 'center'};
-                doc.styles.tableBodyOdd ={alignment: 'center'};
-              }},
-
-              {extend: 'print',text:'Imprimir',
-               customize: function (win){
-                      $(win.document.body).addClass('white-bg');
-                      $(win.document.body).css('font-size', '10px');
-
-                      $(win.document.body).find('table')
-                              .addClass('compact')
-                              .css('font-size', 'inherit');
-              }
-              }
-          ]
+          buttons: [{ extend: 'copy',text:'Copiar'},]
         } );
           }
 

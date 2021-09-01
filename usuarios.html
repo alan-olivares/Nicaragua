@@ -180,7 +180,7 @@
                            <button class="button5 btn btn-primary b-r-xl" style="margin-bottom:20px;" onclick='agregarUsuario.dialog("open");CargarPerfiles("#perfilU");'>Agregar nuevo usuario</button>
                         </div>
                         <div class="table-responsive col-md-12 centro animated" id="scrollingtable">
-                           <table class="table table-bordered table-hover text-nowrap display" id="usuariosTabla">
+                           <table class="table table-bordered table-hover text-nowrap" id="usuariosTabla">
                               <thead>
                                  <tr>
                                     <th>Usuario</th>
@@ -207,7 +207,7 @@
                         <div class="col-md-6  text-center justify-content-center row" >
                            <div class="col-lg-8" >
                               <h5><label>  Selecciona un perfil:   </label>
-                                 <select class="form-control" id="perfiles" onchange="ObtenerPermisosPorPerfil(this);">
+                                 <select class="form-control b-r-xl" id="perfiles" onchange="ObtenerPermisosPorPerfil(this);">
                                  </select>
                               </h5>
                            </div>
@@ -232,7 +232,7 @@
                <div class="col-md-12 text-center  d-flex justify-content-center" >
                   <div class="col-md-10 text-center " >
                      <h5><label>  Ingresa el nombre del nuevo perfil:   </label>
-                        <input type="text" class="form-control" required="true" name="nuevoPerfil" id="nuevoPerfil">
+                        <input type="text" class="form-control b-r-xl" required="true" name="nuevoPerfil" id="nuevoPerfil">
                      </h5>
                   </div>
                </div>
@@ -246,12 +246,12 @@
                   <div class="col-md-12 text-center  d-flex justify-content-center" >
                      <div class="col-md-6 text-center  d-flex justify-content-center" >
                         <h5><label>  Nombre:   </label>
-                           <input type="text" class="form-control" required="true" name="nombreU" id="nombreU">
+                           <input type="text" class="form-control b-r-xl" required="true" name="nombreU" id="nombreU">
                         </h5>
                      </div>
                      <div class="col-md-6 text-center  d-flex justify-content-center" >
                         <h5><label>  Usuario:   </label>
-                           <input type="text" class="form-control" required="true" name="usuarioU" id="usuarioU">
+                           <input type="text" class="form-control b-r-xl" required="true" name="usuarioU" id="usuarioU">
                         </h5>
                      </div>
                   </div>
@@ -259,7 +259,7 @@
                      <div class="col-md-4 text-center" >
                         <h5>
                            <label>  Grupo:   </label>
-                           <select class="form-control" id="grupoU">
+                           <select class="form-control b-r-xl" id="grupoU">
                               <option value="1">ADMINISTRADOR</option>
                               <option value="2">SUPERVISOR</option>
                               <option value="3">OPERARIO</option>
@@ -283,19 +283,19 @@
                   <div class="col-md-12 text-center  d-flex justify-content-center" >
                      <div class="col-md-6 text-center  d-flex justify-content-center" >
                         <h5><label>  Contraseña:   </label>
-                           <input type="password" class="form-control" required="true" name="contrasenaU" id="contrasenaU">
+                           <input type="password" class="form-control b-r-xl" required="true" name="contrasenaU" id="contrasenaU">
                         </h5>
                      </div>
                      <div class="col-md-6 text-center  d-flex justify-content-center" >
                         <h5><label>  Confirmar contraseña:   </label>
-                           <input type="password" class="form-control" required="true" name="contrasenaNU" id="contrasenaNU">
+                           <input type="password" class="form-control b-r-xl" required="true" name="contrasenaNU" id="contrasenaNU">
                         </h5>
                      </div>
                   </div>
                   <div class="col-md-12 text-center  d-flex justify-content-center" >
                      <div class="col-md-6 text-center  d-flex justify-content-center" >
                         <h5><label>  Perfil:   </label>
-                           <select class="form-control" id="perfilU"></select>
+                           <select class="form-control b-r-xl" id="perfilU"></select>
                         </h5>
                      </div>
                   </div>
@@ -305,17 +305,17 @@
                   </div>
                </div>
             </div>
-            <div id="editarUsuario" title="Agregar nuevo usuario" class="animated">
+            <div id="editarUsuario" title="Editar usuario" class="animated">
                <div >
                   <div class="col-md-12 text-center  d-flex justify-content-center" >
                      <div class="col-md-6 text-center  d-flex justify-content-center" >
                         <h5><label>  Nombre:   </label>
-                           <input type="text" class="form-control" required="true" name="nombreUE" id="nombreUE" disabled>
+                           <input type="text" class="form-control b-r-xl" required="true" name="nombreUE" id="nombreUE" disabled>
                         </h5>
                      </div>
                      <div class="col-md-6 text-center  d-flex justify-content-center" >
                         <h5><label>  Usuario:   </label>
-                           <input type="text" class="form-control" required="true" name="usuarioUE" id="usuarioUE" disabled>
+                           <input type="text" class="form-control b-r-xl" required="true" name="usuarioUE" id="usuarioUE" disabled>
                         </h5>
                      </div>
                   </div>
@@ -323,7 +323,7 @@
                      <div class="col-md-6 text-center  d-flex justify-content-center" >
                         <h5>
                            <label>  Grupo:   </label>
-                           <select class="form-control" id="grupoUE">
+                           <select class="form-control b-r-xl" id="grupoUE">
                               <option value="1">ADMINISTRADOR</option>
                               <option value="2">SUPERVISOR</option>
                               <option value="3">OPERARIO</option>
@@ -347,19 +347,19 @@
                   <div class="col-md-12 text-center  d-flex justify-content-center " id="passw" >
                      <div class="col-md-6 text-center  d-flex justify-content-center" >
                         <h5><label>  Nueva contraseña:   </label>
-                           <input type="password" class="form-control" required="true" name="contrasenaUE" id="contrasenaUE">
+                           <input type="password" class="form-control b-r-xl" required="true" name="contrasenaUE" id="contrasenaUE">
                         </h5>
                      </div>
                      <div class="col-md-6 text-center  d-flex justify-content-center" >
                         <h5><label>  Confirmar contraseña:   </label>
-                           <input type="password" class="form-control" required="true" name="contrasenaNUE" id="contrasenaNUE">
+                           <input type="password" class="form-control b-r-xl" required="true" name="contrasenaNUE" id="contrasenaNUE">
                         </h5>
                      </div>
                   </div>
                   <div class="col-md-12 text-center  d-flex justify-content-center" >
                      <div class="col-md-6 text-center  d-flex justify-content-center" >
                         <h5><label>  Perfil:   </label>
-                           <select class="form-control" id="perfilUE"></select>
+                           <select class="form-control b-r-xl" id="perfilUE"></select>
                         </h5>
                      </div>
                   </div>
@@ -551,6 +551,7 @@
              var data = table.row( row ).data();
              EditarUsuario(data[1],data[0],data[2],data[3],data[4],data[5]);
            });
+           revisarTema();
          }
          //Termina funciones de usuarios
          //Inicia Funciones de permisos

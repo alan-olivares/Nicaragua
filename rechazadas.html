@@ -4,6 +4,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>TBRE</title>
+      <link href="css/jquery.dataTables.min.css" rel="stylesheet">
       <link href="css/bootstrap.min.css" rel="stylesheet">
       <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
       <link rel="icon" href="img\TBRE.ico">
@@ -175,7 +176,7 @@
               </div>
                <div class="col-md-12 d-flex justify-content-center table-responsive text-center" id="table-wrapper">
                   <div class="table-responsive col-md-12 centro scrollingtable2">
-                     <table class="table table-bordered cell-border animated" id="barriles">
+                     <table class="table table-bordered" id="barriles">
                         <thead></thead>
                         <tbody></tbody>
                      </table>
@@ -313,7 +314,7 @@
                      {"tag":"td","html":"${FechaAutorizacion}"},
                      {"tag":"td","html":"${Autorizador}"},
                      {"tag":"td","html":"${Estado}"},
-                     {"tag":"td","html":'<button class=" btn btn-primary b-r-xl" name="verBarr" id="verBarr">Ver</button>'},
+                     {"tag":"td","html":'<button class=" btn btn-primary b-r-xl" onclick="preparDialogo(this);">Ver</button>'},
                    ]}
                  ]}
                ]};
@@ -330,7 +331,7 @@
                      {"tag":"td","html":"${FechaAutorizacion}"},
                      {"tag":"td","html":"${Autorizador}"},
                      {"tag":"td","html":"${Estado}"},
-                     {"tag":"td","html":'<button class=" btn btn-primary b-r-xl" name="verBarr" id="verBarr">Ver</button>'},
+                     {"tag":"td","html":'<button class=" btn btn-primary b-r-xl" onclick="preparDialogo(this);">Ver</button>'},
                    ]}
                  ]}
                ]};
@@ -338,10 +339,16 @@
              $('#barriles > thead').append(content);
              $('#barriles > tbody').html(json2html.transform(parsed,transform));
              parar();
+             Recargar();
            } catch(error) {
              await mensajeError(error);
            }
-           Recargar();
+
+         }
+
+         function preparDialogo(campo){
+           var $row = $(campo).closest('tr');
+           CargarDialogo($row.children('td:first').text());
          }
 
          var table=null;
@@ -360,17 +367,12 @@
                search: "",
              }
            });
+           //revisarTema();
          }
 
          $(document).ready(function(){
            permisos(["1","2"]);
            CargarTabla('1');
-           $('#barriles tbody').on( 'click', 'tr', function (e) {
-             var $row = $(this).closest('tr');
-             if( e.target._DT_CellIndex==undefined) {
-               CargarDialogo($row.children('td:first').text());
-             }
-           });
          });
       </script>
    </body>

@@ -174,7 +174,7 @@
                   <div class="col-md-12 text-center  d-flex justify-content-center" >
                      <div class="col-md-6 text-center" >
                         <h5><label>  Nombre:   </label>
-                           <input type="text" class="form-control" required="true" name="nombre" id="nombre">
+                           <input type="text dark-mode" class="form-control" required="true" name="nombre" id="nombre">
                         </h5>
                      </div>
                      <div class="col-md-6 text-center" >
@@ -192,6 +192,16 @@
                      <div class="col-md-6 text-center " >
                         <h5><label>  Perfil:   </label>
                            <input type="text" class="form-control" required="true" name="perfil" id="perfil" disabled>
+                        </h5>
+                     </div>
+                  </div>
+                  <div class="col-md-12 text-center  d-flex justify-content-center" >
+                     <div class="col-md-6 text-center" >
+                        <h5><label>  Tema:   </label>
+                          <select class="form-control" id="tema">
+                            <option value="1">Light mode</option>
+                            <option value="2">Dark mode</option>
+                          </select>
                         </h5>
                      </div>
                   </div>
@@ -260,7 +270,7 @@
                return;
              }
 
-             if(document.getElementById("nombre").value===localStorage['nombre'] && document.getElementById("contrasena").value===""){
+             if(document.getElementById("nombre").value===localStorage['nombre'] && document.getElementById("contrasena").value==="" && localStorage['tema']===document.getElementById("tema").value){
                    mensajeError("Cambia algún dato antes de guardar");
                    return;
              }
@@ -268,7 +278,7 @@
              if(String(document.getElementById("contrasena").value).length>0){
                nContra=btoa(document.getElementById("contrasena").value);
              }
-             var params='nombre='+document.getElementById("nombre").value+'&npass='+nContra;
+             var params='nombre='+document.getElementById("nombre").value+'&npass='+nContra+'&tema='+document.getElementById("tema").value;
              var url='RestApi/POST/'+postApi;
              var result = await conexion("POST",url,params);
              await mensajeSimple("Datos actualizados correctamente");
@@ -276,10 +286,13 @@
                localStorage['password']=result;
              }
              localStorage['nombre']=document.getElementById("nombre").value;
+             localStorage['tema']=document.getElementById("tema").value;
              location.reload();
            } catch(error) {
              mensajeError(error);
+
            }
+           revisarTema()
          }
          async function ObtenerDatos(){
            try {
@@ -290,6 +303,7 @@
              document.getElementById("perfil").value=parsed[0].Descripcion;
              document.getElementById("usuario").value=parsed[0].Clave;
              document.getElementById("grupo").value=parsed[0].IdGrupo;
+             document.getElementById("tema").value=parsed[0].Tema;
            } catch(error) {
              await mensajeError(error);
            }

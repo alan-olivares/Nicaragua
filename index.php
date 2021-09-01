@@ -416,19 +416,19 @@
                var res = dia.split("-");
                dia=res[0]+"-"+res[1]+"-"+res[2];
                var hora=item.series.data[item.dataIndex][0];
-
+               var aut='&aut='+btoa(localStorage['usuario'] + ":" + localStorage['password']);
                switch (item.series.label) {
                  case "Barriles llenados":
-                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" "+hora+":00&hora2="+dia+" "+hora+":59&evento=1&tipo=Barriles llenados");
+                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" "+hora+":00&hora2="+dia+" "+hora+":59&evento=1&tipo=Barriles llenados"+aut);
                  break;
                  case "Barriles rellenados":
-                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" "+hora+":00&hora2="+dia+" "+hora+":59&evento=2,4,5&tipo=Barriles rellenados");
+                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" "+hora+":00&hora2="+dia+" "+hora+":59&evento=2,4,5&tipo=Barriles rellenados"+aut);
                  break;
                  case "Barriles trasegados":
-                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" "+hora+":00&hora2="+dia+" "+hora+":59&evento=3&tipo=Barriles trasegados");
+                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" "+hora+":00&hora2="+dia+" "+hora+":59&evento=3&tipo=Barriles trasegados"+aut);
                  break;
                  case "Barriles reparados":
-                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" "+hora+":00&hora2="+dia+" "+hora+":59&evento=10&tipo=Barriles reparados");
+                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" "+hora+":00&hora2="+dia+" "+hora+":59&evento=10&tipo=Barriles reparados"+aut);
                  break;
                  default:
 

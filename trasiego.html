@@ -170,12 +170,12 @@
                <div class="col-md-8 text-center  d-flex justify-content-center" >
                   <div class="form-inline text-center d-flex justify-content-center">
                     <h5><label class="">Fecha Inicial:</label>
-                       <input type="date" class="form-control" value="" id="date1" name="date1">
+                       <input type="date" class="form-control b-r-xl" value="" id="date1" name="date1">
                     </h5>
                     <h5><label class="">Fecha Final:</label>
-                       <input type="date" class="form-control" value="" id="date2" name="date2">
+                       <input type="date" class="form-control b-r-xl" value="" id="date2" name="date2">
                     </h5>
-                     <button class="ladda-button btn btn-primary button3" onclick="cargarDatos();" id="cargando" data-style="zoom-in"><span class="glyphicon glyphicon-search"></span></button>
+                     <button class="ladda-button btn btn-primary b-r-xl" style="margin-top: 21px;" onclick="cargarDatos();" id="cargando" data-style="zoom-in"><span class="glyphicon glyphicon-search"></span></button>
                   </div>
                </div>
                <div class="col-md-12">
@@ -303,6 +303,7 @@
             var content="";
             l.ladda('start');
             if(parsed.length>0){
+              var tamano=parsed.length;
               mostrarDatos();
               for (var i = 0; i < parsed.length; i++) {
                 content+="<tr><td>"+parsed[i].NoOrden+"</td><td>"+parsed[i].Fecha+"</td><td>"+parsed[i].Alcohol+"</td><td>"+parsed[i].Tanque+"</td><td style='text-align: right;'>"+parsed[i]['CantTanq']+
@@ -319,7 +320,7 @@
               }
               $('#tabla2 tbody').append(content);
               setTimeout(function() {
-                recargarTablas();
+                recargarTablas(tamano,parsed.length);
               }, 500);
 
             }else{
@@ -381,31 +382,29 @@
           var tabla1=null;
           var tabla2=null;
 
-          function recargarTablas(){
+          function recargarTablas(tamano1,tamano2){
+            var check1=(tamano1>100);
+            var check2=(tamano2>100);
             tabla1=$('#tabla1').DataTable({
                 responsive: true,
-                "bPaginate": false,
-                "paging":   false,
+                "bPaginate": check1,
+                "paging":   check1,
                 "ordering": false,
                 "info":     false,
+                "lengthMenu": [ 100, 200, 300, 500],
                 dom: '<"html5buttons"B>lTfgitp',
                 language: {
                   searchPlaceholder: "Busca algún dato aquí",
                   search: "",
+                  "lengthMenu":     "Mostrar _MENU_ resultados",
+                  "paginate": {
+                    "first":      "Primera",
+                    "last":       "Última",
+                    "next":       "Siguiente",
+                    "previous":   "Anterior"
+                  },
                 },
-                buttons: [
-                    { extend: 'copy',text:'Copiar'},
-                    {extend: 'print',text:'Imprimir',
-                     customize: function (win){
-                            $(win.document.body).addClass('white-bg');
-                            $(win.document.body).css('font-size', '10px');
-
-                            $(win.document.body).find('table')
-                                    .addClass('compact')
-                                    .css('font-size', 'inherit');
-                    }
-                    }
-                ]
+                buttons: [{ extend: 'copy',text:'Copiar'},]
 
             });
             tabla2=$('#tabla2').DataTable( {"footerCallback": function ( row, data, start, end, display ) {
@@ -429,28 +428,24 @@
               $( api.column(4).footer() ).html(fomatoNumero(a));
           },
           responsive: true,
-          "bPaginate": false,
-          "paging":   false,
+          "bPaginate": check2,
+          "paging":   check2,
           "ordering": false,
           "info":     false,
+          "lengthMenu": [[ 100, 200, 300, 500,-1],[ "100", "200", "300", "500","Todos"]],
           dom: '<"html5buttons"B>lTfgitp',
           language: {
             searchPlaceholder: "Busca algún dato aquí",
             search: "",
+            "lengthMenu":     "Mostrar _MENU_ resultados",
+            "paginate": {
+              "first":      "Primera",
+              "last":       "Última",
+              "next":       "Siguiente",
+              "previous":   "Anterior"
+            },
           },
-          buttons: [
-              { extend: 'copy',text:'Copiar'},
-              {extend: 'print',text:'Imprimir',
-               customize: function (win){
-                      $(win.document.body).addClass('white-bg');
-                      $(win.document.body).css('font-size', '10px');
-
-                      $(win.document.body).find('table')
-                              .addClass('compact')
-                              .css('font-size', 'inherit');
-              }
-              }
-          ]
+          buttons: [{ extend: 'copy',text:'Copiar'},]
         } );
           }
 

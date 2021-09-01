@@ -176,7 +176,7 @@
               </div>
                <div class="col-md-12 d-flex justify-content-center table-responsive text-center ">
                   <div class="table-responsive col-md-12 centro">
-                     <table class="table table-bordered cell-border animated" id="barriles">
+                     <table class="table table-bordered" id="barriles">
                         <thead></thead>
                         <tbody></tbody>
                      </table>
@@ -314,7 +314,7 @@
                      {"tag":"td","html":"${FechaAutorizacion}"},
                      {"tag":"td","html":"${Autorizador}"},
                      {"tag":"td","html":"${Estado}"},
-                     {"tag":"td","html":'<button class=" btn btn-primary b-r-xl" name="verBarr" id="verBarr">Ver</button>'},
+                     {"tag":"td","html":'<button class=" btn btn-primary b-r-xl" onclick="preparDialogo(this);">Ver</button>'},
                    ]}
                  ]}
                ]};
@@ -331,7 +331,7 @@
                      {"tag":"td","html":"${FechaAutorizacion}"},
                      {"tag":"td","html":"${Autorizador}"},
                      {"tag":"td","html":"${Estado}"},
-                     {"tag":"td","html":'<button class=" btn btn-primary b-r-xl" name="verBarr" id="verBarr">Ver</button>'},
+                     {"tag":"td","html":'<button class=" btn btn-primary b-r-xl" onclick="preparDialogo(this);">Ver</button>'},
                    ]}
                  ]}
                ]};
@@ -343,6 +343,10 @@
              await mensajeError(error);
            }
            Recargar();
+         }
+         function preparDialogo(campo){
+           var $row = $(campo).closest('tr');
+           CargarDialogo($row.children('td:first').text());
          }
 
          var table=null;
@@ -366,12 +370,6 @@
          $(document).ready(function(){
            permisos(["1","2"]);
            CargarTabla('1');
-           $('#barriles tbody').on( 'click', 'tr', function (e) {
-             var $row = $(this).closest('tr');
-             if( e.target._DT_CellIndex==undefined) {
-               CargarDialogo($row.children('td:first').text());
-             }
-           });
          });
       </script>
    </body>

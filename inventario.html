@@ -171,29 +171,29 @@
                   <div class="form-inline text-center d-flex justify-content-center">
                      <h5>
                         <label>  Bodega:  </label>
-                        <select class="form-control" name="bodega" id="bodega">
+                        <select class="form-control b-r-xl" name="bodega" id="bodega">
                            <option value="">Todos</option>
                         </select>
                      </h5>
                      <h5>
                         <label>  Alcohol:   </label>
-                        <select class="form-control" name="alcohol" id="alcohol">
+                        <select class="form-control b-r-xl" name="alcohol" id="alcohol">
                            <option value="">Todos</option>
                         </select>
                      </h5>
                      <h5>
                         <label>  Año llenada:   </label>
-                        <select class="form-control" name="llenada" id="llenada">
+                        <select class="form-control b-r-xl" name="llenada" id="llenada">
                            <option value="">Todos</option>
                         </select>
                      </h5>
                      <h5>
                         <label>  Uso:   </label>
-                        <select class="form-control" name="uso" id="uso">
+                        <select class="form-control b-r-xl" name="uso" id="uso">
                            <option value="">Todos</option>
                         </select>
                      </h5>
-                     <button class="ladda-button btn btn-primary button3" onclick="cargarDatos();" id="cargando" data-style="zoom-in"><span class="glyphicon glyphicon-search"></span></button>
+                     <button class="ladda-button btn btn-primary b-r-xl" style="margin-top: 21px;" onclick="cargarDatos();" id="cargando" data-style="zoom-in"><span class="glyphicon glyphicon-search"></span></button>
                   </div>
                </div>
                <div class="col-md-12">
@@ -224,8 +224,8 @@
                      </table>
                    </div>
                  </div>
-                 <div class="table-responsive col-md-12  d-flex justify-content-center">
-                   <table class="funciones tabla col-md-11" style="margin-bottom:30px;" id="tabla3" >
+                 <div class="col-md-12  d-flex justify-content-center">
+                   <table class="tabla col-md-11" style="margin-bottom:30px;" id="tabla3" >
                      <thead>
                        <tr>
                          <th>Número</th>
@@ -437,44 +437,7 @@
                   searchPlaceholder: "Busca algún dato aquí",
                   search: "",
                 },
-                buttons: [
-                    { extend: 'copy',text:'Copiar'},
-                    {extend: 'csv',text:'CSV',title: 'Inventario',customize: function (csv) {
-                      var buffer = new ArrayBuffer(3);
-                      var dataView = new DataView(buffer);
-                      dataView.setUint8(0, 0xef);
-                      dataView.setUint8(1, 0xbb);
-                      dataView.setUint8(2, 0xbf);
-                      var read = new Uint8Array(buffer);
-                      var blob = new Blob([read, csv], {type: 'text/csv;charset=utf-8'});
-                      return blob;
-                    }},
-                    {extend: 'excel',text:'Excel', title: 'Inventario', customize: function( xlsx ) {
-
-                      var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                      //list of columns that should get a 1000 separator depending on local Excel installation
-                      $('row c[r^="A"]', sheet).attr( 's', '' );
-                    }},
-                    {extend: 'pdf',text:'PDF', title: function(){ return "Inventario";},
-                    footer:true,customize:function(doc){
-                      doc.styles.tableHeader.fillColor='#1ab394';
-                      doc.styles.title.alignment='left';
-                      doc.styles.tableFooter.fillColor='#1ab394';
-                      doc.styles.tableBodyEven ={alignment: 'center'};
-                      doc.styles.tableBodyOdd ={alignment: 'center'};
-                    }},
-
-                    {extend: 'print',text:'Imprimir',
-                     customize: function (win){
-                            $(win.document.body).addClass('white-bg');
-                            $(win.document.body).css('font-size', '10px');
-
-                            $(win.document.body).find('table')
-                                    .addClass('compact')
-                                    .css('font-size', 'inherit');
-                    }
-                    }
-                ]
+                buttons: [{ extend: 'copy',text:'Copiar'},]
 
             });
             tabla2=$('#tabla3').DataTable( {"footerCallback": function ( row, data, start, end, display ) {
@@ -535,45 +498,7 @@
             searchPlaceholder: "Busca algún dato aquí",
             search: "",
           },
-          buttons: [
-              { extend: 'copy',text:'Copiar'},
-              {extend: 'csv',text:'CSV',title: 'Detalle Inventario',footer:true,customize: function (csv) {
-                var buffer = new ArrayBuffer(3);
-                var dataView = new DataView(buffer);
-                dataView.setUint8(0, 0xef);
-                dataView.setUint8(1, 0xbb);
-                dataView.setUint8(2, 0xbf);
-                var read = new Uint8Array(buffer);
-                var blob = new Blob([read, csv], {type: 'text/csv;charset=utf-8'});
-                return blob;
-              }},
-              {extend: 'excel',text:'Excel', title: 'Detalle Inventario',footer:true, customize: function( xlsx ) {
-
-                var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                //list of columns that should get a 1000 separator depending on local Excel installation
-                $('row c[r^="A"]', sheet).attr( 's', '' );
-                $('row c[r^="D"]', sheet).attr( 's', '' );
-              }},
-              {extend: 'pdf',text:'PDF', title: function(){ return "Detalle Inventario";},
-              footer:true,customize:function(doc){
-                doc.styles.tableHeader.fillColor='#1ab394';
-                doc.styles.title.alignment='left';
-                doc.styles.tableFooter.fillColor='#1ab394';
-                doc.styles.tableBodyEven ={alignment: 'center'};
-                doc.styles.tableBodyOdd ={alignment: 'center'};
-              }},
-
-              {extend: 'print',text:'Imprimir',
-               customize: function (win){
-                      $(win.document.body).addClass('white-bg');
-                      $(win.document.body).css('font-size', '10px');
-
-                      $(win.document.body).find('table')
-                              .addClass('compact')
-                              .css('font-size', 'inherit');
-              }
-              }
-          ]
+          buttons: [{ extend: 'copy',text:'Copiar'}]
         } );
           }
 

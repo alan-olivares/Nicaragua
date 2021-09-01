@@ -8,7 +8,7 @@ if($row[0]=='1'){
   if(strpos($permisos,',6,') !== false){
     if(ISSET($_GET['tipo'])){
       if($_GET['tipo']==='1'){
-        $barriles = "SELECT  B.Consecutivo,Al.Descripcion as Alcohol,Datepart(YYYY,L.Recepcion) as Año, C.Codigo as Uso,CONVERT(varchar(10),B.FechaRelleno, 120) as Relleno, B.Capacidad, 
+        $barriles = "SELECT  B.Consecutivo,Al.Descripcion as Alcohol,Datepart(YYYY,L.Recepcion) as Año, C.Codigo as Uso,CONVERT(varchar(10),B.FechaRelleno, 120) as Relleno, B.Capacidad,
         CASE WHEN Am.Nombre is null THEN 'Barril sin ubicación' ELSE CONCAT(Am.Nombre,', ', REPLACE(Ar.Nombre, 'COSTADO', 'Cos: '),', ',REPLACE(Se.Nombre, 'FILA', 'F: '),',', REPLACE(Po.Nombre, 'TORRE', 'T: ') ,',', REPLACE(N.Nombre, 'NIVEL', 'N: ')) END AS Ubicacion
         from WM_Barrica B inner Join WM_Pallet P on P.Idpallet = B.IdPallet
         left Join CM_CodEdad CE on CE.IdCodEdad = B.IdCodificacion left Join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
@@ -38,9 +38,9 @@ if($row[0]=='1'){
          from WM_Tanques T left Join WM_Pallet P on P.Idpallet = T.IdPallet left join WM_RackLoc R on P.RackLocID=R.RackLocID
         left Join AA_Nivel N on R.NivelID=N.NivelID left Join AA_Posicion Po on N.PosicionId=Po.PosicionID
         left Join AA_Seccion Se on Po.SeccionID=Se.SeccionID left Join AA_Area Ar on Se.AreaId = Ar.AreaId
-        left Join AA_Almacen Am on Ar.AlmacenId=Am.AlmacenID ";
+        left Join AA_Almacen Am on Ar.AlmacenId=Am.AlmacenID where T.IdEstado=1 ";
         if($_GET['fechas']!==''){
-          $barriles=$barriles."where CONVERT(varchar(10),T.FechaLLenado, 120) ='".$_GET['fechas']."'";
+          $barriles=$barriles."and CONVERT(varchar(10),T.FechaLLenado, 120) ='".$_GET['fechas']."'";
         }
         imprimir($barriles,$conn);
       }

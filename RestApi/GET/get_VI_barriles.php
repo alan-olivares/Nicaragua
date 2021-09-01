@@ -6,7 +6,6 @@ $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC);
 if($row[0]=='1'){
   include '../revisar_permisos.php';
   if(strpos($permisos,',2,') !== false){
-    $GeneralError='..Error.. Hubó un problema con la base de datos, intenta de nuevo más tarde';
     if(ISSET($_GET['area'])){
       $area=$_GET["area"];
       $fila = "exec sp_AA_getFilas '$area'";
@@ -98,6 +97,27 @@ function imprimir($query,$conn){
     sqlsrv_free_stmt($stmt);
   }else{
     echo $GeneralError;
+  }
+}
+function imprimirTabla($query,$conn){
+  $stmt = sqlsrv_query( $conn , $query);
+  if($stmt){
+    $result = "";
+    do {
+        while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)){
+          $result=$result."<tr>";
+          foreach ($row as $campo) {
+            $result=$result.'<td style="max-width:100%;white-space:nowrap;">'.$campo.'</td>';
+          }
+          $result=$result."</tr>";
+          echo $result;
+          $result = "";
+        }
+    } while (sqlsrv_next_result($stmt));
+
+    sqlsrv_free_stmt($stmt);
+  }else{
+    echo '..Error.. Hubó un problema con la base de datos, intenta de nuevo más tarde';
   }
 }
 sqlsrv_close($conn); //Close the connnectiokn first

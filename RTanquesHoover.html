@@ -175,34 +175,46 @@
                    <div class="col-md-6 text-center d-flex justify-content-center" style="border-style: dotted;border-color: black;">
                      <button class="button5 btn btn-primary b-r-xl" onclick="abrir('TanquesHoover.html')" style="margin-bottom:30px;">Ver tanques</button>
                    </div>
-
                  </div>
                  <div class="col-md-12 text-center d-flex justify-content-center">
                    <div class="col-md-2 text-center" >
                       <h5><label>  No Serie:   </label>
-                         <input type="number" class="form-control" required="true" id="serie">
+                         <input type="number" class="form-control b-r-xl" required="true" id="serie">
                       </h5>
                    </div>
                    <div class="col-md-4 text-center " >
                       <h5><label class="col-md-12">  Capacidad:   </label>
                         <div class="col-md-12 d-flex">
-                          <input type="number" class="form-control col-md-6" required="true" id="capacidad" value="200">
+                          <input type="number" class="form-control col-md-6" required="true" id="capacidad" value="350">
                           <select class="form-control col-md-6" id="tipo">
                             <option value="4.54609">Galones</option>
                             <option value="1.0">Litros</option>
                           </select>
                         </div>
                       </h5>
-
                    </div>
-                   <div class="col-md-5 text-center" >
-                      <h5><label>  Referencia:   </label>
-                         <input type="text" class="form-control" required="true" id="ref">
+                   <div class="col-md-4 text-center" >
+                     <h5><label>  Asignar a plantel:   </label>
+                        <select class="form-control b-r-xl" id="plantel">
+                        </select>
+                     </h5>
+                   </div>
+                 </div>
+                 <div class="col-md-12 text-center d-flex justify-content-center">
+                   <div class="col-md-4 text-center" >
+                      <h5><label>  Proveedor:   </label>
+                         <select class="form-control b-r-xl" id="proveedor">
+                         </select>
+                      </h5>
+                   </div>
+                   <div class="col-md-4 text-center" >
+                      <h5><label>  Órden de compra:   </label>
+                         <input type="text" class="form-control b-r-xl" required="true" id="ref">
                       </h5>
                    </div>
                  </div>
                   <div class="col-md-12 text-center  d-flex justify-content-center" >
-                     <button class="button5 btn btn-primary b-r-xl" onclick="GuardarDatos();" style="margin-right:70px;">Generar registro</button>
+                     <button class="button5 btn btn-primary b-r-xl" onclick="GuardarDatos();">Generar registro</button>
                   </div>
                </div>
             </div>
@@ -242,7 +254,7 @@
              return;
            }
            try {
-             var params='Capac='+(parseFloat($("#capacidad").val())* parseFloat($("#tipo").val()))+'&NoSerie='+$("#serie").val()+'&Ref='+$("#ref").val();
+             var params='Capac='+(parseFloat($("#capacidad").val())* parseFloat($("#tipo").val()))+'&NoSerie='+$("#serie").val()+'&Ref='+$("#ref").val()+'&area='+$("#plantel").val()+"&prov="+$("#proveedor").val();
              var result=await conexion("POST", 'RestApi/POST/'+postApi, params);
              mensajeSimple(result);
              $("#serie").val('');
@@ -250,10 +262,34 @@
              mensajeError(error);
            }
          }
+         async function ObtenerDatos(){
+           try {
+             url='RestApi/GET/'+getApi+'?planteles=true';
+             result = await conexion("GET",url,"");
+             parsed =JSON.parse(result);
+             for (i = 0; i < parsed.length; i++) {
+               $('#plantel').append($('<option>', {
+                 value: parsed[i]["IdArea"],
+                 text: parsed[i]["Nombre"]
+               }));
+             }
+             url='RestApi/GET/'+getApi+'?proveedor=true';
+             result = await conexion("GET",url,"");
+             parsed =JSON.parse(result);
+             for (i = 0; i < parsed.length; i++) {
+               $('#proveedor').append($('<option>', {
+                 value: parsed[i]["IdProveedor"],
+                 text: parsed[i]["Descripcion"]
+               }));
+             }
+           } catch(error) {
+             await mensajeError(error);
+           }
+         }
 
          $(document).ready(function(){
            permisos(["8"]);
-           //ObtenerDatos();
+           ObtenerDatos();
          });
       </script>
    </body>

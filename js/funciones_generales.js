@@ -1,4 +1,5 @@
 ObtenerNotificaciones();
+revisarTema();
 const getNode='http://'+$(location).attr('hostname')+":1337/";
 revisarPermisosInterface();
 $(".scrollingtable2").css("height",screen.height-260);
@@ -8,6 +9,29 @@ async function ObtenerNotificaciones(){
   document.getElementById("letrero2").innerHTML=numero;
   document.getElementById("letrero3").innerHTML=numero;
   document.getElementById("letrero4").innerHTML="Tienes "+numero+" solicitudes pendientes";
+}
+function revisarTema(){
+  if(localStorage['tema']==='2'){
+    $('.gray-bg').removeClass('gray-bg').addClass('gray-bg-dark');
+    $('.navbar-static-top').removeClass('navbar-static-top').addClass('navbar-static-top-dark');
+    $("#page-wrapper").css({"background-color":"#333333"});
+    entradasDark(['select','input','.footer','.panel-body','.white-bg','.ui-dialog-content','.ibox-content','.panel-default']);
+    $('.ui-dialog-titlebar').css({"color":"#a2a1a1"});
+    $('.ui-dialog-titlebar').css({"background-color":"#2f2f2f"});
+    $('.panel-title').css({"color":"#a2a1a1"});
+    $('.panel-heading').css({"background-color":"#2f2f2f"});
+    $('.barriles_length').css({"color":"#a2a1a1"});
+    $('.table-bordered').removeClass('table-bordered').addClass('table-bordered-dark');
+
+  }
+}
+function entradasDark(valores){
+  valores.forEach((item, i) => {
+    $(item).css({"color":"#a2a1a1"});
+    $(item).css({"background-color":"#181818"});
+    $(item+":disabled").css({"background-color":"#303030"});
+  });
+
 }
 function FormatDate(fecha){
   if(fecha!=""){
@@ -21,6 +45,14 @@ function PickerToNormal(fecha){
   if(fecha!=null){
     var res = fecha.split("-");
     return res[2]+"-"+res[1]+"-"+res[0];
+  }else{
+    return "";
+  }
+}
+function NormalToPicker(fecha){
+  if(fecha!=null){
+    var res = fecha.split("-");
+    return res[1]+"-"+res[0]+"-"+res[2];
   }else{
     return "";
   }
@@ -269,11 +301,12 @@ function crearTablaJson(json,tabla){
       content+="</tr>";
     }
     $(tabla+' > tbody').append(content);
+    //$('#cargandoIndicador').text('');
+
   }else{
     $(tabla+' > thead').append('<tr><th>Tabla sin datos</th></tr>');
   }
-
-  return content;
+  revisarTema();
 }
 
 function GenerarEtiqueta(consecutivo,tipo){
