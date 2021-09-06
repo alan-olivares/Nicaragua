@@ -247,7 +247,7 @@ function conexion(method, url,params) {
                 console.log(xhttp.response);
                 resolve(xhttp.response);
               }else{
-                reject(xhttp.response);
+                reject(xhttp.response.substring(12, xhttp.response.length));
               }
 
             } else {

@@ -34,11 +34,6 @@ if($row[0]=='1'){
 <body class="gray-bg">
   <script src="js/revisar_sesion.js"></script>
   <div class="row wrapper border-bottom white-bg page-heading" >
-    <div class="col-md-12 text-center" >
-      <button class="button2 btn btn-primary b-r-xl" onclick="javascript:generate();">PDF</button>
-      <button class="button2 btn btn-primary b-r-xl" onclick="exportTableToCSV(evento+' '+dia+'.csv')">CSV</button>
-    </div>
-
     <div class="table-responsive col-md-12">
       <h3 style="margin-top:20px;margin-left:10px;" id="fecha">Fecha: <?php echo $dia?></h3>
       <h4 style="margin-top:20px;margin-left:10px;" id="evento">Evento: <?php echo $tipo?></h4>
@@ -175,33 +170,6 @@ if($row[0]=='1'){
   <script>
   var dia='<?php echo $dia?>';
   var evento='<?php echo $tipo?>';
-  function generate() {
-
-     var doc = new jsPDF('p', 'pt', 'letter');
-     var res1,res0;
-     if($('#tabla1 tr').length > 0){
-     // second table
-     doc.text(document.getElementById('fecha').innerHTML.toString(),40,50);
-     doc.text(evento,40,70);
-      res1 = doc.autoTableHtmlToJson(document.getElementById('tabla1'));
-      var options = {
-        tableWidth: 'auto',
-        theme: 'grid',
-        columnWidth: 'auto',
-        margin: {
-          top: 80
-        },
-        styles: {
-          overflow: 'linebreak'
-        },
-        fontSize:10
-       };
-      doc.autoTable(res1.columns, res1.data, options);
-      doc.save(evento+" "+dia+".pdf");
-     }else{
-       window.alert("Haz una busqueda antes de exportar a PDF");
-     }
-   }
       $(document).ready(function(){
         $('#tabla1').DataTable( {
           "footerCallback": function ( row, data, start, end, display ) {

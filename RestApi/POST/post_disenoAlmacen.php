@@ -1,33 +1,22 @@
 <?php
-//$usuario=ISSET($_POST['usuario'])?$_POST['usuario']:"null";
-//$pass=ISSET($_POST['pass'])?$_POST['pass']:"null";
 include '../general_connection.php';
-$tsql = "exec sp_getAcceso '$usuario' , '$pass'";
-$stmt = sqlsrv_query( $conn , $tsql);
-$row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC);
-if($row[0]=='1'){
-  include '../revisar_permisos.php';
-  if(strpos($permisos,',7,') !== false){
-    if(isJson($_POST["data"])){
-      $tipo=$_POST["tipo"];
-      $id=$_POST["id"];
-      //echo $_POST["data"];
-      $data = json_decode($_POST["data"], true);
-      foreach ($data as $campo) {
-        $query=operaciones($tipo,$campo,$id);
-        //echo $query;
-        sqlsrv_query( $conn , $query);
-      }
-      echo $tipo.' actualizados correctamiente';
-    }else{
-      echo '..Error.. Se produjo un problema al actualizar los datos';
+if(strpos($permisos,',7,') !== false){
+  if(isJson($_POST["data"])){
+    $tipo=$_POST["tipo"];
+    $id=$_POST["id"];
+    //echo $_POST["data"];
+    $data = json_decode($_POST["data"], true);
+    foreach ($data as $campo) {
+      $query=operaciones($tipo,$campo,$id);
+      //echo $query;
+      sqlsrv_query( $conn , $query);
     }
+    echo $tipo.' actualizados correctamiente';
   }else{
-    echo '..Error.. No tienes permisos para procesar cambios';
+    echo '..Error.. Se produjo un problema al actualizar los datos';
   }
-
 }else{
-  echo '..Error.. Acceso no autorizado';
+  echo '..Error.. No tienes permisos para procesar cambios';
 }
 sqlsrv_close($conn); //Close the connnectiokn first
 
@@ -77,7 +66,6 @@ function operaciones($tipo,$campo,$id) {
       values((select isnull((select top 1 PosicionID+1 from AA_Posicion order by PosicionID desc),0)+1),$id,'".$campo['Nombre']."',
       (select isnull((select top 1 Consecutivo from AA_Seccion where SeccionID=$id order by Consecutivo desc),0)+1))";
     }
-
   }else if($tipo==='NIVEL'){
     if($campo['borrar'] && $campo['id']!=-1){
       $query="exec sp_NivelOpe ".$campo['id'].",'', 2";//Operacion 2 elimina
@@ -88,10 +76,5 @@ function operaciones($tipo,$campo,$id) {
     }
   }
   return $query;
-}
-
-function isJson($string) {
- json_decode($string);
- return (json_last_error() == JSON_ERROR_NONE);
 }
 ?>

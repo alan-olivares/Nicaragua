@@ -4,7 +4,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <title>Inicio</title>
+      <title>TBRE</title>
       <link rel="icon" href="img\TBRE.ico">
       <link href="css/bootstrap.min.css" rel="stylesheet">
       <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
@@ -74,7 +74,7 @@
                   <a href="impresion.html"><i class="fa fa-print"></i> <span class="nav-label">Impresión de etiquetas</span></a>
                </li>
                <li class="seis">
-                  <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Órdenes de trabajo</span><span class="fa arrow"></span></a>
+                  <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Ordenes de trabajo</span><span class="fa arrow"></span></a>
                   <ul class="nav nav-second-level">
                     <li>
                         <a href="#">Llenado<span class="fa arrow"></span></a>
