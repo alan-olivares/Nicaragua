@@ -280,7 +280,7 @@
             if(parsed.length>0){
               var aut=btoa(localStorage['usuario'] + ":" + localStorage['password']);
               for (var i = 0; i < parsed.length; i++) {
-                content+='<tr><td style="text-align: center;color:blue;text-decoration: underline;"><a onclick="javascript:abrir(\'descripcion_bodegas.php?almacen='+parsed[i].AlmacenId+'&area='+parsed[i].AreaId+'&codificacion='+parsed[i].IdCodificacion+'&aut='+aut+'\')">'+parsed[i].Num+'</a></td>'+
+                content+='<tr><td style="text-align: center;color:blue;text-decoration: underline;"><a onclick="javascript:abrir(\'descripcion_bodegas.php?tipo=barriles&almacen='+parsed[i].AlmacenId+'&area='+parsed[i].AreaId+'&codificacion='+parsed[i].IdCodificacion+'&aut='+aut+'\')">'+parsed[i].Num+'</a></td>'+
                 "</td><td>"+parsed[i].Plantel+"</td><td>"+parsed[i].Uso+"</td><td style='text-align: right;'>"+parsed[i].A+
                 "</td><td style='text-align: right;'>"+parsed[i].B+"</td></td><td style='text-align: right;'>"+parsed[i].C+
                 "</td></td><td style='text-align: right;'>"+parsed[i].D+"</td></td><td style='text-align: right;'>"+parsed[i].F+

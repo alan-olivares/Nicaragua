@@ -55,9 +55,11 @@
                      <ul class="nav nav-second-level">
                         <li><a href="inventario.html">Inventario</a></li>
                         <li><a href="barriles_plantel.html">Barriles en plantel</a></li>
+                        <li><a href="tanques_plantel.html">Tanques en plantel</a></li>
                         <li><a href="llenados.html">Barriles llenados</a></li>
-                        <li class="active"><a href="rellenados.html">Barriles rellenados</a></li>
+                        <li><a href="rellenados.html">Barriles rellenados</a></li>
                         <li><a href="trasiego.html">Barriles trasegados</a></li>
+                        <li class="active"><a href="trasiegoHoover.html">T. Hoover llenados</a></li>
                         <li><a href="RGerencia.html">Reporte de Gerencia</a></li>
                      </ul>
                   </li>
@@ -142,7 +144,7 @@
                   <div class="navbar-header">
                      <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
                   </div>
-                  <h2 class="nav navbar-top-links titulo welcome-message">Registro de barriles por relleno</h2>
+                  <h2 class="nav navbar-top-links titulo welcome-message">Registro de tanques hoover llenados</h2>
                   <ul class="nav navbar-top-links navbar-right">
                      <li class="dropdown uno">
                         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -186,58 +188,28 @@
                       <div class="sk-bounce3"></div>
                    </div>
 
-                   <table class=" table-bordered " style="width:100%;" id="tabla1">
+                   <table class=" table-bordered tablaSeleccion" style="width:100%;" id="tabla1">
                      <thead>
                        <tr>
+                         <th colspan="3">Tanque Hoover</th>
+                         <th colspan="5">Barriles vaciados</th>
+                       </tr>
+                       <tr>
+                         <th>Etiqueta</th>
+                         <th>Litros</th>
+                         <th>Fecha llenado</th>
                          <th>N° Orden</th>
-                         <th>Fecha ODT</th>
+                         <th>Etiqueta</th>
                          <th>Alcohol</th>
-                         <th>Año Alcohol</th>
-                         <th>Uso</th>
-                         <th>Tipo</th>
-                         <th>Total</th>
-                         <th>Total litros</th>
+                         <th>Año alcohol</th>
+                         <th>Litros</th>
                        </tr>
                      </thead>
                      <tbody></tbody>
                    </table>
-                 </div>
-                 <div class="col-md-12 d-flex justify-content-center table-responsive text-center">
-                   <div class="table-responsive col-md-12">
-                     <table class="tabla" id="tabla2" >
-                       <thead>
-                         <tr>
-                           <th>Fecha</th>
-                           <th>N° Orden</th>
-                           <th>Año</th>
-                           <th>Alcohol</th>
-                           <th>Tipo</th>
-                           <th>Uso</th>
-                           <th>Etiqueta</th>
-                           <th>Litros</th>
-                           <th>Merma</th>
-                           <th>Último relleno</th>
-                           <th>Relleno actual</th>
-                         </tr>
-                       </thead>
-                       <tbody></tbody>
-                       <tfoot>
-                         <tr>
-                           <td></td>
-                           <td></td>
-                           <td></td>
-                           <th>Total B:</td>
-                           <th style="text-align: right;"></th>
-                           <td></th>
-                           <th>Total Lts:</th>
-                           <th style="text-align: right;"></th>
-                           <th>Total Merma:</th>
-                           <th style="text-align: right;"></th>
-                           <td></td>
-                         </tr>
-                       </tfoot>
-                     </table>
-                   </div>
+                   <table class=" table-bordered" style="width:100%; margin-top:40px;" id="tabla2">
+                     <tbody></tbody>
+                   </table>
                  </div>
                </div>
             </div>
@@ -296,37 +268,44 @@
         const getApi="get_Reportes.php";
 
         async function cargarDatos(){
+          var l = $('#cargando').ladda();
           try {
             empezar();
-            limpiarDatos();
             if(tabla1!=null){
               tabla1.destroy();
               tabla2.destroy();
             }
-            var url='RestApi/GET/'+getApi+'?rellenados=true&fecha1='+$('#date1').val()+'&fecha2='+$('#date2').val();
+            limpiarDatos();
+            var url='RestApi/GET/'+getApi+'?trasiegoHoover=true&fecha1='+$('#date1').val()+'&fecha2='+$('#date2').val();
             var result = await conexion("GET",url,"");
             var parsed =JSON.parse(result);
             var content="";
-            var l = $('#cargando').ladda();
-            mostrarDatos();
+            l.ladda('start');
             if(parsed.length>0){
-              l.ladda('start');
+              mostrarDatos();
+              var etiqueta="";
+              var tanques=0;
               for (var i = 0; i < parsed.length; i++) {
-                content+="<tr><td>"+parsed[i].NoOrden+"</td><td>"+parsed[i].FechaOdT+"</td><td>"+parsed[i].Alcohol+"</td><td>"+parsed[i].Fecha_Ll+"</td><td>"+parsed[i].Uso+"</td><td>"+parsed[i].Estatus+"</td><td style='text-align: right;'>"+parsed[i].Total+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i].totalLts)+"</td></tr>";
+                if(parsed[i].Etiqueta!==etiqueta){//Se encontro un nuevo tanque hoover
+                  etiqueta=parsed[i].Etiqueta;
+                  tanques++;
+                  content+='<tr class="colapsar" onclick="colapsar(this)"><td><span class="fa fa-angle-down" style="float:left; margin-left:5px;"></span>'+parsed[i].Etiqueta+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i].Litros)+"</td><td>"+parsed[i].FechaLLenado+"</td><td  colspan='5'></tr>";
+                  content+="<tr><td  colspan='3'></td><td>"+parsed[i].IdOrden+
+                  "</td><td>"+parsed[i].EtiquetaBarr+"</td><td>"+parsed[i].Descripcion+"</td><td>"+parsed[i].Recepcion+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i].Capacidad)+"</td></tr>";
+                }else{//Se añaden los barriles de cada tanque hoover
+                  content+="<tr><td  colspan='3'></td><td>"+parsed[i].IdOrden+
+                  "</td><td>"+parsed[i].EtiquetaBarr+"</td><td>"+parsed[i].Descripcion+"</td><td>"+parsed[i].Recepcion+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i].Capacidad)+"</td></tr>";
+                }
               }
-              var tamano=parsed.length;
               $('#tabla1 tbody').append(content);
-              url='RestApi/GET/'+getApi+'?rellenadosT2=true&fecha1='+$('#date1').val()+'&fecha2='+$('#date2').val();
-              result = await conexion("GET",url,"");
-              parsed =JSON.parse(result);
-              content="";
-              for (var i = 0; i < parsed.length; i++) {
-                content+="<tr><td>"+parsed[i].Fecha+"</td><td>"+parsed[i].NoOrden+"</td><td>"+parsed[i]['Año']+"</td><td>"+parsed[i].Alcohol
-                +"</td><td>"+parsed[i].Tipo+"</td><td>"+parsed[i].Uso+"</td><td>"+parsed[i].Etiqueta+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i].Litros)+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i].Merma)
-                +"</td><td>"+parsed[i]['Ultimo relleno']+"</td><td>"+parsed[i]['Relleno Actual']+"</td></tr>";
-              }
-              $('#tabla2 tbody').append(content);
-              recargarTablas(tamano,parsed.length);
+              $('#tabla2 tbody').append('<tr><td>Total tanques llenados: </td><td style="text-align: right;">'+tanques+'</td><td>Total barriles vacíados: </td><td style="text-align: right;">'+parsed.length+'</td></tr>');
+              $('.colapsar').each(function(i, obj) {
+                colapsar(obj);
+              });
+              setTimeout(function() {
+                //recargarTablas(parsed.length);
+              }, 500);
+
             }else{
               limpiarDatos();
               alert('Las fechas seleccionadas no arrojaron resultados')
@@ -340,8 +319,8 @@
         }
         function limpiarDatos(){
           $('#tabla1 tbody').empty();
-          $('#tabla2 tbody').empty();
           $('#tabla1').hide();
+          $('#tabla2 tbody').empty();
           $('#tabla2').hide();
         }
 
@@ -355,10 +334,10 @@
              var l = $('#'+boton).ladda();
              try {
                l.ladda('start');
-               var url=getNode+'?reporte=rellenados&fecha1='+$('#date1').val()+'&fecha2='+$('#date2').val()+'&tipo='+tipo;
+               var url=getNode+'?reporte=trasiegoHoover&fecha1='+$('#date1').val()+'&fecha2='+$('#date2').val()+'&tipo='+tipo;
                var valor=await conexion("GET",url,"");
                let link = document.createElement("a");
-               link.download = "Reporte de Registro de barriles por relleno del "+PickerToNormal($('#date1').val())+" al "+PickerToNormal($('#date2').val())+"."+tipo;
+               link.download = "Reporte de Registro de tanques hoover llenados del "+PickerToNormal($('#date1').val())+" al "+PickerToNormal($('#date2').val())+"."+tipo;
                link.href = valor;
                link.click();
              } catch (e) {
@@ -366,7 +345,6 @@
              } finally {
                l.ladda('stop');
              }
-
            }else{
              mensajeError("No hay datos que exportar");
            }
@@ -375,16 +353,15 @@
           var tabla1=null;
           var tabla2=null;
 
-          function recargarTablas(tamano1,tamano2){
+          function recargarTablas(tamano1){
             var check1=(tamano1>100);
-            var check2=(tamano2>100);
             tabla1=$('#tabla1').DataTable({
                 responsive: true,
                 "bPaginate": check1,
                 "paging":   check1,
-                "ordering": check1,
+                "ordering": false,
                 "info":     false,
-                "lengthMenu": [ 100, 200, 300, 500],
+                "lengthMenu": [[ 100, 200, 300, 500,-1],[ "100", "200", "300", "500","Todos"]],
                 dom: '<"html5buttons"B>lTfgitp',
                 language: {
                   searchPlaceholder: "Busca algún dato aquí",
@@ -398,51 +375,21 @@
                   },
                 },
                 buttons: [{ extend: 'copy',text:'Copiar'},]
-            });
-            tabla2=$('#tabla2').DataTable( {"footerCallback": function ( row, data, start, end, display ) {
-              var api = this.api(), data;
 
-              // Remove the formatting to get integer data for summation
-              var intVal = function ( i ) {
-                  return typeof i === 'string' ?
-                      i.replace(/[\$,]/g, '')*1 :
-                      typeof i === 'number' ?
-                          i : 0;
-              };
-              a = api.column( 7, { page: 'current'} ).data().reduce( function (a, b) {
-                  return intVal(a) + intVal(b);
-              }, 0 );
-              b= api.column( 8, { page: 'current'} ).data().reduce( function (a, b) {
-                  return intVal(a) + intVal(b);
-              }, 0 );
-              total= api.column( 2, { page: 'current'} ).data().reduce( function (a) {
-                  return a+1;
-              }, 0 );
-              // Update footer
-              $( api.column(4).footer() ).html(total);
-              $( api.column(7).footer() ).html(fomatoNumero(a));
-              $( api.column(9).footer() ).html(fomatoNumero(b));
-          },
-          responsive: true,
-          "bPaginate": check2,
-          "paging":   check2,
-          "ordering": false,
-          "info":     false,
-          "lengthMenu": [[ 100, 200, 300, 500,-1],[ "100", "200", "300", "500","Todos"]],
-          dom: '<"html5buttons"B>lTfgitp',
-          language: {
-            "lengthMenu":     "Mostrar _MENU_ resultados",
-            searchPlaceholder: "Busca algún dato aquí",
-            search: "",
-            "paginate": {
-              "first":      "Primera",
-              "last":       "Última",
-              "next":       "Siguiente",
-              "previous":   "Anterior"
-            },
-          },
-          buttons: [{ extend: 'copy',text:'Copiar'},]
-        } );
+            });
+
+
+          }
+          function colapsar(boton){
+            if($(boton).find('span').hasClass('fa-angle-down') ){
+              $(boton).find('span').removeClass('fa-angle-down');
+              $(boton).find('span').addClass('fa-angle-right');
+            }else{
+              $(boton).find('span').removeClass('fa-angle-right');
+              $(boton).find('span').addClass('fa-angle-down');
+            }
+            $(boton).nextUntil('tr.colapsar').slideToggle(100, function(){});
+            $("#tabla2").css("margin-bottom","50px");
           }
 
          $(document).ready(function(){
@@ -450,6 +397,7 @@
            limpiarDatos();
            document.getElementById("date1").valueAsDate= new Date();
            document.getElementById("date2").valueAsDate= new Date();
+
          });
 
 

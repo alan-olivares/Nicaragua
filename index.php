@@ -206,6 +206,10 @@
                      <span class="h5 font-bold m-t block" style="color:#ed5565" id="BRE">0</span>
                      <h5 class="text-muted m-b block">Barriles reparados</h5>
                   </div>
+                  <div class="col">
+                     <span class="h5 font-bold m-t block" style="color:#daed07" id="TLL">0</span>
+                     <h5 class="text-muted m-b block">T. Hoover llenados</h5>
+                  </div>
                </div>
             </div>
          </div>
@@ -240,7 +244,7 @@
       <!-- Data picker -->
       <script src="js/plugins/datapicker/bootstrap-datepicker.js"></script>
       <script src="js/funciones_generales.js"></script>
-      <script>var data1= []; var data2=[]; var data3=[];var data4=[];</script>
+      <script>var data1= []; var data2=[]; var data3=[];var data4=[];var data5=[];</script>
       <?php
          if(ISSET($_POST['date1'])){
            $orgDate = str_replace('/', '-', $_POST['date1']);
@@ -293,6 +297,10 @@
          FROM PR_Mantenimiento M INNER JOIN ADM_logMantenimiento L ON M.IdMantenimiento=L.IdMantenimiento
          WHERE L.TipoOp='I' AND M.Fecha between '$hora1' and '$hora2'
          group by CONVERT(CHAR(13), l.Fecha, 120) order by CONVERT(CHAR(13), l.Fecha, 120)";
+         $hoover="SELECT CONVERT(CHAR(13), fecha, 120), count(distinct IdTanque) as Tanques
+         FROM WM_OperacionTQH  WHERE fecha between '$hora1' and '$hora2'
+         group by CONVERT(CHAR(13), fecha, 120) order by CONVERT(CHAR(13), fecha, 120)";
+
          $llenadosTotal="SELECT count(distinct idbarrica)
          from adm_logregbarril l inner join PR_RegBarril r on r.idregbarril=l.IdregBarril
          where l.fecha between '$hora1' and '$hora2' and r.TipoReg=1";
@@ -305,25 +313,27 @@
          $reparadosTotal="SELECT count(distinct M.idbarrica)
          FROM PR_Mantenimiento M INNER JOIN ADM_logMantenimiento L ON M.IdMantenimiento=L.IdMantenimiento
          WHERE L.TipoOp='I' AND M.Fecha between '$hora1' and '$hora2'";
+         $hooverTotal="SELECT count(distinct IdTanque)
+         FROM WM_OperacionTQH WHERE  fecha between '$hora1' and '$hora2'";
 
          $stmt = sqlsrv_query( $conn , $llenados);
          $stmt2 = sqlsrv_query( $conn , $rellenados);
          $stmt3 = sqlsrv_query( $conn , $trasiegos);
          $stmt4 = sqlsrv_query( $conn , $reparados);
-         $stmtLlenadosTotal = sqlsrv_query( $conn , $llenadosTotal);
-         $stmtRellenadosTotal = sqlsrv_query( $conn , $rellenadosTotal);
-         $stmtTrasiegosTotal = sqlsrv_query( $conn , $trasiegosTotal);
-         $stmtReparadosTotal = sqlsrv_query( $conn , $reparadosTotal);
-         $TotalRe = sqlsrv_fetch_array( $stmtLlenadosTotal, SQLSRV_FETCH_NUMERIC);
-         $TotalLL = sqlsrv_fetch_array( $stmtRellenadosTotal, SQLSRV_FETCH_NUMERIC);
-         $TotalTr = sqlsrv_fetch_array( $stmtTrasiegosTotal, SQLSRV_FETCH_NUMERIC);
-         $TotalRep = sqlsrv_fetch_array( $stmtReparadosTotal, SQLSRV_FETCH_NUMERIC);
+         $stmt5 = sqlsrv_query( $conn , $hoover);
+
+         function getTotal($conn , $query){
+           $stmt = sqlsrv_query( $conn , $query);
+           $Total = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC);
+           return (int)$Total[0];
+         }
          ?>
       <script>
-         document.getElementById("BLLT").innerHTML = <?php echo $TotalRe[0]?>;
-         document.getElementById("BRT").innerHTML = <?php echo $TotalLL[0]?>;
-         document.getElementById("BTT").innerHTML = <?php echo $TotalTr[0]?>;
-         document.getElementById("BRE").innerHTML = <?php echo $TotalRep[0]?>;
+      document.getElementById("BLLT").innerHTML = <?php echo getTotal($conn ,$llenadosTotal);?>;
+      document.getElementById("BRT").innerHTML = <?php echo getTotal($conn ,$rellenadosTotal);?>;
+      document.getElementById("BTT").innerHTML = <?php echo getTotal($conn ,$trasiegosTotal);?>;
+      document.getElementById("BRE").innerHTML = <?php echo getTotal($conn ,$reparadosTotal);?>;
+      document.getElementById("TLL").innerHTML = <?php echo getTotal($conn ,$hooverTotal);?>;
       </script>
       <?php
          while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC))
@@ -350,6 +360,12 @@
       <script> data4.push([<?php echo (int)substr($row[0], -2,2)?>,<?php echo (int)$row[1]?>])</script>
       <?php
          }
+         while( $row = sqlsrv_fetch_array( $stmt5, SQLSRV_FETCH_NUMERIC))
+         {
+           ?>
+      <script> data5.push([<?php echo (int)substr($row[0], -2,2)?>,<?php echo (int)$row[1]?>])</script>
+      <?php
+         }
 
          /* Free statement and connection resources. */
          sqlsrv_free_stmt( $stmt);
@@ -363,6 +379,7 @@
                { label: "Barriles rellenados", data: data2},
                { label: "Barriles trasegados", data: data3},
                { label: "Barriles reparados", data: data4},
+               { label: "Tanques Hoover llenados", data: data5},
              ];
              var ticks = [[6, "6:00"], [7, "7:00"], [8, "8:00"], [9, "9:00"], [10, "10:00"], [11, "11:00"], [12, "12:00"], [13, "13:00"], [14, "14:00"], [15, "15:00"]
            , [16, "16:00"], [17, "17:00"], [18, "18:00"], [19, "19:00"]];
@@ -392,7 +409,7 @@
                  borderWidth: 1,
                  color: '#858786'
                },
-               colors: ["#1ab394", "#1C84C6","#f8ac59","#ed5565"],
+               colors: ["#1ab394", "#1C84C6","#f8ac59","#ed5565","#daed07"],
                xaxis:{
                  min:6,
                  max:19,
@@ -419,19 +436,20 @@
                var aut='&aut='+btoa(localStorage['usuario'] + ":" + localStorage['password']);
                switch (item.series.label) {
                  case "Barriles llenados":
-                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" "+hora+":00&hora2="+dia+" "+hora+":59&evento=1&tipo=Barriles llenados"+aut);
+                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" "+hora+":00&hora2="+dia+" "+hora+":59&evento=1&tipo="+item.series.label+aut);
                  break;
                  case "Barriles rellenados":
-                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" "+hora+":00&hora2="+dia+" "+hora+":59&evento=2,4,5&tipo=Barriles rellenados"+aut);
+                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" "+hora+":00&hora2="+dia+" "+hora+":59&evento=2,4,5&tipo="+item.series.label+aut);
                  break;
                  case "Barriles trasegados":
-                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" "+hora+":00&hora2="+dia+" "+hora+":59&evento=3&tipo=Barriles trasegados"+aut);
+                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" "+hora+":00&hora2="+dia+" "+hora+":59&evento=3&tipo="+item.series.label+aut);
                  break;
                  case "Barriles reparados":
-                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" "+hora+":00&hora2="+dia+" "+hora+":59&evento=10&tipo=Barriles reparados"+aut);
+                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" "+hora+":00&hora2="+dia+" "+hora+":59&evento=10&tipo="+item.series.label+aut);
                  break;
-                 default:
-
+                 case "Tanques Hoover llenados":
+                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" "+hora+":00&hora2="+dia+" "+hora+":59&evento=11&tipo="+item.series.label+aut);
+                 break;
                }
 
              }

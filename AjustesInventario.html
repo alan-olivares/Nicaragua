@@ -273,7 +273,6 @@
          const getApi="get_ajustesInventario.php";
          const postApi="post_ajustesInventario.php";
 
-
          function cambioBarriles(campo){
            if(campo.value<=$('#barriles tbody tr').length){
              $('#barriles > tbody > tr').removeClass('selected');
@@ -356,7 +355,6 @@
 
          }
          async function CargarTabla(){
-
            try {
              var l = $('#cargando').ladda();
              l.ladda('start');

@@ -39,67 +39,7 @@ if($row[0]=='1'){
       <h4 style="margin-top:20px;margin-left:10px;" id="evento">Evento: <?php echo $tipo?></h4>
     <table class="funciones tabla " id="tabla1">
       <?php
-      if($evento!=10){
-      ?>
-    <thead>
-      <tr>
-        <th style="text-align: center;">Hora</th>
-        <th style="text-align: center;">N° Orden</th>
-        <th style="text-align: center;">Etiqueta</th>
-        <th style="text-align: center;">Tapa</th>
-        <th style="text-align: center;">Uso</th>
-        <th style="text-align: center;">Litros</th>
-        <th style="text-align: center;">Alcohol</th>
-        <th style="text-align: center;">Año Alcohol</th>
-      </tr>
-      </thead>
-      <tbody>
-        <?php
-        $tsql = "select SUBSTRING(CONVERT(CHAR(16), lo.fecha, 120),12,5),
-        IdOrden,'01' + '01' +(right('000000' + convert(varChar(6),Consecutivo ),6)) as Etiqueta,
-        NoTapa, C.Codigo, Capacidad, Al.Descripcion as Alcohol, Year(L.recepcion) as [Año Alcohol]
-        from adm_logregbarril lo
-        inner join PR_RegBarril r on r.idregbarril=lo.IdregBarril
-        inner Join CM_CodEdad CE on CE.IdCodEdad = r.IdCodedad
-        inner Join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
-        inner Join WM_LoteBarrica LB on LB.IdLoteBarica = r.IdLoteBarrica
-        left Join PR_Lote L on L.Idlote = LB.IdLote
-        inner Join CM_Alcohol Al on Al.IdAlcohol = L.IdAlcohol
-        where lo.fecha between '$hora1' and '$hora2' and r.TipoReg in ($evento) order by SUBSTRING(CONVERT(CHAR(16), lo.fecha, 120),12,5)";
-
-        $stmt = sqlsrv_query( $conn , $tsql);
-
-        while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC))
-        {
-        ?>
-        <tr>
-          <td style="text-align: center;"><?php echo $row[0]?></td>
-          <td style="text-align: center;"><?php echo $row[1]?></td>
-          <td style="text-align: center;"><?php echo $row[2]?></td>
-          <td style="text-align: center;"><?php echo $row[3]?></td>
-          <td style="text-align: center;"><?php echo $row[4]?></td>
-          <td style="text-align: right;"><?php echo number_format((float)str_replace(",","",$row[5]), 3, '.', ',')?></td>
-          <td style="text-align: center;"><?php echo $row[6]?></td>
-          <td style="text-align: center;"><?php echo $row[7]?></td>
-        </tr>
-        <?php
-        }
-        ?>
-        </tbody>
-        <tfoot>
-          <tr>
-            <td style="text-align: center;"></td>
-            <td style="text-align: center;"></td>
-            <td style="text-align: center;"></td>
-            <td style="text-align: center;"></td>
-            <th style="text-align: center;">Total Litros:</th>
-            <th style="text-align: right;"></th>
-            <td style="text-align: center;"></td>
-            <td style="text-align: center;"></td>
-          </tr>
-        </tfoot>
-        <?php
-      }else{
+      if($evento==10){
         ?>
         <thead>
           <tr>
@@ -112,7 +52,7 @@ if($row[0]=='1'){
           </thead>
           <tbody>
             <?php
-            $tsql = "select SUBSTRING(CONVERT(CHAR(16), L.fecha, 120),  12, 5),
+            $tsql = "SELECT SUBSTRING(CONVERT(CHAR(16), L.fecha, 120),  12, 5),
             isnull((('01' + right('00' + convert(varChar(2),1),2) + right('000000' + convert(varChar(6),B.Consecutivo),6))),'Sin Asignar') as Etiqueta,
             C.Codigo as Uso,
             U.Nombre as Operador,
@@ -143,6 +83,107 @@ if($row[0]=='1'){
             ?>
             </tbody>
         <?php
+      }else if($evento==11){
+        ?>
+        <thead>
+          <tr>
+            <th style="text-align: center;">Hora</th>
+            <th style="text-align: center;">Etiqueta</th>
+            <th style="text-align: center;">Ubicación</th>
+            <th style="text-align: center;">Litros</th>
+            <th style="text-align: center;">Total barriles trasegados</th>
+          </tr>
+          </thead>
+          <tbody>
+            <?php
+            $tsql = "SELECT SUBSTRING(CONVERT(CHAR(16), Op.fecha, 120),  12, 5) as Hora,
+            isnull((('01' + right('00' + convert(varChar(2),2),2) + right('000000' + convert(varChar(6),OpDe.NoSerie),6))),'Sin Asignar') as Etiqueta,
+            CASE WHEN Am.Nombre is null THEN 'Tanque sin ubicación' ELSE CONCAT(Am.Nombre,', ', REPLACE(Ar.Nombre, 'COSTADO', 'Cos: '),', ',REPLACE(Se.Nombre, 'FILA', 'F: '),',', REPLACE(Po.Nombre, 'TORRE', 'T: ') ,',', REPLACE(N.Nombre, 'NIVEL', 'N: ')) END AS Ubicacion,
+            OpDe.Litros, (select count(*) from WM_OperacionTQHBarrilHis where IdOperacion=Op.IdOperacion) from WM_OperacionTQH Op
+            inner join WM_OperacionTQHDetalle OpDe on Op.IdOperacion = OpDe.IdOperacion
+            left Join WM_Pallet P on P.Idpallet = OpDe.IdPallet left join WM_RackLoc R on P.RackLocID=R.RackLocID left Join AA_Nivel N on R.NivelID=N.NivelID
+            left Join AA_Posicion Po on N.PosicionId=Po.PosicionID left Join AA_Seccion Se on Po.SeccionID=Se.SeccionID left Join AA_Area Ar on Se.AreaId = Ar.AreaId
+            left Join AA_Almacen Am on Ar.AlmacenId=Am.AlmacenID
+            Where Op.Fecha between '$hora1' and '$hora2'
+            order by SUBSTRING(CONVERT(CHAR(16), Op.fecha, 120),  12, 5)";
+
+            $stmt = sqlsrv_query( $conn , $tsql);
+
+            while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC))
+            {
+            ?>
+            <tr>
+              <td style="text-align: center;"><?php echo $row[0]?></td>
+              <td style="text-align: center;"><?php echo $row[1]?></td>
+              <td style="text-align: center;"><?php echo utf8_encode($row[2])?></td>
+              <td style="text-align: center;"><?php echo $row[3]?></td>
+              <td style="text-align: center;"><?php echo (int)$row[4]?></td>
+            </tr>
+            <?php
+            }
+            ?>
+            </tbody>
+        <?php
+      }else{
+        ?>
+      <thead>
+        <tr>
+          <th style="text-align: center;">Hora</th>
+          <th style="text-align: center;">N° Orden</th>
+          <th style="text-align: center;">Etiqueta</th>
+          <th style="text-align: center;">Tapa</th>
+          <th style="text-align: center;">Uso</th>
+          <th style="text-align: center;">Litros</th>
+          <th style="text-align: center;">Alcohol</th>
+          <th style="text-align: center;">Año Alcohol</th>
+        </tr>
+        </thead>
+        <tbody>
+          <?php
+          $tsql = "SELECT SUBSTRING(CONVERT(CHAR(16), lo.fecha, 120),12,5),
+          IdOrden,'01' + '01' +(right('000000' + convert(varChar(6),Consecutivo ),6)) as Etiqueta,
+          NoTapa, C.Codigo, Capacidad, Al.Descripcion as Alcohol, Year(L.recepcion) as [Año Alcohol]
+          from adm_logregbarril lo
+          inner join PR_RegBarril r on r.idregbarril=lo.IdregBarril
+          inner Join CM_CodEdad CE on CE.IdCodEdad = r.IdCodedad
+          inner Join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
+          inner Join WM_LoteBarrica LB on LB.IdLoteBarica = r.IdLoteBarrica
+          left Join PR_Lote L on L.Idlote = LB.IdLote
+          inner Join CM_Alcohol Al on Al.IdAlcohol = L.IdAlcohol
+          where lo.fecha between '$hora1' and '$hora2' and r.TipoReg in ($evento) order by SUBSTRING(CONVERT(CHAR(16), lo.fecha, 120),12,5)";
+
+          $stmt = sqlsrv_query( $conn , $tsql);
+
+          while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC))
+          {
+          ?>
+          <tr>
+            <td style="text-align: center;"><?php echo $row[0]?></td>
+            <td style="text-align: center;"><?php echo $row[1]?></td>
+            <td style="text-align: center;"><?php echo $row[2]?></td>
+            <td style="text-align: center;"><?php echo $row[3]?></td>
+            <td style="text-align: center;"><?php echo $row[4]?></td>
+            <td style="text-align: right;"><?php echo number_format((float)str_replace(",","",$row[5]), 3, '.', ',')?></td>
+            <td style="text-align: center;"><?php echo $row[6]?></td>
+            <td style="text-align: center;"><?php echo $row[7]?></td>
+          </tr>
+          <?php
+          }
+          ?>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td style="text-align: center;"></td>
+              <td style="text-align: center;"></td>
+              <td style="text-align: center;"></td>
+              <td style="text-align: center;"></td>
+              <th style="text-align: center;">Total Litros:</th>
+              <th style="text-align: right;"></th>
+              <td style="text-align: center;"></td>
+              <td style="text-align: center;"></td>
+            </tr>
+          </tfoot>
+          <?php
       }
       sqlsrv_free_stmt( $stmt);
       sqlsrv_close( $conn);

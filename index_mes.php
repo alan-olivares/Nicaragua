@@ -205,6 +205,10 @@
                      <span class="h5 font-bold m-t block" style="color:#ed5565" id="BRE">0</span>
                      <h5 class="text-muted m-b block">Barriles reparados</h5>
                   </div>
+                  <div class="col">
+                     <span class="h5 font-bold m-t block" style="color:#daed07" id="TLL">0</span>
+                     <h5 class="text-muted m-b block">T. Hoover llenados</h5>
+                  </div>
                </div>
             </div>
          </div>
@@ -247,7 +251,7 @@
       <!-- ChartJS-->
       <script src="js/plugins/chartJs/Chart.min.js"></script>
       <script src="js/funciones_generales.js"></script>
-      <script>var data1= []; var data2=[]; var data3=[];var data4=[];</script>
+      <script>var data1= []; var data2=[]; var data3=[];var data4=[];var data5=[];</script>
       <?php
          if(ISSET($_POST['date1'])){
            $date1 = date("Y-m", strtotime($_POST['date1']));
@@ -281,57 +285,59 @@
          $hora1= $date1."-01 00:00";
          $hora2= $date1."-".$lastDay." 23:59";
          include'general_connection.php';
-         $llenados = "select SUBSTRING(CONVERT(CHAR(10), l.fecha, 120), 9, 2) as dia, count(distinct idbarrica) as Barriles
+         $llenados = "SELECT SUBSTRING(CONVERT(CHAR(10), l.fecha, 120), 9, 2) as dia, count(distinct idbarrica) as Barriles
          from adm_logregbarril l inner join PR_RegBarril r on r.idregbarril=l.IdregBarril
          where l.fecha between '$hora1' and '$hora2' and r.TipoReg=1
          group by SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2) order by SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2)";
-         $rellenados ="select SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2) as dia, count(distinct idbarrica) as Barriles
+         $rellenados ="SELECT SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2) as dia, count(distinct idbarrica) as Barriles
          from adm_logregbarril l inner join PR_RegBarril r on r.idregbarril=l.IdregBarril
          where l.fecha between '$hora1' and '$hora2' and r.TipoReg in (2,4,5)
          group by SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2) order by SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2)";
-         $trasiegos="select SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2) as dia, count(distinct idbarrica) as Barriles
+         $trasiegos="SELECT SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2) as dia, count(distinct idbarrica) as Barriles
          from adm_logregbarril l inner join PR_RegBarril r on r.idregbarril=l.IdregBarril
          where l.fecha between '$hora1' and '$hora2' and r.TipoReg=3
          group by SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2) order by SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2)";
-         $reparados="SELECT SUBSTRING(CONVERT(CHAR(10), L.fecha, 120),  9, 2) as Hora, count(distinct M.idbarrica) as Barriles
+         $reparados="SELECT SUBSTRING(CONVERT(CHAR(10), L.fecha, 120),  9, 2) as dia, count(distinct M.idbarrica) as Barriles
          FROM PR_Mantenimiento M INNER JOIN ADM_logMantenimiento L ON M.IdMantenimiento=L.IdMantenimiento
          WHERE L.TipoOp='I' AND M.Fecha between '$hora1' and '$hora2'
          group by SUBSTRING(CONVERT(CHAR(10), L.fecha, 120),  9, 2) order by SUBSTRING(CONVERT(CHAR(10), l.fecha, 120),  9, 2)";
+         $hoover="SELECT SUBSTRING(CONVERT(CHAR(10), fecha, 120),  9, 2) as dia, count(distinct IdTanque) as Tanques
+         FROM WM_OperacionTQH  WHERE fecha between '$hora1' and '$hora2'
+         group by SUBSTRING(CONVERT(CHAR(10), fecha, 120),  9, 2) order by SUBSTRING(CONVERT(CHAR(10), fecha, 120),  9, 2)";
 
-         $llenadosTotal="select count(distinct idbarrica)
+         $llenadosTotal="SELECT count(distinct idbarrica)
          from adm_logregbarril l inner join PR_RegBarril r on r.idregbarril=l.IdregBarril
          where l.fecha between '$hora1' and '$hora2' and r.TipoReg=1";
-         $rellenadosTotal="select count(distinct idbarrica)
+         $rellenadosTotal="SELECT count(distinct idbarrica)
          from adm_logregbarril l inner join PR_RegBarril r on r.idregbarril=l.IdregBarril
          where l.fecha between '$hora1' and '$hora2' and r.TipoReg in (2,4,5)";
-         $trasiegosTotal="select count(distinct idbarrica)
+         $trasiegosTotal="SELECT count(distinct idbarrica)
          from adm_logregbarril l inner join PR_RegBarril r on r.idregbarril=l.IdregBarril
          where l.fecha between '$hora1' and '$hora2' and r.TipoReg=3";
          $reparadosTotal="SELECT count(distinct M.idbarrica)
          FROM PR_Mantenimiento M INNER JOIN ADM_logMantenimiento L ON M.IdMantenimiento=L.IdMantenimiento
          WHERE L.TipoOp='I' AND M.Fecha between '$hora1' and '$hora2'";
+         $hooverTotal="SELECT count(distinct IdTanque)
+         FROM WM_OperacionTQH WHERE  fecha between '$hora1' and '$hora2'";
 
          $stmt = sqlsrv_query( $conn , $llenados);
          $stmt2 = sqlsrv_query( $conn , $rellenados);
          $stmt3 = sqlsrv_query( $conn , $trasiegos);
          $stmt4 = sqlsrv_query( $conn , $reparados);
+         $stmt5 = sqlsrv_query( $conn , $hoover);
 
-         $stmtLlenadosTotal = sqlsrv_query( $conn , $llenadosTotal);
-         $stmtRellenadosTotal = sqlsrv_query( $conn , $rellenadosTotal);
-         $stmtTrasiegosTotal = sqlsrv_query( $conn , $trasiegosTotal);
-         $stmtReparadosTotal = sqlsrv_query( $conn , $reparadosTotal);
-
-         $TotalRe = sqlsrv_fetch_array( $stmtLlenadosTotal, SQLSRV_FETCH_NUMERIC);
-         $TotalLL = sqlsrv_fetch_array( $stmtRellenadosTotal, SQLSRV_FETCH_NUMERIC);
-         $TotalTr = sqlsrv_fetch_array( $stmtTrasiegosTotal, SQLSRV_FETCH_NUMERIC);
-         $TotalRep = sqlsrv_fetch_array( $stmtReparadosTotal, SQLSRV_FETCH_NUMERIC);
-
+         function getTotal($conn , $query){
+           $stmt = sqlsrv_query( $conn , $query);
+           $Total = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC);
+           return (int)$Total[0];
+         }
          ?>
       <script>
-         document.getElementById("BLLT").innerHTML = <?php echo $TotalRe[0]?>;
-         document.getElementById("BRT").innerHTML = <?php echo $TotalLL[0]?>;
-         document.getElementById("BTT").innerHTML = <?php echo $TotalTr[0]?>;
-         document.getElementById("BRE").innerHTML = <?php echo $TotalRep[0]?>;
+         document.getElementById("BLLT").innerHTML = <?php echo getTotal($conn ,$llenadosTotal);?>;
+         document.getElementById("BRT").innerHTML = <?php echo getTotal($conn ,$rellenadosTotal);?>;
+         document.getElementById("BTT").innerHTML = <?php echo getTotal($conn ,$trasiegosTotal);?>;
+         document.getElementById("BRE").innerHTML = <?php echo getTotal($conn ,$reparadosTotal);?>;
+         document.getElementById("TLL").innerHTML = <?php echo getTotal($conn ,$hooverTotal);?>;
       </script>
       <?php
          while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC))
@@ -358,6 +364,14 @@
       <script> data4.push([<?php echo (int)$row[0]?>,<?php echo (int)$row[1]?>])</script>
       <?php
          }
+         while( $row = sqlsrv_fetch_array( $stmt5, SQLSRV_FETCH_NUMERIC))
+
+         {
+           ?>
+      <script> data5.push([<?php echo (int)$row[0]?>,<?php echo (int)$row[1]?>])</script>
+      <?php
+
+         }
 
          /* Free statement and connection resources. */
          sqlsrv_free_stmt( $stmt);
@@ -371,12 +385,15 @@
 
          $(document).ready(function() {
            permisos(["11"]);
+
              var dataset = [
                { label: "Barriles llenados", data: data1 },
                { label: "Barriles rellenados", data: data2},
                { label: "Barriles trasegados", data: data3},
                { label: "Barriles reparados", data: data4},
+               { label: "Tanques Hoover llenados", data: data5},
              ];
+
              var ticks =[];
              var d = new Date(document.getElementById("date1").valueAsDate);
              for(var i=1;i<=new Date(d.getFullYear(), d.getMonth()+2, 0).getDate();i++){
@@ -410,7 +427,7 @@
                  borderWidth: 1,
                  color: '#858786'
                },
-               colors: ["#1ab394", "#1C84C6","#f8ac59","#ed5565"],
+               colors: ["#1ab394", "#1C84C6","#f8ac59","#ed5565","#daed07"],
                xaxis:{
                  min:1,
                  max:new Date(d.getFullYear(), d.getMonth()+2, 0).getDate(),
@@ -436,18 +453,20 @@
                var aut='&aut='+btoa(localStorage['usuario'] + ":" + localStorage['password']);
                switch (item.series.label) {
                  case "Barriles llenados":
-                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" 00:00&hora2="+dia+" 23:59&evento=1&tipo=Barriles llenados"+aut);
+                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" 00:00&hora2="+dia+" 23:59&evento=1&tipo="+item.series.label+aut);
                  break;
                  case "Barriles rellenados":
-                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" 00:00&hora2="+dia+" 23:59&evento=2,4,5&tipo=Barriles rellenados"+aut);
+                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" 00:00&hora2="+dia+" 23:59&evento=2,4,5&tipo="+item.series.label+aut);
                  break;
                  case "Barriles trasegados":
-                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" 00:00&hora2="+dia+" 23:59&evento=3&tipo=Barriles trasegados"+aut);
+                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" 00:00&hora2="+dia+" 23:59&evento=3&tipo="+item.series.label+aut);
                  break;
                  case "Barriles reparados":
-                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" 00:00&hora2="+dia+" 23:59&evento=10&tipo=Barriles reparados"+aut);
+                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" 00:00&hora2="+dia+" 23:59&evento=10&tipo="+item.series.label+aut);
                  break;
-                 default:
+                 case "Tanques Hoover llenados":
+                   abrir("descripcion_dia.php?dia="+dia+"&hora1="+dia+" 00:00&hora2="+dia+" 23:59&evento=11&tipo="+item.series.label+aut);
+                 break;
 
                }
 

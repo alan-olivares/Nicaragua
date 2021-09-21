@@ -207,7 +207,6 @@ async function BuscarBarril(){
         for (var i = 1; i < campos[0].length; i++) {
           document.getElementById(campos[0][i]).value=parsed[0][campos[1][i]];
         }
-
       }else{
         mensajeError("La busqueda no arrojo resultados");
       }

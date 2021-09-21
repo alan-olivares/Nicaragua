@@ -47,13 +47,17 @@ app.get('/', function(req, res) {
         llenarInventario('Inventario-BaPlantel',bodega,alcohol,llenada,uso,res,req.query.tipo,id);
       }else if(req.query.reporte==='barriles_plantel'){
         llenarBarrilesPlantel('Inventario-BaPlantel',res,req.query.tipo,id);
+      }else if(req.query.reporte==='tanques_plantel'){
+        llenarTanquesPlantel('tanques_plantel',res,req.query.tipo,id);
       }else if(req.query.reporte==='llenados'){
         llenarBarrilesLlenados('llenados',res,req.query.fecha1,req.query.fecha2,req.query.tipo,id);
       }else if(req.query.reporte==='rellenados'){
         llenarBarrilesReLlenados('rellenados',res,req.query.fecha1,req.query.fecha2,req.query.tipo,id)
       }else if(req.query.reporte==='trasiego'){
         llenarBarrilesTrasiego('trasiego',res,req.query.fecha1,req.query.fecha2,req.query.tipo,id)
-      }else if(req.query.reporte==='detalleBarril'){
+      }else if(req.query.reporte==='trasiegoHoover'){
+        llenarTanquesTrasiego('trasiegoHoover',res,req.query.fecha1,req.query.fecha2,req.query.tipo,id)
+      }else  if(req.query.reporte==='detalleBarril'){
         var almamcen=req.query.almacen;
         var area=req.query.area;
         var seccion=req.query.seccion;
@@ -61,11 +65,15 @@ app.get('/', function(req, res) {
         var cod=req.query.cod;
         var fecha=req.query.fecha;
         llenarDetalleBarril('detalleBarrilXSeccion',res,almamcen,area,seccion,alcohol,cod,fecha,req.query.tipo,id)
-      }else if(req.query.reporte==='detalleBarrilPlantel'){
+      }else if(req.query.reporte==='detallebarrilesPlantel'){
         var almacen=req.query.almacen;
         var area=req.query.area;
         var cod=req.query.cod;
         llenarDetalleBarrilPlantel('detalleBarrilesPlantel',res,almacen,area,cod,req.query.tipo,id)
+      }else if(req.query.reporte==='detalletanquesPlantel'){
+        var almacen=req.query.almacen;
+        var area=req.query.area;
+        llenarDetalleTanquePlantel('detalleTanquesPlantel',res,almacen,area,req.query.tipo,id)
       }
     }else{
       res.send('..Error.. Problema con la autenticación');
@@ -702,6 +710,27 @@ function insertarTablaUnoBarrilesPlantel(json,hoja,inicio){
 }
 
 //Termina reporte en barriles_plantel.html
+//Inicia reporte en tanques_plantel.html
+function llenarTanquesPlantel(archivo,res,tipo,id){
+  XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
+    .then(async workbook => {
+      const hoja=workbook.sheet("Principal");
+      var url=servidor+'RestApi/GET/get_Reportes.php?tanques_plantel=true';
+      var result = await conexion(url);
+      var parsed =JSON.parse(result);
+      var totales=0;
+      for (var i = 0; i < parsed.length; i++) {
+        hoja.cell('F'+(i+8)).value([[parsed[i].Num,parsed[i].Plantel]]);
+        hoja.cell('H'+(i+8)).value(parsed[i].Tanques).style({"numberFormat": "#,##0"});
+        totales+=parseInt(parsed[i].Tanques);
+      }
+      hoja.cell('G'+(parsed.length+8)).value('Totales:').style({bold: true,border:true,"borderColor": "F5F5F6","horizontalAlignment":"right"});
+      hoja.cell('H'+(parsed.length+8)).value(totales).style({bold: true,border:true,"borderColor": "F5F5F6","numberFormat": "#,##0"});
+      await exportar(archivo,id,tipo,workbook,res);
+    });
+}
+
+//Termina reporte en tanques_plantel.html
 //Empieza reporte en llehandos.html
 function llenarBarrilesLlenados(archivo,res,fecha,fecha2,tipo,id){
   XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
@@ -815,6 +844,41 @@ function llenarBarrilesTrasiego(archivo,res,fecha,fecha2,tipo,id){
 
 }
 //Termina reporte en trasiego.html
+//Inicia reporte en trasiegoHoover.html
+function llenarTanquesTrasiego(archivo,res,fecha,fecha2,tipo,id){
+  XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
+    .then(async workbook => {
+      const hoja=workbook.sheet("Principal");
+      hoja.cell("J5").value(PickerToNormal(fecha));
+      hoja.cell("L5").value(PickerToNormal(fecha2));
+      var url=servidor+'RestApi/GET/get_Reportes.php?trasiegoHoover=true&fecha1='+fecha+'&fecha2='+fecha2;
+      var result = await conexion(url);
+      var parsed =JSON.parse(result);
+      var etiqueta="";
+      var pos=9,tanques=0;
+      for (var i = 0; i < parsed.length; i++) {
+        if(parsed[i].Etiqueta!==etiqueta){//Se encontro un nuevo tanque hoover
+          tanques++;
+          etiqueta=parsed[i].Etiqueta;
+          hoja.cell("E"+(i+pos)).value([[parsed[i].Etiqueta,parseFloat(parsed[i].Litros),parsed[i].FechaLLenado,'','','','','']]).style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
+          pos++;
+          hoja.cell("E"+(i+pos)).value([['','','',parsed[i].IdOrden,parsed[i].EtiquetaBarr,parsed[i].Descripcion,parsed[i].Recepcion,parseFloat(parsed[i].Capacidad)]]).style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
+        }else{//Se añaden los barriles de cada tanque hoover
+          hoja.cell("E"+(i+pos)).value([['','','',parsed[i].IdOrden,parsed[i].EtiquetaBarr,parsed[i].Descripcion,parsed[i].Recepcion,parseFloat(parsed[i].Capacidad)]]).style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
+        }
+      }
+      var posFinal=(parsed.length+pos)+2;
+      hoja.range("E"+posFinal+":F"+posFinal).merged(true);
+      hoja.cell("E"+posFinal).value('Total tanques llenados').style({border:true,"borderColor": "000000","horizontalAlignment":"center"});
+      hoja.range("I"+posFinal+":J"+posFinal).merged(true);
+      hoja.cell("I"+posFinal).value('Total barriles vacíados').style({border:true,"borderColor": "000000","horizontalAlignment":"center"});
+      hoja.cell("G"+posFinal).value(tanques).style({border:true,"borderColor": "000000","horizontalAlignment":"right","numberFormat": "#,##0"});
+      hoja.cell("K"+posFinal).value(parsed.length).style({border:true,"borderColor": "000000","horizontalAlignment":"right","numberFormat": "#,##0"});
+      await exportar(archivo,id,tipo,workbook,res);
+    });
+
+}
+//Termina reporte en trasiegoHoover.html
 //Incia reporte en descripcion.php
 function llenarDetalleBarril(archivo,res,almacen,area,seccion,alcohol,cod,fecha,tipo,id){
   XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
@@ -842,7 +906,7 @@ function llenarDetalleBarril(archivo,res,almacen,area,seccion,alcohol,cod,fecha,
 }
 //Termina reporte en descripcion.php
 
-//Incia reporte en descripcion_bodegas.php
+//Incia reporte en descripcion_bodegas.php para barriles
 function llenarDetalleBarrilPlantel(archivo,res,almacen,area,cod,tipo,id){
   XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
     .then(async workbook => {
@@ -863,7 +927,30 @@ function llenarDetalleBarrilPlantel(archivo,res,almacen,area,cod,tipo,id){
       await exportar(archivo,id,tipo,workbook,res);
     });
 }
-//Termina reporte en descripcion_bodegas.php
+//Termina reporte en descripcion_bodegas.php para barriles
+
+//Incia reporte en descripcion_bodegas.php para tanques
+function llenarDetalleTanquePlantel(archivo,res,almacen,area,tipo,id){
+  XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
+    .then(async workbook => {
+      const hoja="Principal";
+      var url=servidor+'RestApi/GET/get_Reportes.php?detallesTanquesPlantel=true&almacen='+almacen+'&area='+area;
+      var result = await conexion(url);
+      var parsed =JSON.parse(result);
+      if(parsed.length>0){
+        workbook.sheet(hoja).cell("E8").value(parsed[0].Bod);
+        workbook.sheet(hoja).cell("I8").value(parsed[0].Cost);
+        for (var i = 0; i < parsed.length; i++) {
+          workbook.sheet(hoja).cell("E"+(i+12)).value([[parsed[i].Etiqueta,parsed[i]['Año'],parsed[i].FechaTanque,parsed[i].DiasTanque,parsed[i].Estado]]).style({"horizontalAlignment":"center"});
+        }
+        workbook.sheet(hoja).range("E"+(parsed.length+12)+":F"+(parsed.length+12)).merged(true);
+        workbook.sheet(hoja).cell("E"+(parsed.length+12)).value('Total tanques:').style({bold: true,border:true,"borderColor": "000000","horizontalAlignment":"right"});
+        workbook.sheet(hoja).cell("G"+(parsed.length+12)).value(parsed.length).style({bold: true,border:true,"borderColor": "000000","numberFormat": "#,##0"});
+      }
+      await exportar(archivo,id,tipo,workbook,res);
+    });
+}
+//Termina reporte en descripcion_bodegas.php para tanques
 function convinarCeldas(hoja,convinaciones){
   for (var i = 0; i < convinaciones.length; i++) {
     hoja.range(convinaciones[i]).merged(true);

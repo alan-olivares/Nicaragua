@@ -36,6 +36,15 @@
   background-color: black;
   color: white;
 }
+tr.colapsar
+{
+    cursor:pointer;
+}
+.tablaSeleccion
+{
+    border: 1px solid black;
+    border-collapse:collapse;
+}
 .margen{
   border-style:
   inset;border-width:1px;

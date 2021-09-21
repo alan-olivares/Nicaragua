@@ -1,7 +1,8 @@
 <?php
 $almacen=$_GET["almacen"];
 $area=$_GET["area"];
-$codificacion=$_GET["codificacion"];
+$tipo=$_GET["tipo"];
+$codificacion="";
 include 'general_connection.php';
 $tsql = "exec sp_getAcceso '$usuario' , '$pass'";
 $stmt = sqlsrv_query( $conn , $tsql);
@@ -27,7 +28,7 @@ if($row[0]=='1'){
         <link rel="icon" href="img\TBRE.ico">
 
         <link href="css/plugins/dataTables/datatables.min.css" rel="stylesheet">
-
+        <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
         <link href="css/animate.css" rel="stylesheet">
         <link href="css/style.css" rel="stylesheet">
     </head>
@@ -42,12 +43,14 @@ if($row[0]=='1'){
             <h5><h4>Area: <h4 class="subrrayado"><?php echo $AreaNombre; ?></h4></h4></h5>
           </div>
         </div>
+        <?php
+        if($tipo==='barriles'){
+          $codificacion=$_GET["codificacion"];
+        ?>
         <div class="table-responsive">
           <h3 style="margin-top:20px;margin-left:10px;" id="edad">Edades</h3>
-        <table class="table table-striped table-bordered table-hover" id="tabla1">
-        <thead>
-
-
+          <table class="table table-striped table-bordered table-hover" id="tabla1">
+            <thead>
         <?php
         $tsql = "exec sp_ListaEdad";
         $stmt = sqlsrv_query( $conn , $tsql);
@@ -69,27 +72,26 @@ if($row[0]=='1'){
         /* Free statement and connection resources. */
         sqlsrv_free_stmt( $stmt);
         ?>
-        </thead>
-        <tbody>
-        </tbody>
-        </table>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
         </div>
-
         <div class="table-responsive col-md-12">
-        <table class="funciones tabla"  id="tabla2">
-        <thead>
-          <tr>
-          <th style="text-align: center;">Número</th>
-          <th style="text-align: center;">Barril</th>
-          <th style="text-align: center;">Año</th>
-          <th style="text-align: center;">Fecha</th>
-          <th style="text-align: center;">Dias barril</th>
-          <th style="text-align: center;">Edad</th>
-          <th style="text-align: center;">Estado</th>
-          <th style="text-align: center;">Etiqueta</th>
-          </tr>
-          </thead>
-          <tbody>
+          <table class="funciones tabla"  id="tabla2">
+            <thead>
+              <tr>
+                <th style="text-align: center;">Número</th>
+                <th style="text-align: center;">Barril</th>
+                <th style="text-align: center;">Año</th>
+                <th style="text-align: center;">Fecha</th>
+                <th style="text-align: center;">Dias barril</th>
+                <th style="text-align: center;">Edad</th>
+                <th style="text-align: center;">Estado</th>
+                <th style="text-align: center;">Etiqueta</th>
+              </tr>
+            </thead>
+            <tbody>
             <?php
             $tsql = "exec sp_BarrilPlantelDetalle '$almacen','$area','$codificacion'";
 
@@ -110,10 +112,6 @@ if($row[0]=='1'){
             </tr>
             <?php
             }
-
-            /* Free statement and connection resources. */
-            sqlsrv_free_stmt( $stmt);
-            sqlsrv_close( $conn);
             ?>
             </tbody>
             <tfoot>
@@ -122,8 +120,53 @@ if($row[0]=='1'){
                 <th style="text-align: right;"></th>
               </tr>
             </tfoot>
+          </table>
+        </div>
+            <?php
+          }else if($tipo==='tanques'){
+            ?>
+        <div class="table-responsive col-md-12">
+          <table class="funciones tabla"  id="tabla2">
+            <thead>
+              <tr>
+              <th style="text-align: center;">Etiqueta</th>
+              <th style="text-align: center;">Año</th>
+              <th style="text-align: center;">Fecha</th>
+              <th style="text-align: center;">Dias tanque</th>
+              <th style="text-align: center;">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+                <?php
+                $tsql = "exec sp_TanquePlantelDetalle '$almacen','$area'";
+                $stmt = sqlsrv_query( $conn , $tsql);
+
+                while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC))
+                {
+                ?>
+                <tr>
+                  <td style="text-align: center;"><?php echo $row[0];?></td>
+                  <td style="text-align: center;"><?php echo $row[1];?></td>
+                  <td style="text-align: center;"><?php echo $row[2];?></td>
+                  <td style="text-align: center;"><?php echo $row[3];?></td>
+                  <td style="text-align: center;"><?php echo utf8_encode($row[4]);?></td>
+                </tr>
+                <?php
+                }
+                ?>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th style="text-align: center;">Total tanques:</th>
+                  <th style="text-align: right;"></th>
+                </tr>
+              </tfoot>
             </table>
-            </div>
+          </div>
+            <?php
+          }
+            sqlsrv_free_stmt( $stmt);
+            ?>
             <a href="#" class="aDes floatDes btnDes" id="menu-share">
               <i class="fa fa-download my-float"></i>
             </a>
@@ -160,6 +203,7 @@ if($row[0]=='1'){
 
       <script src="js/plugins/dataTables/datatables.min.js"></script>
       <script src="js/plugins/dataTables/dataTables.bootstrap4.min.js"></script>
+      <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
       <!-- Custom and plugin javascript -->
       <script src="js/inspinia.js"></script>
       <script src="js/plugins/pace/pace.min.js"></script>
@@ -171,14 +215,15 @@ if($row[0]=='1'){
       <script src="js/plugins/ladda/ladda.jquery.min.js"></script>
 
       <script>
+      var table;
       async function generar(tipo,boton){
-        if($('#tabla2 tbody tr').length > 0){
+        if(table.data().any()){
           var l = $('#'+boton).ladda();
           l.ladda('start');
-          var url=getNode+"?reporte=detalleBarrilPlantel&tipo="+tipo+"<?php echo "&almacen=$almacen&area=$area&cod=$codificacion";?>";
+          var url=getNode+"?reporte=detalle"+"<?php echo $tipo;?>"+"Plantel&tipo="+tipo+"<?php echo "&almacen=$almacen&area=$area&cod=$codificacion";?>";
           var valor=await conexion("GET",url,"");
           let link = document.createElement("a");
-          link.download = "Detalle de barril por plantel."+tipo;
+          link.download = "Detalle de "+"<?php echo $tipo;?>"+" por plantel."+tipo;
           link.href = valor;
           link.click();
           l.ladda('stop');
@@ -187,39 +232,10 @@ if($row[0]=='1'){
           mensajeError("No hay datos que exportar");
         }
       }
-      function generate() {
 
-
-         var doc = new jsPDF('p', 'pt', 'letter');
-         var res1,res0;
-         if($('#tabla1 tr').length > 0 || $('#tabla2 tr').length > 1){
-         // first table
-          res0 = doc.autoTableHtmlToJson(document.getElementById('tabla1'));
-         //get the columns & rows for first table
-         doc.text("Edades",50,70);
-         doc.autoTable(res0.columns, res0.data, {tableWidth: 'auto',  columnWidth: 'auto',margin: {top: 80},styles: {overflow: 'linebreak'}});
-         // second table
-          res1 = doc.autoTableHtmlToJson(document.getElementById('tabla2'));
-          var options = {
-            tableWidth: 'auto',
-            columnWidth: 'auto',
-            margin: {
-              top: 80
-            },
-            styles: {
-              overflow: 'linebreak'
-            },
-            fontSize:6,
-            startY: doc.autoTableEndPosY() + 20
-           };
-          doc.autoTable(res1.columns, res1.data, options);
-          doc.save("Reporte Detalle Bodega.pdf");
-         }else{
-           window.alert("Las tablas estan vacias");
-         }
-       }
           $(document).ready(function(){
-            $('#tabla2').DataTable( {"footerCallback": function ( row, data, start, end, display ) {
+
+            table=$('#tabla2').DataTable( {"footerCallback": function ( row, data, start, end, display ) {
               var api = this.api(), data;
 
               // Remove the formatting to get integer data for summation
@@ -229,7 +245,7 @@ if($row[0]=='1'){
                       typeof i === 'number' ?
                           i : 0;
               };
-              total= api.column( 1, { page: 'current'} ).data().reduce( function (a) {
+              var total= api.column( 1, { page: 'current'} ).data().reduce( function (a) {
                   return a+1;
               }, 0 );
               // Update footer
@@ -246,47 +262,7 @@ if($row[0]=='1'){
             searchPlaceholder: "Busca algún dato aquí",
             search: "",
           },
-          buttons: [
-              { extend: 'copy',text:'Copiar'},
-              {extend: 'csv',text:'CSV',title: 'Reporte Detalle Bodega',footer:true,customize: function (csv) {
-                var buffer = new ArrayBuffer(3);
-                var dataView = new DataView(buffer);
-                dataView.setUint8(0, 0xef);
-                dataView.setUint8(1, 0xbb);
-                dataView.setUint8(2, 0xbf);
-                var read = new Uint8Array(buffer);
-                var blob = new Blob([read, csv], {type: 'text/csv;charset=utf-8'});
-                return blob;
-              }},
-              {extend: 'excel',text:'Excel', title: 'Reporte Detalle Bodega',footer:true, customize: function( xlsx ) {
-
-                var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                //list of columns that should get a 1000 separator depending on local Excel installation
-                $('row c[r^="A"]', sheet).attr( 's', '' );
-                $('row c[r^="E"]', sheet).attr( 's', '' );
-                $('row c[r^="G"]', sheet).attr( 's', '' );
-                $('row c[r^="J"]', sheet).attr( 's', '' );
-              }},
-              {extend: 'pdf',text:'PDF', title: function(){ return "Reporte Detalle Bodega";},
-              footer:true,customize:function(doc){
-                doc.styles.tableHeader.fillColor='#1ab394';
-                doc.styles.title.alignment='left';
-                doc.styles.tableFooter.fillColor='#1ab394';
-                doc.styles.tableBodyEven ={alignment: 'center'};
-                doc.styles.tableBodyOdd ={alignment: 'center'};
-              }},
-
-              {extend: 'print',text:'Imprimir',
-               customize: function (win){
-                      $(win.document.body).addClass('white-bg');
-                      $(win.document.body).css('font-size', '10px');
-
-                      $(win.document.body).find('table')
-                              .addClass('compact')
-                              .css('font-size', 'inherit');
-              }
-              }
-          ]
+          buttons: [{ extend: 'copy',text:'Copiar'}]
       } );
 
           });
@@ -303,6 +279,7 @@ if($row[0]=='1'){
 }else{
   echo 'La autenticación del usuario no se ha podido procesar';
 }
+sqlsrv_close( $conn);
 function getValor($query,$conn){
   $stmt = sqlsrv_query( $conn , $query);
   $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC);
