@@ -55,12 +55,14 @@
                   <li class="diez">
                      <a href="#"><i class="fa fa-table"></i> <span class="nav-label">Reportes</span><span class="fa arrow"></span></a>
                      <ul class="nav nav-second-level">
-                        <li><a href="inventario.html">Inventario</a></li>
-                        <li><a href="barriles_plantel.html">Barriles en plantel</a></li>
-                        <li><a href="llenados.html">Barriles llenados</a></li>
-                        <li><a href="rellenados.html">Barriles rellenados</a></li>
-                        <li><a href="trasiego.html">Barriles trasegados</a></li>
-                        <li><a href="RGerencia.html">Reporte de Gerencia</a></li>
+                       <li><a href="inventario.html">Inventario</a></li>
+                       <li><a href="barriles_plantel.html">Barriles en plantel</a></li>
+                       <li><a href="tanques_plantel.html">Tanques en plantel</a></li>
+                       <li><a href="llenados.html">Barriles llenados</a></li>
+                       <li><a href="rellenados.html">Barriles rellenados</a></li>
+                       <li><a href="trasiego.html">Barriles trasegados</a></li>
+                       <li><a href="trasiegoHoover.html">T. Hoover llenados</a></li>
+                       <li><a href="RGerencia.html">Reporte de Gerencia</a></li>
                      </ul>
                   </li>
                   <li class="active dos">

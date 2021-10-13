@@ -281,8 +281,6 @@ function llenarSelect(select,valor,texto,json){
   }
 }
 function crearTablaJson(json,tabla){
-  $(tabla+' > thead').empty();
-  $(tabla+' > tbody').empty();
   var content="";
   if(json.length>0){
     var keys=Object.keys(json[0]);
@@ -291,7 +289,7 @@ function crearTablaJson(json,tabla){
       content+='<th>'+key+'</th>';
     });
     content+="</tr>";
-    $(tabla+' > thead').append(content);
+    $(tabla+' > thead').html(content);
     content="";
     for (var i = 0; i < json.length; i++) {
       content+="<tr>";
@@ -300,11 +298,11 @@ function crearTablaJson(json,tabla){
       });
       content+="</tr>";
     }
-    $(tabla+' > tbody').append(content);
+    $(tabla+' > tbody').html(content);
     //$('#cargandoIndicador').text('');
 
   }else{
-    $(tabla+' > thead').append('<tr><th>Tabla sin datos</th></tr>');
+    $(tabla+' > thead').html('<tr><th>Tabla sin datos</th></tr>');
   }
   revisarTema();
 }
