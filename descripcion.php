@@ -28,6 +28,7 @@
              <link href="css/plugins/dataTables/datatables.min.css" rel="stylesheet">
              <link href="css/animate.css" rel="stylesheet">
              <link href="css/style.css" rel="stylesheet">
+             <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
           </head>
           <body class="gray-bg">
              <script src="js/revisar_sesion.js"></script>
@@ -194,20 +195,25 @@
              <script src="js/plugins/ladda/spin.min.js"></script>
              <script src="js/plugins/ladda/ladda.min.js"></script>
              <script src="js/plugins/ladda/ladda.jquery.min.js"></script>
+             <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
              <script>
              async function generar(tipo,boton){
                if($('#tabla2 tbody tr').length > 0){
                  var l = $('#'+boton).ladda();
-                 l.ladda('start');
-                 var url=getNode+"?reporte=detalleBarril&tipo="+tipo+"<?php echo "&almacen=$almacen&area=$area&seccion=$seccion&alcohol=$alcohol&cod=$codificacion&fecha=$fecha";?>";
+                 try {
+                   l.ladda('start');
+                   var url=getNode+"?reporte=detalleBarril&tipo="+tipo+"<?php echo "&almacen=$almacen&area=$area&seccion=$seccion&alcohol=$alcohol&cod=$codificacion&fecha=$fecha";?>";
 
-                 var valor=await conexion("GET",url,"");
-                 let link = document.createElement("a");
-                 link.download = "Detalle de barril por sección."+tipo;
-                 link.href = valor;
-                 link.click();
-                 l.ladda('stop');
-
+                   var valor=await conexion("GET",url,"");
+                   let link = document.createElement("a");
+                   link.download = "Detalle de barril por sección."+tipo;
+                   link.href = valor;
+                   link.click();
+                 } catch (e) {
+                   mensajeError(e);
+                 } finally {
+                   l.ladda('stop');
+                 }
                }else{
                  mensajeError("No hay datos que exportar");
                }

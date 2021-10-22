@@ -377,14 +377,19 @@
          async function generar(tipo,boton){
            if(usos.length > 0){
              var l = $('#'+boton).ladda();
-             l.ladda('start');
-             var url=getNode+"?reporte=RLlenadoRevisado&fecha="+$('#fecha').val()+'&tipo='+boton;
-             var valor=await conexion("GET",url,"");
-             let link = document.createElement("a");
-             link.download = "Reporte Diario de Revisado de barriles "+PickerToNormal($('#fecha').val())+"."+tipo;
-             link.href = valor;
-             link.click();
-             l.ladda('stop');
+             try {
+               l.ladda('start');
+               var url=getNode+"?reporte=RLlenadoRevisado&fecha="+$('#fecha').val()+'&tipo='+boton;
+               var valor=await conexion("GET",url,"");
+               let link = document.createElement("a");
+               link.download = "Reporte Diario de Revisado de barriles "+PickerToNormal($('#fecha').val())+"."+tipo;
+               link.href = valor;
+               link.click();
+             } catch (e) {
+               mensajeError(e);
+             } finally {
+               l.ladda('stop');
+             }
            }else{
              mensajeError("No hay datos que exportar");
            }

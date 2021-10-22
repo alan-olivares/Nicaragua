@@ -319,14 +319,19 @@
          }
          async function generar(tipo,boton){
            var l = $('#'+boton).ladda();
-           l.ladda('start');
-           var url=getNode+"?reporte=RGerencia&tipo="+tipo;
-           var valor=await conexion("GET",url,"");
-           let link = document.createElement("a");
-           link.download = "Reporte de Gerencia."+tipo;
-           link.href = valor;
-           link.click();
-           l.ladda('stop');
+           try {
+             l.ladda('start');
+             var url=getNode+"?reporte=RGerencia&tipo="+tipo;
+             var valor=await conexion("GET",url,"");
+             let link = document.createElement("a");
+             link.download = "Reporte de Gerencia."+tipo;
+             link.href = valor;
+             link.click();
+           } catch (e) {
+             mensajeError(e);
+           } finally {
+             l.ladda('stop');
+           }
          }
 
          function generate() {

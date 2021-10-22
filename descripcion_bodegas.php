@@ -219,14 +219,21 @@ if($row[0]=='1'){
       async function generar(tipo,boton){
         if(table.data().any()){
           var l = $('#'+boton).ladda();
-          l.ladda('start');
-          var url=getNode+"?reporte=detalle"+"<?php echo $tipo;?>"+"Plantel&tipo="+tipo+"<?php echo "&almacen=$almacen&area=$area&cod=$codificacion";?>";
-          var valor=await conexion("GET",url,"");
-          let link = document.createElement("a");
-          link.download = "Detalle de "+"<?php echo $tipo;?>"+" por plantel."+tipo;
-          link.href = valor;
-          link.click();
-          l.ladda('stop');
+          try {
+            l.ladda('start');
+            var url=getNode+"?reporte=detalle"+"<?php echo $tipo;?>"+"Plantel&tipo="+tipo+"<?php echo "&almacen=$almacen&area=$area&cod=$codificacion";?>";
+            var valor=await conexion("GET",url,"");
+            let link = document.createElement("a");
+            link.download = "Detalle de "+"<?php echo $tipo;?>"+" por plantel."+tipo;
+            link.href = valor;
+            link.click();
+          } catch (e) {
+            mensajeError(e);
+          } finally {
+            l.ladda('stop');
+          }
+
+
 
         }else{
           mensajeError("No hay datos que exportar");
