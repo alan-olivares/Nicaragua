@@ -243,11 +243,12 @@ function conexion(method, url,params) {
         xhttp.setRequestHeader("Authorization", "basic " + btoa(localStorage['usuario'] + ":" + localStorage['password']) );
         xhttp.onload = function () {
             if (this.readyState == 4 && this.status == 200) {
-              if(!xhttp.response.includes("..Error..")){
-                console.log(xhttp.response);
-                resolve(xhttp.response);
+              if(xhttp.response.includes("..Error..")){
+                reject(xhttp.response.substring(11, xhttp.response.length));
+              }else if(xhttp.response.includes("..Desautorizado..")){
+                limpiar();
               }else{
-                reject(xhttp.response.substring(12, xhttp.response.length));
+                resolve(xhttp.response);
               }
 
             } else {

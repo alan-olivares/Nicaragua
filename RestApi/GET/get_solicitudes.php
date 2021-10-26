@@ -4,7 +4,7 @@ if(strpos($permisos,',2,') !== false || strpos($permisos,',1,') !== false){
   $tipo=$_GET["tipo"];
   if(ISSET($_GET['estado'])){
     $estado=$_GET["estado"];
-    if($tipo==='1'){
+    if($tipo==='1'){//Barriles
       $barril = "SELECT ad.IdAjuste,ad.Evento,b.Consecutivo,CONVERT(varchar(16),ad.FechaSolicitud, 120)as FechaSolicitud ,u.Nombre as Solicitante,
       CONVERT(varchar(16),ad.FechaAutorizacion, 120) as FechaAutorizacion,
       (select Nombre from CM_Usuario where IdUsuario=ad.Autorizador) as Autorizador,ES.Descripcion as Estado,R.Descripcion from ADM_Ajustes ad
@@ -12,7 +12,7 @@ if(strpos($permisos,',2,') !== false || strpos($permisos,',1,') !== false){
       left join WM_Barrica b on ad.IdBarrica=b.IdBarrica
       left join ADM_Estados ES on ES.IdEstado=ad.Estado
       left join ADM_Razones R on ad.IdRazon=R.IdRazon where Estado='$estado'";
-    }else if($tipo==='2'){
+    }else if($tipo==='2'){//Tanques Hoover
       $barril = "SELECT ad.IdAjuste,ad.Evento,T.NoSerie,CONVERT(varchar(16),ad.FechaSolicitud, 120)as FechaSolicitud ,u.Nombre as Solicitante,
       CONVERT(varchar(16),ad.FechaAutorizacion, 120)as FechaAutorizacion,
       (select Nombre from CM_Usuario where IdUsuario=ad.Autorizador) as Autorizador,ES.Descripcion as Estado,R.Descripcion from ADM_AjustesTanques ad
@@ -24,11 +24,11 @@ if(strpos($permisos,',2,') !== false || strpos($permisos,',1,') !== false){
     if(strpos($permisos,',1,')=== false){
       $barril = $barril." and u.Clave='$usuario'";
     }
-    if($estado!=="1"){
+    if($estado!=="1"){//Cuando la solicitud no es de pendientes
       $dias = "SELECT Val1 from CM_Config where IdConfig=3";
       $stmtDias = sqlsrv_query( $conn , $dias);
       $rowDias = sqlsrv_fetch_array( $stmtDias, SQLSRV_FETCH_NUMERIC);
-      $barril=$barril." and ad.FechaSolicitud > DATEADD(DAY, -".$rowDias[0].", GETDATE()) order by ad.IdAjuste desc";
+      $barril=$barril." and ad.FechaAutorizacion > DATEADD(DAY, -".$rowDias[0].", GETDATE()) order by ad.IdAjuste desc";
     }else{
       $barril=$barril." order by ad.FechaSolicitud";
     }

@@ -41,45 +41,42 @@
            $tsql = "exec sp_getAcceso '$usuario' , '$contra'";
            $evento="";
            $stmt = sqlsrv_query( $conn , $tsql);
-           while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC))
-           {
-             if($row[0]=='1'){
-               $tsql2 = "SELECT top 1 u.Nombre,p.Descripcion,per.Pagina,u.Tema from CM_Usuario u
-               left join CM_Perfil p on p.IdPerfil=u.IdPerfil
-               left join CM_PerfilPermiso pp on pp.IdPerfil=p.IdPerfil
-               left join CM_Permiso per on per.IdPermiso=pp.IdPermiso where u.Clave='$usuario' order by per.Orden;";
-               $stmt2 = sqlsrv_query( $conn , $tsql2);
-               $row2 = sqlsrv_fetch_array( $stmt2, SQLSRV_FETCH_NUMERIC);
-               if( $row2[2]!=null)
-               {
+           $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC);
+           if($row[0]=='1'){
+             $tsql2 = "SELECT top 1 u.Nombre,p.Descripcion,per.Pagina,u.Tema from CM_Usuario u
+             left join CM_Perfil p on p.IdPerfil=u.IdPerfil
+             left join CM_PerfilPermiso pp on pp.IdPerfil=p.IdPerfil
+             left join CM_Permiso per on per.IdPermiso=pp.IdPermiso where u.Clave='$usuario' order by per.Orden;";
+             $stmt2 = sqlsrv_query( $conn , $tsql2);
+             $row2 = sqlsrv_fetch_array( $stmt2, SQLSRV_FETCH_NUMERIC);
+             if( $row2[2]!=null){
                  ?>
-      <script type="text/javascript">
-         localStorage['nombre'] = '<?php echo utf8_encode($row2[0]);?>';
-         localStorage['perfil'] = '<?php echo utf8_encode($row2[1]);?>';
-         localStorage['paginaI'] = '<?php echo utf8_encode($row2[2]);?>';
-         localStorage['tema'] = '<?php echo utf8_encode($row2[3]);?>';
-         localStorage['usuario'] = '<?php echo PHP_AES_Cipher::encrypt("Pims.2021","fedcba9876543210",$usuario);?>';
-         localStorage['password'] = '<?php echo PHP_AES_Cipher::encrypt("Pims.2021","fedcba9876543210",$contra);?>';
-         localStorage['sesion_timer']=new Date();
-         window.location.replace(localStorage['paginaI']);
-      </script>
-      <?php
-    }else{
-      ?>
-   <script type="text/javascript">
-      document.getElementById("estado").innerHTML = 'No tienes permisos para acceder al sitio';
-   </script>
-   <?php
-    }
-         sqlsrv_free_stmt( $stmt2);
-         }else{
+                 <script type="text/javascript">
+                    localStorage['nombre'] = '<?php echo utf8_encode($row2[0]);?>';
+                    localStorage['perfil'] = '<?php echo utf8_encode($row2[1]);?>';
+                    localStorage['paginaI'] = '<?php echo utf8_encode($row2[2]);?>';
+                    localStorage['tema'] = '<?php echo utf8_encode($row2[3]);?>';
+                    localStorage['usuario'] = '<?php echo PHP_AES_Cipher::encrypt("Pims.2021","fedcba9876543210",$usuario);?>';
+                    localStorage['password'] = '<?php echo PHP_AES_Cipher::encrypt("Pims.2021","fedcba9876543210",$contra);?>';
+                    localStorage['sesion_timer']=new Date();
+                    window.location.replace(localStorage['paginaI']);
+                  </script>
+          <?php
+            }else{
+          ?>
+                <script type="text/javascript">
+                  document.getElementById("estado").innerHTML = 'Tu perfil no cuenta con algún permiso para acceder al sitio';
+                </script>
+          <?php
+            }
+            sqlsrv_free_stmt( $stmt2);
+          }else{
            ?>
-      <script type="text/javascript">
-         document.getElementById("estado").innerHTML = 'Usuario o contraseña incorrecta';
-      </script>
-      <?php
-         }
-         }
+            <script type="text/javascript">
+              document.getElementById("estado").innerHTML = '<?php echo utf8_encode($row[0]);?>';
+            </script>
+          <?php
+          }
 
          /* Free statement and connection resources. */
          sqlsrv_free_stmt( $stmt);

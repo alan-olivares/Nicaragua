@@ -1,6 +1,6 @@
 <?php
 //Conexión a la base de datos, modificar con los datos del servidor sql server
-const SERVIDOR="DESKTOP-VDMBV97";//Nombre o IP del servidor
+const SERVIDOR="DESKTOP-VDMBV97";//Nombre o IP del servidor de la base de datos
 const UID="";//Usuario para conectar a la base de datos
 const PWD="";//Contraseña para conectar a la base de datos
 const DBNOMBRE="AAB_CLNSA";//Nombre de la base de datos
@@ -23,7 +23,7 @@ if(isset($headers["Authorization"])){
 }
 $tsql = "exec sp_getAcceso '$usuario' , '$pass'";
 if(ObtenerCantidad($tsql,$conn)!=1){
-  terminarScript($conn,"..Error.. Acceso no autorizado");//El Usuario no está autenticado, por lo tanto terminamos el script
+  terminarScript($conn,"..Desautorizado.. Acceso no autorizado");//El Usuario no está autenticado, por lo tanto terminamos el script
 }
 include 'revisar_permisos.php';
  ?>
