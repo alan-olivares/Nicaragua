@@ -47,7 +47,7 @@
                      </div>
                   </li>
                   <li class="once">
-                     <a href="index.php"><i class="fa fa-area-chart"></i> <span class="nav-label">Operación del día</span></a>
+                     <a href="index.html"><i class="fa fa-area-chart"></i> <span class="nav-label">Operación del día</span></a>
                   </li>
                   <li class="diez">
                      <a href="#"><i class="fa fa-table"></i> <span class="nav-label">Reportes</span><span class="fa arrow"></span></a>
@@ -475,11 +475,15 @@
 
          async function escogerItem(campo){
            try {
-             var url='RestApi/GET/'+getApi+'?alcohol='+campo.value;
-             var result = await conexion("GET",url,"");
-             var alcoholes =JSON.parse(result);
              var $row = $(campo).closest('tr');
-             $row.find('td').find("#item").val(alcoholes[0].Codigo);
+             if(campo.value!==''){
+               var url='RestApi/GET/'+getApi+'?alcohol='+campo.value;
+               var result = await conexion("GET",url,"");
+               var alcoholes =JSON.parse(result);
+               $row.find('td').find("#item").val(alcoholes[0].Codigo);
+             }else{
+               $row.find('td').find("#item").val('');
+             }
            } catch (e) {
              mensajeError(e);
            }

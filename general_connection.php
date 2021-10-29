@@ -1,7 +1,7 @@
 <?php
 $serverName = "DESKTOP-VDMBV97";
-$uid = "";
-$pwd = "";
+$uid = "alanolivares";
+$pwd = "123456";
 $databaseName = "AAB_CLNSA";
 $connectionInfo = array( "UID"=>$uid,
                          "PWD"=>$pwd,

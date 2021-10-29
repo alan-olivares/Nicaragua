@@ -34,26 +34,26 @@ if(strpos($permisos,',7,') !== false){
     //echo $barriles;
     imprimir($barriles,$conn);
   }else if(ISSET($_GET['plantas'])){
-    $bodegas = "SELECT * from AA_Plantas";
+    $bodegas = "SELECT PlantaID,Nombre,Consecutivo from AA_Plantas";
     imprimir($bodegas,$conn);
   }else if(ISSET($_GET['bodegas'])){
-    $bodegas = "SELECT * from AA_Almacen where PlantaID=".$_GET['bodegas'];
+    $bodegas = "SELECT AlmacenID,Nombre,Descripcion,Alto,Largo,X,Y from AA_Almacen where PlantaID=".$_GET['bodegas'];
     imprimir($bodegas,$conn);
   }else if(ISSET($_GET['areas'])){
     $bodega=$_GET['areas'];
-    $areas = "SELECT * from AA_Area where AlmacenId=$bodega";
+    $areas = "SELECT AreaId,Nombre,Alto,Largo,X,Y from AA_Area where AlmacenId=$bodega";
     imprimir($areas,$conn);
   }else if(ISSET($_GET['filas'])){
     $area=$_GET['filas'];
-    $filas = "SELECT * from AA_Seccion where AreaId=$area";
+    $filas = "SELECT SeccionID,Nombre,Alto,Largo,X,Y from AA_Seccion where AreaId=$area";
     imprimir($filas,$conn);
   }else if(ISSET($_GET['torres'])){
     $fila=$_GET['torres'];
-    $torres = "SELECT * from AA_Posicion where SeccionID=$fila";
+    $torres = "SELECT PosicionID,Nombre,Consecutivo from AA_Posicion where SeccionID=$fila";
     imprimir($torres,$conn);
   }else if(ISSET($_GET['niveles'])){
     $torre=$_GET['niveles'];
-    $niveles = "SELECT * from AA_Nivel where PosicionId=$torre";
+    $niveles = "SELECT NivelID,Nombre,Consecutivo from AA_Nivel where PosicionId=$torre";
     imprimir($niveles,$conn);
   }
 }else{

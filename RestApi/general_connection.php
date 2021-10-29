@@ -1,8 +1,8 @@
 <?php
 //Conexión a la base de datos, modificar con los datos del servidor sql server
 const SERVIDOR="DESKTOP-VDMBV97";//Nombre o IP del servidor de la base de datos
-const UID="";//Usuario para conectar a la base de datos
-const PWD="";//Contraseña para conectar a la base de datos
+const UID="alanolivares";//Usuario para conectar a la base de datos
+const PWD="123456";//Contraseña para conectar a la base de datos
 const DBNOMBRE="AAB_CLNSA";//Nombre de la base de datos
 const ENCONTRASENA="Pims.2021";//la contraseña para desencriptar las contraseñas de los usuarios
 $connectionInfo = array( "UID"=>UID,

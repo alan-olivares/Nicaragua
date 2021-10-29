@@ -12,10 +12,10 @@ if(strpos($permisos,',9,') !== false){
     foreach ($ids as $consecutivo) {
       //Verificar que el barril no tenga otras solicitudes pendientes
       $queryCons="SELECT COUNT(*) from ADM_Ajustes where IdBarrica=(select IdBarrica from WM_Barrica where Consecutivo='$consecutivo') AND Estado=1";
-      if(ObtenerCantidad($conn , $queryCons)!=0){
+      if(ObtenerCantidad($queryCons,$conn)!=0){
         $errores=$errores.$consecutivo." (solicitud pendiente), ";
         //Verificar que el barril no se encuentre en estado vacío
-      }else if(ObtenerCantidad($conn , "SELECT COUNT(*) from WM_Barrica where IdEstado=2 and Consecutivo='$consecutivo'")!=0){
+      }else if(ObtenerCantidad("SELECT COUNT(*) from WM_Barrica where IdEstado=2 and Consecutivo='$consecutivo'",$conn)!=0){
         $errores=$errores.$consecutivo." (barril en estado vacío), ";
       }else{
         $query="INSERT into ADM_Ajustes (Evento,IdBarrica,FechaSolicitud,Solicitante,Estado,IdRazon) values
@@ -51,14 +51,14 @@ if(strpos($permisos,',9,') !== false){
     foreach ($ids as $NoSerie) {
       //Verificar que el tanque no tenga otras solicitudes pendientes
       $queryCons="SELECT COUNT(*) from ADM_AjustesTanques where IdTanque=(SELECT IdTanque from WM_Tanques where NoSerie='$NoSerie') AND Estado=1";
-      if(ObtenerCantidad($conn , $queryCons)!=0){
+      if(ObtenerCantidad( $queryCons,$conn )!=0){
         $errores=$errores.$NoSerie." (solicitud pendiente), ";
         //Verificar que el tanque no se encuentre en estado vacío
-      }else if(ObtenerCantidad($conn , "SELECT COUNT(*) from WM_Tanques where NoSerie='$NoSerie' AND IdEstado=2")!=0){
+      }else if(ObtenerCantidad("SELECT COUNT(*) from WM_Tanques where NoSerie='$NoSerie' AND IdEstado=2",$conn )!=0){
         $errores=$errores.$NoSerie." (tanque en estado vacío), ";
       }else{
-        $query="INSERT into ADM_AjustesTanques (Evento,NoSerie,FechaSolicitud,Solicitante,Estado,IdRazon)
-        values ('Ajuste litros',$NoSerie,(SELECT GETDATE()),(select IdUsuario from CM_Usuario where Clave = '$usuario'),1,$motivo); SELECT SCOPE_IDENTITY()";
+        $query="INSERT into ADM_AjustesTanques (Evento,IdTanque,FechaSolicitud,Solicitante,Estado,IdRazon)
+        values ('Ajuste litros',(SELECT IdTanque from WM_Tanques where NoSerie=$NoSerie),(SELECT GETDATE()),(select IdUsuario from CM_Usuario where Clave = '$usuario'),1,$motivo); SELECT SCOPE_IDENTITY()";
         $result = sqlsrv_query( $conn , $query);
         if($result){//Si se guardo en ADM_Ajustes
           sqlsrv_next_result($result);
@@ -75,10 +75,10 @@ if(strpos($permisos,',9,') !== false){
             sqlsrv_query( $conn , $query);
             $query="DELETE from ADM_AjustesTanques where IdAjuste='$IdAjuste'";
             sqlsrv_query( $conn , $query);
-            $errores=$errores.$NoSerie." (desconocido), ";
+            $errores=$errores.$NoSerie." (Código: 1), ";
           }
         }else{
-          $errores=$errores.$NoSerie." (desconocido), ";
+          $errores=$errores.$NoSerie." (Código: 2), ";
         }
       }
     }
