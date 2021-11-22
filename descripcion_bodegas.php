@@ -52,19 +52,19 @@ if($row[0]=='1'){
           <table class="table table-striped table-bordered table-hover" id="tabla1">
             <thead>
         <?php
-        $tsql = "exec sp_ListaEdad";
+        $tsql = "exec sp_ListaEdad_v2";
         $stmt = sqlsrv_query( $conn , $tsql);
         while( $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC))
         {
         ?>
         <tr>
-        <th style="text-align: center;" ><?php echo utf8_encode($row[0])?></th>
-        <th style="text-align: center;" ><?php echo utf8_encode($row[1])?></th>
-        <th style="text-align: center;" ><?php echo utf8_encode($row[2])?></th>
-        <th style="text-align: center;" ><?php echo utf8_encode($row[3])?></th>
-        <th style="text-align: center;"><?php echo utf8_encode($row[4])?></th>
-        <th style="text-align: center;"><?php echo utf8_encode($row[5])?></th>
-        <th style="text-align: center;"><?php echo utf8_encode($row[6])?></th>
+        <th style="text-align: center;" ><?php echo $row[0]?></th>
+        <th style="text-align: center;" ><?php echo $row[1]?></th>
+        <th style="text-align: center;" ><?php echo $row[2]?></th>
+        <th style="text-align: center;" ><?php echo $row[3]?></th>
+        <th style="text-align: center;"><?php echo $row[4]?></th>
+        <th style="text-align: center;"><?php echo $row[5]?></th>
+        <th style="text-align: center;"><?php echo $row[6]?></th>
         </tr>
         <?php
         }
@@ -93,7 +93,7 @@ if($row[0]=='1'){
             </thead>
             <tbody>
             <?php
-            $tsql = "exec sp_BarrilPlantelDetalle '$almacen','$area','$codificacion'";
+            $tsql = "exec sp_BarrilPlantelDetalle_v2 '$almacen','$area','$codificacion'";
 
             $stmt = sqlsrv_query( $conn , $tsql);
 
@@ -107,7 +107,7 @@ if($row[0]=='1'){
               <td style="text-align: center;"><?php echo $row[5]?></td>
               <td style="text-align: center;"><?php echo (int)$row[6]?></td>
               <td style="text-align: center;"><?php echo $row[7]?></td>
-              <td style="text-align: center;"><?php echo utf8_encode($row[8])?></td>
+              <td style="text-align: center;"><?php echo $row[8]?></td>
               <td style="text-align: center;"><?php echo $row[9]?></td>
             </tr>
             <?php
@@ -149,7 +149,7 @@ if($row[0]=='1'){
                   <td style="text-align: center;"><?php echo $row[1];?></td>
                   <td style="text-align: center;"><?php echo $row[2];?></td>
                   <td style="text-align: center;"><?php echo $row[3];?></td>
-                  <td style="text-align: center;"><?php echo utf8_encode($row[4]);?></td>
+                  <td style="text-align: center;"><?php echo $row[4];?></td>
                 </tr>
                 <?php
                 }

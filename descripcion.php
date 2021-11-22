@@ -98,7 +98,7 @@
                       </thead>
                       <tbody>
                          <?php
-                            $tsql = "exec sp_InfoBarrilDetalle3 '$almacen','$area','$seccion','$alcohol','$codificacion','$fecha'";
+                            $tsql = "exec sp_InfoBarrilDetalle3_v2 '$almacen','$area','$seccion','$alcohol','$codificacion','$fecha'";
 
                             $stmt = sqlsrv_query( $conn , $tsql);
 

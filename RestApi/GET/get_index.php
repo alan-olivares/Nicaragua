@@ -93,6 +93,53 @@ function obtenerTotales($conn,$hora1,$hora2){
   "\"Hoover\": ".ObtenerCantidad($hoover,$conn)." }]";
   return $salida;
 }
+function obtenerTiempos2($conn,$campo,$hora1,$hora2,$arrayDias){
+  $llenados = "SELECT ".$campo.", count(distinct idbarrica) as Barriles
+  from PR_Orden l inner join PR_RegBarril r on r.IdOrden=l.IdOrden
+  where l.fecha between '$hora1' and '$hora2' and r.TipoReg=1
+  group by ".$campo." order by ".$campo;
+  $rellenados ="SELECT ".$campo.", count(distinct idbarrica) as Barriles
+  from PR_Orden l inner join PR_RegBarril r on r.IdOrden=l.IdOrden
+  where l.fecha between '$hora1' and '$hora2' and r.TipoReg in (2,4,5)
+  group by ".$campo." order by ".$campo;
+  $trasiegos="SELECT ".$campo.", count(distinct idbarrica) as Barriles
+  from PR_Orden l inner join PR_RegBarril r on r.IdOrden=l.IdOrden
+  where l.fecha between '$hora1' and '$hora2' and r.TipoReg=3
+  group by ".$campo." order by ".$campo;
+  $reparados="SELECT ".$campo.", count(distinct M.idbarrica) as Barriles
+  FROM PR_Mantenimiento M INNER JOIN ADM_logMantenimiento L ON M.IdMantenimiento=L.IdMantenimiento
+  WHERE L.TipoOp='I' AND M.Fecha between '$hora1' and '$hora2'
+  group by ".$campo." order by ".$campo;
+  $hoover="SELECT ".$campo.", count(distinct IdTanque) as Tanques
+  FROM WM_OperacionTQH l  WHERE fecha between '$hora1' and '$hora2'
+  group by ".$campo." order by ".$campo;
+  $salida="[{ \"label\": \"Barriles llenados\", \"data\": [".obtenerTiempoIndv($conn,$llenados,$arrayDias)."] },".
+  "{ \"label\": \"Barriles rellenados\", \"data\": [".obtenerTiempoIndv($conn,$rellenados,$arrayDias)."] },".
+  "{ \"label\": \"Barriles trasegados\", \"data\": [".obtenerTiempoIndv($conn,$trasiegos,$arrayDias)."] },".
+  "{ \"label\": \"Barriles reparados\", \"data\": [".obtenerTiempoIndv($conn,$reparados,$arrayDias)."] },".
+  "{ \"label\": \"Tanques Hoover llenados\", \"data\": [".obtenerTiempoIndv($conn,$hoover,$arrayDias)."] }]";
+  return $salida;
+}
+function obtenerTotales2($conn,$hora1,$hora2){
+  $llenados="SELECT count(distinct idbarrica)
+  from PR_Orden l inner join PR_RegBarril r on r.IdOrden=l.IdOrden
+  where l.fecha between '$hora1' and '$hora2' and r.TipoReg=1";
+  $rellenados="SELECT count(distinct idbarrica)
+  from PR_Orden l inner join PR_RegBarril r on r.IdOrden=l.IdOrden
+  where l.fecha between '$hora1' and '$hora2' and r.TipoReg in (2,4,5)";
+  $trasiegos="SELECT count(distinct idbarrica)
+  from PR_Orden l inner join PR_RegBarril r on r.IdOrden=l.IdOrden
+  where l.fecha between '$hora1' and '$hora2' and r.TipoReg=3";
+  $reparados="SELECT count(distinct M.idbarrica)
+  FROM PR_Mantenimiento M INNER JOIN ADM_logMantenimiento L ON M.IdMantenimiento=L.IdMantenimiento
+  WHERE L.TipoOp='I' AND M.Fecha between '$hora1' and '$hora2'";
+  $hoover="SELECT count(distinct IdTanque)
+  FROM WM_OperacionTQH WHERE  fecha between '$hora1' and '$hora2'";
+  $salida="[{\"llenados\":".ObtenerCantidad($llenados,$conn)." ,\"rellenados\": ".ObtenerCantidad($rellenados,$conn).",".
+  "\"trasegados\":".ObtenerCantidad($trasiegos,$conn).",\"reparados\": ".ObtenerCantidad($reparados,$conn).",".
+  "\"Hoover\": ".ObtenerCantidad($hoover,$conn)." }]";
+  return $salida;
+}
 function obtenerTiempoIndv($conn,$consulta,$arrayDias){
   $salida="";
   $stmt = sqlsrv_query( $conn , $consulta);

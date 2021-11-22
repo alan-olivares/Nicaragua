@@ -1,13 +1,10 @@
 <?php
-$serverName = "DESKTOP-VDMBV97";
-$uid = "alanolivares";
-$pwd = "123456";
-$databaseName = "AAB_CLNSA";
-$connectionInfo = array( "UID"=>$uid,
-                         "PWD"=>$pwd,
-                         "Database"=>$databaseName);
-
-$conn = sqlsrv_connect( $serverName, $connectionInfo);
+include 'RestApi/credenciales.php';
+$connectionInfo = array( "UID"=>base64_decode(UID),
+                         "PWD"=>base64_decode(PWD),
+                         "Database"=>base64_decode(DBNOMBRE),
+                         "CharacterSet" => "UTF-8");
+$conn = sqlsrv_connect( base64_decode(SERVIDOR), $connectionInfo);
 include 'RestApi/encriptacion.php';
 //Autenticación de usuario por parametros (No modificar)
 $usuario="";

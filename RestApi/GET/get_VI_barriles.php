@@ -6,7 +6,7 @@ if(strpos($permisos,',2,') !== false){
     $fila = "exec sp_AA_getFilas '$area'";
     imprimir($fila,$conn);
   }else if(ISSET($_GET['plantas'])){
-    $bodegas = "SELECT * from AA_Plantas";
+    $bodegas = "SELECT PlantaID,Nombre from AA_Plantas";
     imprimir($bodegas,$conn);
   }else if(ISSET($_GET['bodegas'])){
     $planta=$_GET["bodegas"];
@@ -27,11 +27,11 @@ if(strpos($permisos,',2,') !== false){
   }else if(ISSET($_GET['Rack'])){
     //Nos regresa la tabla en forma de json
     $Rack=$_GET["Rack"];
-    $tabla = "exec sp_BarrPallet '$Rack'";
+    $tabla = "exec sp_BarrPallet_v2 '$Rack'";
     imprimir($tabla,$conn);
   }else if(ISSET($_GET['consecutivo'])){
     $Consecutivo=$_GET["consecutivo"];
-    $barril = "exec sp_BarrilUbicacion '$Consecutivo'";
+    $barril = "exec sp_BarrilUbicacion_v2 '$Consecutivo'";
     imprimir($barril,$conn);
 
   }else if(ISSET($_GET['tapa'])){
@@ -46,7 +46,6 @@ if(strpos($permisos,',2,') !== false){
     $loteA=$_GET["loteA"];
     $barril = "SELECT COUNT(*) from WM_LoteBarrica where IdLoteBarica='$loteA';";
     imprimir($barril,$conn);
-
   }else if(ISSET($_GET['ConsecutivoEdad'])){
     $edad=$_GET["ConsecutivoEdad"];
     $barril = "SELECT IdCodificacion from WM_Barrica where Consecutivo='$edad';";
@@ -69,7 +68,7 @@ if(strpos($permisos,',2,') !== false){
     $fecha = "SELECT DISTINCT(convert(varchar, Fecha, 23)) as Fecha from WM_LoteBarrica";
     imprimir($fecha,$conn);
   }else if(ISSET($_GET['razones'])){
-    $razones = "SELECT * from ADM_Razones where IdCaso=".$_GET['razones'];
+    $razones = "SELECT IdRazon,Descripcion from ADM_Razones where IdCaso=".$_GET['razones'];
     imprimir($razones,$conn);
   }
 }else{

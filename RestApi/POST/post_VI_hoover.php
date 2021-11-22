@@ -9,7 +9,7 @@ if(strpos($permisos,',2,') !== false){
   if(ObtenerCantidad($queryCons,$conn)==0){
     if(ISSET($_POST['restablecer'])){//Esta editando el tanque
       $query="INSERT into ADM_AjustesTanques (Evento,IdTanque,FechaSolicitud,Solicitante,Estado,IdRazon)
-      values ('$evento',(SELECT IdTanque from WM_Tanques where NoSerie=$NoSerie),(SELECT GETDATE()),(select IdUsuario from CM_Usuario where Clave = '$usuario'),1,$motivo); SELECT SCOPE_IDENTITY()";
+      values ('$evento',(SELECT IdTanque from WM_Tanques where NoSerie=$NoSerie),(SELECT GETDATE()),(select IdUsuario from CM_Usuario_WEB where Clave = '$usuario'),1,$motivo); SELECT SCOPE_IDENTITY()";
       $result = sqlsrv_query( $conn , $query);
       sqlsrv_next_result($result);
       sqlsrv_fetch($result);
@@ -78,7 +78,7 @@ if(strpos($permisos,',2,') !== false){
       }else{
         //Preparar datos
         $query="INSERT into ADM_AjustesTanques (Evento,IdTanque,FechaSolicitud,Solicitante,Estado,IdRazon)
-        values ('$evento',(SELECT IdTanque from WM_Tanques where NoSerie=$NoSerie),(SELECT GETDATE()),(select IdUsuario from CM_Usuario where Clave = '$usuario'),1,$motivo); SELECT SCOPE_IDENTITY()";
+        values ('$evento',(SELECT IdTanque from WM_Tanques where NoSerie=$NoSerie),(SELECT GETDATE()),(select IdUsuario from CM_Usuario_WEB where Clave = '$usuario'),1,$motivo); SELECT SCOPE_IDENTITY()";
         $result = sqlsrv_query( $conn , $query);
         sqlsrv_next_result($result);
         sqlsrv_fetch($result);

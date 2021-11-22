@@ -7,13 +7,16 @@ if($nombre===""){
   echo "..Error.. El nombre es incorrecto";
 }else{
   if($npass===""){
-    $queryPer="UPDATE CM_Usuario set Nombre='$nombre',Tema='$tema' where Clave='$usuario'";
+    $queryPer="UPDATE CM_Usuario_WEB set Nombre='$nombre',Tema='$tema' where Clave='$usuario'";
+    $queryPerV1="UPDATE CM_Usuario set Nombre='$nombre' where Clave='$usuario'";
   }else{
     $npass=base64_decode($npass);
-    $queryPer="UPDATE CM_Usuario set Nombre='$nombre',Pass=ENCRYPTBYPASSPHRASE('Pims.2011','$npass'),Tema='$tema' where Clave='$usuario'";
+    $queryPer="UPDATE CM_Usuario_WEB set Nombre='$nombre',Pass=ENCRYPTBYPASSPHRASE('Pims.2011','$npass'),Tema='$tema' where Clave='$usuario'";
+    $queryPerV1="UPDATE CM_Usuario set Nombre='$nombre',Pass='$npass' where Clave='$usuario'";
   }
   $resultPer = sqlsrv_query( $conn , $queryPer);
   if($resultPer){
+    ejecutarDato($conn,$queryPerV1);
     echo PHP_AES_Cipher::encrypt(ENCONTRASENA,"fedcba9876543210",$npass);
   }else{
     echo "..Error.. Hubó un problema al hacer los cambios, por favor intenta de nuevo más tarde";

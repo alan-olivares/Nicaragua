@@ -1,15 +1,11 @@
 <?php
-//Conexión a la base de datos, modificar con los datos del servidor sql server
-const SERVIDOR="DESKTOP-VDMBV97";//Nombre o IP del servidor de la base de datos
-const UID="alanolivares";//Usuario para conectar a la base de datos
-const PWD="123456";//Contraseña para conectar a la base de datos
-const DBNOMBRE="AAB_CLNSA";//Nombre de la base de datos
+include 'credenciales.php';
 const ENCONTRASENA="Pims.2021";//la contraseña para desencriptar las contraseñas de los usuarios
-$connectionInfo = array( "UID"=>UID,
-                         "PWD"=>PWD,
-                         "Database"=>DBNOMBRE,
+$connectionInfo = array( "UID"=>base64_decode(UID),
+                         "PWD"=>base64_decode(PWD),
+                         "Database"=>base64_decode(DBNOMBRE),
                          "CharacterSet" => "UTF-8");
-$conn = sqlsrv_connect( SERVIDOR, $connectionInfo);
+$conn = sqlsrv_connect( base64_decode(SERVIDOR), $connectionInfo);
 //Autenticación de usuario por los headers (No modificar)
 $headers = apache_request_headers();
 include 'encriptacion.php';

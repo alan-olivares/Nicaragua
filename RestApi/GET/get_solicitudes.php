@@ -7,16 +7,16 @@ if(strpos($permisos,',2,') !== false || strpos($permisos,',1,') !== false){
     if($tipo==='1'){//Barriles
       $barril = "SELECT ad.IdAjuste,ad.Evento,b.Consecutivo,CONVERT(varchar(16),ad.FechaSolicitud, 120)as FechaSolicitud ,u.Nombre as Solicitante,
       CONVERT(varchar(16),ad.FechaAutorizacion, 120) as FechaAutorizacion,
-      (select Nombre from CM_Usuario where IdUsuario=ad.Autorizador) as Autorizador,ES.Descripcion as Estado,R.Descripcion from ADM_Ajustes ad
-      left join CM_Usuario u on ad.Solicitante=u.IdUsuario
+      (select Nombre from CM_Usuario_WEB where IdUsuario=ad.Autorizador) as Autorizador,ES.Descripcion as Estado,R.Descripcion from ADM_Ajustes ad
+      left join CM_Usuario_WEB u on ad.Solicitante=u.IdUsuario
       left join WM_Barrica b on ad.IdBarrica=b.IdBarrica
       left join ADM_Estados ES on ES.IdEstado=ad.Estado
       left join ADM_Razones R on ad.IdRazon=R.IdRazon where Estado='$estado'";
     }else if($tipo==='2'){//Tanques Hoover
       $barril = "SELECT ad.IdAjuste,ad.Evento,T.NoSerie,CONVERT(varchar(16),ad.FechaSolicitud, 120)as FechaSolicitud ,u.Nombre as Solicitante,
       CONVERT(varchar(16),ad.FechaAutorizacion, 120)as FechaAutorizacion,
-      (select Nombre from CM_Usuario where IdUsuario=ad.Autorizador) as Autorizador,ES.Descripcion as Estado,R.Descripcion from ADM_AjustesTanques ad
-      left join CM_Usuario u on ad.Solicitante=u.IdUsuario
+      (select Nombre from CM_Usuario_WEB where IdUsuario=ad.Autorizador) as Autorizador,ES.Descripcion as Estado,R.Descripcion from ADM_AjustesTanques ad
+      left join CM_Usuario_WEB u on ad.Solicitante=u.IdUsuario
       left join WM_Tanques T on T.IdTanque=ad.IdTanque
       left join ADM_Estados ES on ES.IdEstado=ad.Estado
       left join ADM_Razones R on ad.IdRazon=R.IdRazon where ad.Estado='$estado'";

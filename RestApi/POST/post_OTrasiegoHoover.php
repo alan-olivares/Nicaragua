@@ -1,19 +1,28 @@
 <?php
 include '../general_connection.php';
 if(strpos($permisos,',6,') !== false){
-  if(ISSET($_POST['bodega']) && ISSET($_POST['year']) && ISSET($_POST['Alcohol']) && ISSET($_POST['Uso']) && ISSET($_POST['Cantidad'])&& ISSET($_POST['tanque'])){//Crear orden
-    $bodega=$_POST['bodega'];
-    $year=$_POST['year'];
-    $Alcohol=$_POST['Alcohol'];
-    $Uso=$_POST['Uso'];
-    $Cantidad=$_POST['Cantidad'];
-    $tanque=$_POST['tanque'];
-    $tsql = "exec sp_OrdenTrasInsert '$usuario' , '$bodega','$year','$Alcohol','$Uso',$Cantidad,$tanque,7";
-    $stmt = sqlsrv_query( $conn , $tsql);
-    if($stmt){
-      echo 'Ordenes registradas con exito';
+  if(ISSET($_POST["data"])){//Agregar ordenes
+    if(isJson($_POST["data"])){
+      $data = json_decode($_POST["data"], true);
+      $enviar="";
+      $contar=0;$contarErr=0;
+      foreach($data as $campo) {
+        $query="exec sp_OrdenTrasInsert_v2 '".$usuario."','".$campo['bodega']."','".$campo['year']."','".$campo['Alcohol']."','".$campo['Uso']."','".$campo['Cantidad']."','".$campo['tanque']."', 7";
+        $stmtCheck = sqlsrv_query( $conn , $query);
+        $row = sqlsrv_fetch_array( $stmtCheck, SQLSRV_FETCH_NUMERIC);
+        if($row[0]!==""){
+          $enviar=$enviar."\n".$row[0]."\n";
+          $contarErr++;
+        }
+      }
+      if($enviar===""){
+        echo count($data).' órdenes registradas con exito';
+      }else{
+        echo '..Error.. '.$contarErr.' órdenes tuvieron errores: '.$enviar.' No hay barriles suficientes para esta órden, alguna otra órden necesitará barriles con estas caracteristicas, intenta con un número de barriles disponibles o cancela las órdenes pendientes';
+      }
+
     }else{
-      echo '..Error.. Hubo un problema al registrar las ordenes';
+      echo '..Error.. Se generó un problema al generar el Json';
     }
   }else if(ISSET($_POST['orden']) && ISSET($_POST['operador']) && ISSET($_POST['motaca']) && ISSET($_POST['supervisor'])){//Actualizar o asignar orden
     $orden=$_POST['orden'];
@@ -33,6 +42,22 @@ if(strpos($permisos,',6,') !== false){
       }
     }else{
       echo '..Error.. Esta orden ya se encuentra en proceso y no puede ser modificada';
+    }
+  }else if(ISSET($_POST['cancelarOrdenId'])){//Cancelar orden
+    $orden=$_POST['cancelarOrdenId'];
+    $check="SELECT Estatus from PR_Orden where IdOrden=$orden";
+    $stmtCheck = sqlsrv_query( $conn , $check);
+    $row = sqlsrv_fetch_array( $stmtCheck, SQLSRV_FETCH_NUMERIC);
+    if($row[0]=='1' || $row[0]=='0'){
+      $tsql = "UPDATE PR_Orden SET Estatus=3,IdOperario=0, IdOperarioMon=0,IdSupervisor=0 where IdOrden=$orden";
+      $stmt = sqlsrv_query( $conn , $tsql);
+      if($stmt){
+        echo 'Ordenen cancelada con exito';
+      }else{
+        echo '..Error.. Hubo un problema al cancelar la orden, intenta de nuevo mas tarde';
+      }
+    }else{
+      echo '..Error.. Esta orden ya se encuentra en proceso y no puede ser cancelada';
     }
   }
 

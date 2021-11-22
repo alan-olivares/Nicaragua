@@ -20,7 +20,7 @@ if(strpos($permisos,',8,') !== false){
     $ordenes = "SELECT  IdProveedor,Descripcion FROM CM_Proveedor";
     imprimir($ordenes,$conn);
   }else if(ISSET($_GET['alcohol'])){//alcoholes en existencia
-    $barriles = "SELECT * from CM_Alcohol ".($_GET['alcohol']!=="true"?"where IdAlcohol=".$_GET['alcohol']:"");
+    $barriles = "SELECT IdAlcohol,Codigo,Descripcion,Grado,Observaciones from CM_Alcohol ".($_GET['alcohol']!=="true"?"where IdAlcohol=".$_GET['alcohol']:"");
     imprimir($barriles,$conn);
   }else if(ISSET($_GET['envios'])){//Envios existentes
     $barriles = "SELECT Re.IdRecDetail, T.Descripcion as tanque,Re.Litros,Re.Medida,A.Codigo as CodAlcohol,A.Descripcion as alcohol,Re.Estatus from WM_Recepcion R

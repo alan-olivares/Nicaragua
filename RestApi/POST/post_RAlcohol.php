@@ -72,7 +72,7 @@ if(strpos($permisos,',8,') !== false){
     $anno=$_POST['anno'];$para=$_POST['para'];$fecha=$_POST['fecha'];$envio=$_POST['envio'];
     $tsql = "SELECT * from WM_RecDetail where IdTanque=(select IDTanque from CM_Tanque where Codigo='$tanque') and Estatus=0 and IdAlcohol<>'$IdAlcohol'";
     if(ObtenerCantidadBol($tsql,$conn)){
-      $tsql = "exec sp_LoteCrea '$fecha','$IdAlcohol'";
+      $tsql = "exec sp_LoteCrea_v2 '$fecha','$IdAlcohol'";
       $idLote=ObtenerDatoSimple($tsql,$conn);
       $tsql = "if not exists (select * from CM_Item where Año='$anno')
       insert into CM_Item (Codigo,Año,Estatus) OUTPUT Inserted.IdItem values ((select top 1 Codigo from CM_Item order by Codigo desc)+1,'$anno','0')

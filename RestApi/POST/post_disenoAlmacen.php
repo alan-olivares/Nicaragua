@@ -68,11 +68,11 @@ function operaciones($tipo,$campo,$id) {
     }
   }else if($tipo==='NIVEL'){
     if($campo['borrar'] && $campo['id']!=-1){
-      $query="exec sp_NivelOpe ".$campo['id'].",'', 2";//Operacion 2 elimina
+      $query="exec sp_NivelOpe_v2 ".$campo['id'].",'', 2";//Operacion 2 elimina
     }else if($campo['id']!=-1){
       $query="UPDATE AA_Nivel set Nombre='".$campo['Nombre']."' where NivelID=".$campo['id'];
     }else if($campo['id']==-1 && $campo['borrar']==false){
-      $query="exec sp_NivelOpe $id, '".$campo['Nombre']."', 1";//Operacion 1 inserta
+      $query="exec sp_NivelOpe_v2 $id, '".$campo['Nombre']."', 1";//Operacion 1 inserta
     }
   }
   return $query;

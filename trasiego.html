@@ -299,11 +299,11 @@
               tabla2.destroy();
             }
             limpiarDatos();
+            l.ladda('start');
             var url='RestApi/GET/'+getApi+'?trasiego=true&fecha1='+$('#date1').val()+'&fecha2='+$('#date2').val();
             var result = await conexion("GET",url,"");
             var parsed =JSON.parse(result);
             var content="";
-            l.ladda('start');
             if(parsed.length>0){
               var tamano=parsed.length;
               mostrarDatos();

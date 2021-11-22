@@ -10,6 +10,7 @@
       <link rel="stylesheet" href="css/jquery-ui.css">
       <link href="css/animate.css" rel="stylesheet">
       <link href="css/style.css" rel="stylesheet">
+      <link href="css/plugins/toastr/toastr.min.css" rel="stylesheet">
       <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
    </head>
    <body>
@@ -372,6 +373,7 @@
       <script src="js/funciones_generales.js"></script>
       <script src="js/abrir_ventana.js"></script>
       <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
+      <script src="js/plugins/toastr/toastr.min.js"></script>
       <script>
          const getApi="get_RAlcohol.php";
          const postApi="post_RAlcohol.php";
@@ -829,7 +831,20 @@
            document.getElementById('fecha').valueAsDate=fecha;
            document.getElementById('hora').value=(fecha.getHours()<10?"0"+fecha.getHours():fecha.getHours())+":"+(fecha.getMinutes()<10?"0"+fecha.getMinutes():fecha.getMinutes());
            document.getElementById('anno').value=fecha.getFullYear();
-           //CargarTabla();
+           toastr.options = {
+             "closeButton": true,
+             "progressBar": true,
+             "positionClass": "toast-top-center",
+             "showDuration": "200",
+             "hideDuration": "1000",
+             "timeOut": "3000",
+             "extendedTimeOut": "1000",
+             "showEasing": "swing",
+             "hideEasing": "linear",
+             "showMethod": "fadeIn",
+             "hideMethod": "fadeOut"
+           }
+           toastr.success('Agrega un número de envío para continuar');
          });
       </script>
    </body>

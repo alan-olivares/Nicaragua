@@ -8,6 +8,8 @@ if(strpos($permisos,',4,') !== false){
         $query="UPDATE CM_Config set Val1=N'".$campo['valor']."' where IdConfig=".$campo['id'];
         sqlsrv_query( $conn , $query);
       }
+      $query="UPDATE Pr_Config set DiasRevision=(select Val1 from CM_Config where IdConfig=1),diasRelleno=(select Val1 from CM_Config where IdConfig=2)";
+      ejecutarDato($conn,$query);
       echo 'Configuración actualizada correctamiente';
     }else{
       echo '..Error.. Insertaste algún caracter no valido';

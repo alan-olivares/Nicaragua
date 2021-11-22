@@ -3,7 +3,7 @@ include '../general_connection.php';
 if(strpos($permisos,',6,') !== false){
   if(ISSET($_GET['OPDetalleLlen']) && ISSET($_GET['fecha'])){// Reporte Detalle de Operaciones Llenado
     $fecha=$_GET['fecha'];
-    $datos = "exec sp_RepOPDetalleLlen '$fecha'";
+    $datos = "exec sp_RepOPDetalleLlen_v2 '$fecha'";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['OPDetalleMant']) && ISSET($_GET['fecha'])){// Reporte Detalle de Barriles en Mantenimiento
     $fecha=$_GET['fecha'];
@@ -13,7 +13,7 @@ if(strpos($permisos,',6,') !== false){
              from PR_Mantenimiento M inner join WM_Barrica B on B.IdBarrica = M.IdBarrica
              inner Join CM_CodEdad CE on CE.IdCodEdad = B.IdCodificacion
              inner join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
-             inner join CM_Usuario U on U.IdUsuario = M.IdUsuario
+             inner join CM_Usuario_WEB U on U.IdUsuario = M.IdUsuario
              Where Convert(Date,M.Fecha) = Convert(Date,'$fecha')
              group by M.IdTipoMant, C.Codigo";
     imprimir($datos,$conn);
@@ -27,7 +27,7 @@ if(strpos($permisos,',6,') !== false){
              from PR_Mantenimiento M inner join WM_Barrica B on B.IdBarrica = M.IdBarrica
              inner Join CM_CodEdad CE on CE.IdCodEdad = B.IdCodificacion
              inner join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
-             inner join CM_Usuario U on U.IdUsuario = M.IdUsuario
+             inner join CM_Usuario_WEB U on U.IdUsuario = M.IdUsuario
              Where Convert(Date,M.Fecha) = Convert(Date,'$fecha') order by C.Codigo";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['RepOpRevisado']) && ISSET($_GET['fecha'])){

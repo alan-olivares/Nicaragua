@@ -40,21 +40,21 @@ if(strpos($permisos,',6,') !== false){
       imprimir($barriles,$conn);
     }
   }else if(ISSET($_GET['annio'])){
-    $lotes = "select distinct(Datepart(YYYY,Recepcion)) as annio from PR_Lote order by Datepart(YYYY,Recepcion) desc";
+    $lotes = "SELECT distinct(Datepart(YYYY,Recepcion)) as annio from PR_Lote order by Datepart(YYYY,Recepcion) desc";
     imprimir($lotes,$conn);
   }else if(ISSET($_GET['alcohol'])){//Obtenemos informacion de las ordenes por la fecha
-    $Alcohol = "select * from CM_Alcohol";
+    $Alcohol = "SELECT IdAlcohol,Descripcion from CM_Alcohol";
     imprimir($Alcohol,$conn);
 
   }else if(ISSET($_GET['uso'])){//Obtenemos las ordenes dadas por una fecha en especifico
-    $uso = "select IdCodificacion,Codigo from CM_Codificacion";
+    $uso = "SELECT IdCodificacion,Codigo from CM_Codificacion";
     imprimir($uso,$conn);
 
   }else if(ISSET($_GET['fechasLotes'])){//Obtenemos informacion de los lotes por la fecha
-    $fecha = "select DISTINCT(convert(varchar, Fecha, 23)) as Fecha from WM_LoteBarrica";
+    $fecha = "SELECT DISTINCT(convert(varchar, Fecha, 23)) as Fecha from WM_LoteBarrica";
     imprimir($fecha,$conn);
   }else if(ISSET($_GET['motivo'])){//Obtenemos informacion de los lotes por la fecha
-    $razones = "SELECT * from ADM_Razones where IdCaso=4";
+    $razones = "SELECT IdRazon,Descripcion from ADM_Razones where IdCaso=4";
     imprimir($razones,$conn);
   }
 }else{

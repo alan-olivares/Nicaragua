@@ -10,7 +10,7 @@ if(strpos($permisos,',2,') !== false){
     if(ObtenerCantidad($queryCons,$conn)==0){
       $query="INSERT into ADM_Ajustes (Evento,IdBarrica,FechaSolicitud,Solicitante,Estado,IdRazon)
       values ('$evento',(select IdBarrica from WM_Barrica where Consecutivo='$consecutivo'),(SELECT GETDATE()),
-      (select IdUsuario from CM_Usuario where Clave = '$usuario'),1,$motivo); SELECT SCOPE_IDENTITY();";
+      (select IdUsuario from CM_Usuario_WEB where Clave = '$usuario'),1,$motivo); SELECT SCOPE_IDENTITY();";
       $result = sqlsrv_query( $conn , $query);
       sqlsrv_next_result($result);
       sqlsrv_fetch($result);
@@ -110,7 +110,7 @@ if(strpos($permisos,',2,') !== false){
           }else{
             $query="INSERT into ADM_Ajustes (Evento,IdBarrica,FechaSolicitud,Solicitante,Estado,IdRazon)
                                     values ('$evento',(select IdBarrica from WM_Barrica where Consecutivo='$consecutivo'),(SELECT GETDATE()),
-                                            (select IdUsuario from CM_Usuario where Clave = '$usuario'),1,$motivo); SELECT SCOPE_IDENTITY()";
+                                            (select IdUsuario from CM_Usuario_WEB where Clave = '$usuario'),1,$motivo); SELECT SCOPE_IDENTITY()";
             $result = sqlsrv_query( $conn , $query);
             sqlsrv_next_result($result);
             sqlsrv_fetch($result);

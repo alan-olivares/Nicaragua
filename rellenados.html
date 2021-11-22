@@ -300,19 +300,19 @@
         async function cargarDatos(){
           try {
             empezar();
-            limpiarDatos();
             if(tabla1!=null){
               tabla1.destroy();
               tabla2.destroy();
             }
+            limpiarDatos();
+            var l = $('#cargando').ladda();
+            l.ladda('start');
             var url='RestApi/GET/'+getApi+'?rellenados=true&fecha1='+$('#date1').val()+'&fecha2='+$('#date2').val();
             var result = await conexion("GET",url,"");
             var parsed =JSON.parse(result);
             var content="";
-            var l = $('#cargando').ladda();
             mostrarDatos();
             if(parsed.length>0){
-              l.ladda('start');
               for (var i = 0; i < parsed.length; i++) {
                 content+="<tr><td>"+parsed[i].NoOrden+"</td><td>"+parsed[i].FechaOdT+"</td><td>"+parsed[i].Alcohol+"</td><td>"+parsed[i].Fecha_Ll+"</td><td>"+parsed[i].Uso+"</td><td>"+parsed[i].Estatus+"</td><td style='text-align: right;'>"+parsed[i].Total+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i].totalLts)+"</td></tr>";
               }

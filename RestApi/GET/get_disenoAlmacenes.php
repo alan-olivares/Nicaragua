@@ -3,7 +3,7 @@ include '../general_connection.php';
 if(strpos($permisos,',7,') !== false){
   if(ISSET($_GET['detalleBodega'])){//Usado para la tabla de los detalles de cada bodega
     $bodega=$_GET['detalleBodega'];
-    $bodegas = "exec sp_BodDetalle2 '$bodega'";
+    $bodegas = "exec sp_BodDetalle2_v2 '$bodega'";
     imprimir($bodegas,$conn);
   }else if(ISSET($_GET['plantas']) && ISSET($_GET['bodegas']) && ISSET($_GET['areas']) && ISSET($_GET['filas']) && ISSET($_GET['torres']) && ISSET($_GET['niveles'])){
     $planta=$_GET['plantas'];

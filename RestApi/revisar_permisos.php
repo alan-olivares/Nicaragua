@@ -1,6 +1,6 @@
 
 <?php
-$ObtPermisos = "select per.IdPermiso from CM_Usuario u
+$ObtPermisos = "SELECT per.IdPermiso from CM_Usuario_WEB u
     left join CM_Perfil p on p.IdPerfil=u.IdPerfil
     left join CM_PerfilPermiso pp on pp.IdPerfil=p.IdPerfil
     left join CM_Permiso per on per.IdPermiso=pp.IdPermiso

@@ -56,7 +56,7 @@ if(strpos($permisos,',3,') !== false){
   }/*else if(ISSET($_POST['borrarIdUser'])){//Usuario a borrar
     $borrarIdUser=$_POST["borrarIdUser"];
 
-    $queryborr="DELETE from CM_Usuario where Clave='$borrarIdUser'";
+    $queryborr="DELETE from CM_Usuario_WEB where Clave='$borrarIdUser'";
     $resultCons = sqlsrv_query( $conn , $queryborr);
     if($resultCons){
       echo "El usuario $borrarIdUser se ha borrado con exito";
@@ -66,19 +66,16 @@ if(strpos($permisos,',3,') !== false){
   }*/else if(ISSET($_POST['nombre'])){//Agregar nuevo usuario
     $passn=$_POST["passn"];
     $user=$_POST["user"];
-    $perfil=$_POST["perfil"];
+    $perfil=$_POST["perfil"]===''?'null':$_POST["perfil"];
     $nombre=$_POST["nombre"];
     $activo=$_POST["activo"];
     $grupo=$_POST["grupo"];
     $acceso=$_POST["acceso"];
-    $query="if not exists (select * from CM_Usuario where Clave='$user') ";
-    if($perfil!==""){
-      $query=$query."INSERT into CM_Usuario (IdFacultad, IdGrupo,Nombre, Estatus,Clave,Pass,IdPerfil,Tema) values ($acceso,'$grupo','$nombre',$activo,'$user',ENCRYPTBYPASSPHRASE('Pims.2011','$passn'),'$perfil',1)";
-    }else{
-      $query=$query."INSERT into CM_Usuario (IdFacultad,IdGrupo,Nombre, Estatus,Clave,Pass,Tema) values ($acceso,'$grupo','$nombre',$activo,'$user',ENCRYPTBYPASSPHRASE('Pims.2011','$passn'),1)";
-    }
+    $query="if not exists (select * from CM_Usuario_WEB where Clave='$user') INSERT into CM_Usuario_WEB (IdFacultad, IdGrupo,Nombre, Estatus,Clave,Pass,IdPerfil,Tema) values ($acceso,'$grupo','$nombre',$activo,'$user',ENCRYPTBYPASSPHRASE('Pims.2011','$passn'),$perfil,1)";
+    $queryV1="if not exists (select * from CM_Usuario where Clave='$user') INSERT into CM_Usuario (IdFacultad, IdGrupo,Nombre, Estatus,Clave,Pass) values ($acceso,'$grupo','$nombre',$activo,'$user','$passn')";
     $resultCons = sqlsrv_query( $conn , $query);
     if($resultCons){
+      ejecutarDato($conn,$queryV1);
       echo "El usuario se ha registrado con exito";
     }else{
       echo '..Error.. hubo un problema al intentar hacer la solucitud, por favor intenta más tarde';
@@ -91,18 +88,24 @@ if(strpos($permisos,',3,') !== false){
     $grupo=$_POST["grupo"];
     $acceso=$_POST["acceso"];
     if($perfil!=="" && $passn!=""){
-      $query="UPDATE CM_Usuario set IdFacultad=$acceso, IdGrupo='$grupo',Estatus=$activo, IdPerfil=$perfil,
+      $query="UPDATE CM_Usuario_WEB set IdFacultad=$acceso, IdGrupo='$grupo',Estatus=$activo, IdPerfil=$perfil,
       Pass=ENCRYPTBYPASSPHRASE('Pims.2011','$passn') where Clave='$userEdit'";
     }else if($perfil!==""){
-      $query="UPDATE CM_Usuario set IdFacultad=$acceso, IdGrupo='$grupo',Estatus=$activo, IdPerfil=$perfil where Clave='$userEdit'";
+      $query="UPDATE CM_Usuario_WEB set IdFacultad=$acceso, IdGrupo='$grupo',Estatus=$activo, IdPerfil=$perfil where Clave='$userEdit'";
     }else if($passn!==""){
-      $query="UPDATE CM_Usuario set IdFacultad=$acceso, IdGrupo='$grupo',Estatus=$activo,
+      $query="UPDATE CM_Usuario_WEB set IdFacultad=$acceso, IdGrupo='$grupo',Estatus=$activo,
       IdPerfil=NULL,Pass=ENCRYPTBYPASSPHRASE('Pims.2011','$passn') where Clave='$userEdit'";
     }else{
-      $query="UPDATE CM_Usuario set IdFacultad=$acceso, IdGrupo='$grupo',Estatus=$activo, IdPerfil=NULL where Clave='$userEdit'";
+      $query="UPDATE CM_Usuario_WEB set IdFacultad=$acceso, IdGrupo='$grupo',Estatus=$activo, IdPerfil=NULL where Clave='$userEdit'";
+    }
+    if($passn!==""){
+      $queryV1="UPDATE CM_Usuario set IdFacultad=$acceso, IdGrupo='$grupo',Estatus=$activo,Pass='$passn' where Clave='$userEdit'";
+    }else{
+      $queryV1="UPDATE CM_Usuario set IdFacultad=$acceso, IdGrupo='$grupo',Estatus=$activo where Clave='$userEdit'";
     }
     $resultCons = sqlsrv_query( $conn , $query);
     if($resultCons){
+      ejecutarDato($conn,$queryV1);
       echo "El usuario se ha modificado exitosamente";
     }else{
       echo '..Error.. hubo un problema al intentar hacer la solucitud, por favor intenta más tarde';

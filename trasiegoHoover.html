@@ -285,8 +285,8 @@
               var etiqueta="";
               var tanques=0;
               for (var i = 0; i < parsed.length; i++) {
-                if(parsed[i].Etiqueta!==etiqueta){//Se encontro un nuevo tanque hoover
-                  etiqueta=parsed[i].Etiqueta;
+                if(parsed[i].IdOperacion!==etiqueta){//Se encontro un nuevo tanque hoover
+                  etiqueta=parsed[i].IdOperacion;
                   tanques++;
                   content+='<tr class="colapsar" onclick="colapsar(this)"><td><span class="fa fa-angle-down" style="float:left; margin-left:5px;"></span>'+parsed[i].Etiqueta+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i].Litros)+"</td><td>"+parsed[i].FechaLLenado+"</td><td  colspan='5'></tr>";
                   content+="<tr><td  colspan='3'></td><td>"+parsed[i].IdOrden+

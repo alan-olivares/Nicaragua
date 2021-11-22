@@ -170,11 +170,6 @@
                   </ul>
                </nav>
             </div>
-            <?php
-               include'general_connection.php';
-               $bodegas = "Select AlmacenId,Nombre from AA_Almacen order by Nombre";
-               $stmtBodegas = sqlsrv_query( $conn , $bodegas);
-               ?>
             <div class="row wrapper border-bottom white-bg page-heading " >
                <div class="col-md-12 text-center  d-flex justify-content-center " >
                   <div class="form-inline text-center d-flex justify-content-center"  >
@@ -404,12 +399,13 @@
                   <label>  Uso:   </label>
                   <select class="form-control b-r-xl" required="true" name="uso" id="uso">
                      <?php
-                        $uso = "select IdCodificacion,Codigo from CM_Codificacion";
+                        include 'general_connection.php';
+                        $uso = "SELECT IdCodificacion,Codigo from CM_Codificacion";
                         $stmtUso = sqlsrv_query( $conn , $uso);
                         while( $row = sqlsrv_fetch_array( $stmtUso, SQLSRV_FETCH_NUMERIC))
                         {
                         ?>
-                     <option value="<?php echo $row[0]?>"><?php echo utf8_encode($row[1])?></option>
+                     <option value="<?php echo $row[0]?>"><?php echo $row[1]?></option>
                      <?php
                         }
                         sqlsrv_free_stmt( $stmtUso);
@@ -422,12 +418,12 @@
                   <label>  Edad:   </label>
                   <select class="form-control b-r-xl" required="true" name="edad" id="edad">
                      <?php
-                        $edad = "select * from CM_Edad";
+                        $edad = "SELECT IdEdad,Codigo from CM_Edad";
                         $stmtEdad = sqlsrv_query( $conn , $edad);
                         while( $row = sqlsrv_fetch_array( $stmtEdad, SQLSRV_FETCH_NUMERIC))
                         {
                         ?>
-                     <option value="<?php echo $row[0]?>"><?php echo utf8_encode($row[1])?></option>
+                     <option value="<?php echo $row[0]?>"><?php echo $row[1]?></option>
                      <?php
                         }
                         sqlsrv_free_stmt( $stmtEdad);
@@ -469,7 +465,7 @@
                   <label>  Estado:   </label>
                   <select class="form-control b-r-xl" required="true" name="estado" id="estado">
                      <?php
-                        $estados = "select IdEstado, Descripcion from CM_Estado";
+                        $estados = "SELECT IdEstado, Descripcion from CM_Estado";
                         $stmtEstados = sqlsrv_query( $conn , $estados);
                         while( $row = sqlsrv_fetch_array( $stmtEstados, SQLSRV_FETCH_NUMERIC))
                         {

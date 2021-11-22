@@ -62,7 +62,7 @@ if($row[0]=='1'){
             INNER JOIN ADM_logMantenimiento L ON M.IdMantenimiento=L.IdMantenimiento
             inner Join CM_CodEdad CE on CE.IdCodEdad = B.IdCodificacion
             inner join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
-            inner join CM_Usuario U on U.IdUsuario = M.IdUsuario
+            left join CM_Usuario_WEB U on U.IdUsuario = M.IdUsuario
             Where L.TipoOp='I' and L.Fecha between '$hora1' and '$hora2'
             order by SUBSTRING(CONVERT(CHAR(16), L.fecha, 120),  12, 5)";
 
@@ -75,8 +75,8 @@ if($row[0]=='1'){
               <td style="text-align: center;"><?php echo $row[0]?></td>
               <td style="text-align: center;"><?php echo $row[1]?></td>
               <td style="text-align: center;"><?php echo $row[2]?></td>
-              <td style="text-align: center;"><?php echo utf8_encode($row[3])?></td>
-              <td style="text-align: center;"><?php echo utf8_encode($row[4])?></td>
+              <td style="text-align: center;"><?php echo $row[3]?></td>
+              <td style="text-align: center;"><?php echo $row[4]?></td>
             </tr>
             <?php
             }
@@ -115,7 +115,7 @@ if($row[0]=='1'){
             <tr>
               <td style="text-align: center;"><?php echo $row[0]?></td>
               <td style="text-align: center;"><?php echo $row[1]?></td>
-              <td style="text-align: center;"><?php echo utf8_encode($row[2])?></td>
+              <td style="text-align: center;"><?php echo $row[2]?></td>
               <td style="text-align: center;"><?php echo $row[3]?></td>
               <td style="text-align: center;"><?php echo (int)$row[4]?></td>
             </tr>

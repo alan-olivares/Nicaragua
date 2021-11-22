@@ -170,11 +170,6 @@
                   </ul>
                </nav>
             </div>
-            <?php
-               include'general_connection.php';
-               $bodegas = "Select AlmacenId,Nombre from AA_Almacen order by Nombre";
-               $stmtBodegas = sqlsrv_query( $conn , $bodegas);
-               ?>
             <div class="row wrapper border-bottom white-bg page-heading " >
                <div class="col-md-12 text-center  d-flex justify-content-center " >
                   <div class="form-inline text-center d-flex justify-content-center"  >
@@ -372,12 +367,13 @@
                  <label>  Estado:   </label>
                  <select class="form-control b-r-xl" required="true" name="estado" id="estado">
                     <?php
-                       $estados = "select IdEstado, Descripcion from CM_Estado";
+                       include 'general_connection.php';
+                       $estados = "SELECT IdEstado, Descripcion from CM_Estado";
                        $stmtEstados = sqlsrv_query( $conn , $estados);
                        while( $row = sqlsrv_fetch_array( $stmtEstados, SQLSRV_FETCH_NUMERIC))
                        {
                        ?>
-                    <option value="<?php echo $row[0]?>"><?php echo utf8_encode($row[1])?></option>
+                    <option value="<?php echo $row[0]?>"><?php echo $row[1]?></option>
                     <?php
                        }
                        sqlsrv_free_stmt( $stmtEstados);

@@ -7,19 +7,25 @@
  * @return JSON datos
  */
 function imprimir($query,$conn){
-  $stmt = sqlsrv_query( $conn , $query);
-  if($stmt){
-    $result = array();
-    do {
-        while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)){
-           $result[] = $row;
-        }
-    } while (sqlsrv_next_result($stmt));
-    echo json_encode($result, JSON_UNESCAPED_UNICODE);
-    sqlsrv_free_stmt($stmt);
-  }else{
-    echo '..Error.. Hubo un error al obtener los datos, intenta de nuevo más tarde';
+  try {
+    $stmt = sqlsrv_query( $conn , $query);
+    if($stmt){
+      $result = array();
+      do {
+          while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)){
+             $result[] = $row;
+          }
+      } while (sqlsrv_next_result($stmt));
+      echo json_encode($result, JSON_UNESCAPED_UNICODE);
+      sqlsrv_free_stmt($stmt);
+    }else{
+      echo '..Error.. Hubo un error al obtener los datos, intenta de nuevo más tarde';
+    }
+  } catch (\Exception $e) {
+    echo '..Error.. '.$e;
   }
+
+
 }
 /**
  * Obtiene un valor entero de una consulta que recibe como parametro
@@ -29,11 +35,22 @@ function imprimir($query,$conn){
  * @return value entero obtenido
  */
 function ObtenerCantidad($queryCons,$conn){
-  $resultCons = sqlsrv_query( $conn , $queryCons);
-  $row = sqlsrv_fetch_array( $resultCons, SQLSRV_FETCH_NUMERIC);
-  if(empty($row))
+  try {
+    $resultCons = sqlsrv_query( $conn , $queryCons);
+    $row = sqlsrv_fetch_array( $resultCons, SQLSRV_FETCH_NUMERIC);
+    if(empty($row))
+      return -1;
+    return (int)$row[0];
+  } catch (\Exception $e) {
     return -1;
-  return (int)$row[0];
+  }
+}
+function ejecutarDato($conn,$queryCons){
+  try {
+    return sqlsrv_query( $conn , $queryCons);
+  } catch (\Exception $e) {
+    return false;
+  }
 }
 /**
  * Valida si un String se puede convertir en un JSON

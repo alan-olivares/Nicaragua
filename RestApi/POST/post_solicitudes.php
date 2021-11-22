@@ -8,7 +8,7 @@ if($tipo==='1'){//Solicitudes de barriles
   foreach ($ids as $IdSolicitud) {
     if(strpos($permisos,',1,') !== false){
       if($estado=='3'){
-        $queryCons="UPDATE ADM_Ajustes set FechaAutorizacion=(SELECT GETDATE()),Autorizador=(select IdUsuario from CM_Usuario where Clave = '$usuario'),
+        $queryCons="UPDATE ADM_Ajustes set FechaAutorizacion=(SELECT GETDATE()),Autorizador=(select IdUsuario from CM_Usuario_WEB where Clave = '$usuario'),
                     Estado='$estado' where IdAjuste='$IdSolicitud'";
         $resultCons = sqlsrv_query( $conn , $queryCons);
         if(!$resultCons){
@@ -22,7 +22,7 @@ if($tipo==='1'){//Solicitudes de barriles
         $resultCons = sqlsrv_query( $conn , $queryCons);
         if($resultCons){
           //Actualiza el estado de la solicitud
-          $queryCons="UPDATE ADM_Ajustes set FechaAutorizacion=(SELECT GETDATE()),Autorizador=(select IdUsuario from CM_Usuario where Clave = '$usuario'),
+          $queryCons="UPDATE ADM_Ajustes set FechaAutorizacion=(SELECT GETDATE()),Autorizador=(select IdUsuario from CM_Usuario_WEB where Clave = '$usuario'),
                       Estado='$estado' where IdAjuste='$IdSolicitud'";
           $resultCons = sqlsrv_query( $conn , $queryCons);
           if(!$resultCons){
@@ -34,7 +34,7 @@ if($tipo==='1'){//Solicitudes de barriles
       }
     }else if(strpos($permisos,',2,') !== false){
       if($estado=='3'){
-        $queryCons="UPDATE ADM_Ajustes set FechaAutorizacion=(SELECT GETDATE()),Autorizador=(select IdUsuario from CM_Usuario where Clave = '$usuario'),
+        $queryCons="UPDATE ADM_Ajustes set FechaAutorizacion=(SELECT GETDATE()),Autorizador=(select IdUsuario from CM_Usuario_WEB where Clave = '$usuario'),
                     Estado='4' where IdAjuste='$IdSolicitud'";
         $resultCons = sqlsrv_query( $conn , $queryCons);
         if(!$resultCons){
@@ -49,7 +49,7 @@ if($tipo==='1'){//Solicitudes de barriles
   foreach ($ids as $IdSolicitud) {
     if(strpos($permisos,',1,') !== false){
       if($estado=='3'){
-        $queryCons="UPDATE ADM_AjustesTanques set FechaAutorizacion=(SELECT GETDATE()),Autorizador=(select IdUsuario from CM_Usuario where Clave = '$usuario'),
+        $queryCons="UPDATE ADM_AjustesTanques set FechaAutorizacion=(SELECT GETDATE()),Autorizador=(select IdUsuario from CM_Usuario_WEB where Clave = '$usuario'),
                     Estado='$estado' where IdAjuste='$IdSolicitud'";
         $resultCons = sqlsrv_query( $conn , $queryCons);
         if(!$resultCons){
@@ -62,7 +62,7 @@ if($tipo==='1'){//Solicitudes de barriles
         $resultCons = sqlsrv_query( $conn , $queryCons);
         if($resultCons){
           //Actualiza el estado de la solicitud
-          $queryCons="UPDATE ADM_AjustesTanques set FechaAutorizacion=(SELECT GETDATE()),Autorizador=(select IdUsuario from CM_Usuario where Clave = '$usuario'),
+          $queryCons="UPDATE ADM_AjustesTanques set FechaAutorizacion=(SELECT GETDATE()),Autorizador=(select IdUsuario from CM_Usuario_WEB where Clave = '$usuario'),
                       Estado='$estado' where IdAjuste='$IdSolicitud'";
           $resultCons = sqlsrv_query( $conn , $queryCons);
           if(!$resultCons){
@@ -74,7 +74,7 @@ if($tipo==='1'){//Solicitudes de barriles
       }
     }else if(strpos($permisos,',2,') !== false){
       if($estado=='3'){
-        $queryCons="UPDATE ADM_AjustesTanques set FechaAutorizacion=(SELECT GETDATE()),Autorizador=(select IdUsuario from CM_Usuario where Clave = '$usuario'),
+        $queryCons="UPDATE ADM_AjustesTanques set FechaAutorizacion=(SELECT GETDATE()),Autorizador=(select IdUsuario from CM_Usuario_WEB where Clave = '$usuario'),
                     Estado='4' where IdAjuste='$IdSolicitud'";
         $resultCons = sqlsrv_query( $conn , $queryCons);
         if(!$resultCons){

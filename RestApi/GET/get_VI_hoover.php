@@ -41,7 +41,7 @@ if(strpos($permisos,',2,') !== false){
     imprimir($barril,$conn);
 
   }else if(ISSET($_GET['razones'])){
-    $razones = "SELECT * from ADM_Razones where IdCaso=".$_GET['razones'];
+    $razones = "SELECT IdRazon,Descripcion from ADM_Razones where IdCaso=".$_GET['razones'];
     imprimir($razones,$conn);
   }
 }else{

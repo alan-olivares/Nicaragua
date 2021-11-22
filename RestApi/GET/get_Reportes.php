@@ -9,14 +9,14 @@ if(strpos($permisos,',10,') !== false){
     $Alcohol=$_GET['alcohol'];
     $Allenada=$_GET['llenada'];
     $Uso=$_GET['uso'];
-    $datos = "exec sp_InvParamDetalle '$bodegas','$Alcohol','$Allenada','$Uso'";
+    $datos = "exec sp_InvParamDetalle_v2 '$bodegas','$Alcohol','$Allenada','$Uso'";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['inventario'])){
     $bodegas=$_GET['bodega'];
     $Alcohol=$_GET['alcohol'];
     $Allenada=$_GET['llenada'];
     $Uso=$_GET['uso'];
-    $datos = "exec sp_InvParam '$bodegas','$Alcohol','$Allenada','$Uso'";
+    $datos = "exec sp_InvParam_v2 '$bodegas','$Alcohol','$Allenada','$Uso'";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['barriles_plantel'])){//Reporte de barriles de plantel
     $datos = "exec sp_BarrilPlantel";
@@ -32,37 +32,37 @@ if(strpos($permisos,',10,') !== false){
   }else if(ISSET($_GET['llenados'])){//Reporte de
     $fecha1=$_GET['fecha1'];
     $fecha2=$_GET['fecha2'];
-    $datos = "exec sp_RepOPDetalleLlenEncWeb '$fecha1' , '$fecha2'";
+    $datos = "exec sp_RepOPDetalleLlenEncWeb_v2 '$fecha1' , '$fecha2'";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['llenadosT2'])){//Reporte de
     $fecha1=$_GET['fecha1'];
     $fecha2=$_GET['fecha2'];
-    $datos = "exec sp_RepOPDetalleLlenWeb_v2 '$fecha1' , '$fecha2'";
+    $datos = "exec sp_RepOPDetalleLlenWeb_v2_v2 '$fecha1' , '$fecha2'";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['rellenados'])){//Reporte de rellenados
     $fecha1=$_GET['fecha1'];
     $fecha2=$_GET['fecha2'];
-    $datos = "exec sp_RepOPRellenoEncWeb '$fecha1' , '$fecha2'";
+    $datos = "exec sp_RepOPRellenoEncWeb_v2 '$fecha1' , '$fecha2'";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['rellenadosT2'])){//Reporte de rellenados tabla detalles
     $fecha1=$_GET['fecha1'];
     $fecha2=$_GET['fecha2'];
-    $datos = "exec sp_RepOPRellenoWeb '$fecha1' , '$fecha2'";
+    $datos = "exec sp_RepOPRellenoWeb_v2 '$fecha1' , '$fecha2'";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['trasiego'])){//Reporte de trasiego
     $fecha1=$_GET['fecha1'];
     $fecha2=$_GET['fecha2'];
-    $datos = "exec sp_RepOPDetalleEncWeb 5, '$fecha1' , '$fecha2'";
+    $datos = "exec sp_RepOPDetalleEncWeb_v2 5, '$fecha1' , '$fecha2'";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['trasiegoT2'])){//Reporte de trasiego tabla detalles
     $fecha1=$_GET['fecha1'];
     $fecha2=$_GET['fecha2'];
-    $datos = "exec sp_RepOPDetalleWeb_v2 5, '$fecha1' , '$fecha2'";
+    $datos = "exec sp_RepOPDetalleWeb_v2_v2 5, '$fecha1' , '$fecha2'";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['trasiegoHoover'])){//Reporte de trasiego hoover
     $fecha1=$_GET['fecha1'];
     $fecha2=$_GET['fecha2'];
-    $datos = "SELECT isnull((('01' + right('00' + convert(varChar(2),2),2) + right('000000' + convert(varChar(6),OpDe.NoSerie),6))),'Sin Asignar') as Etiqueta,
+    $datos = "SELECT Op.IdOperacion,isnull((('01' + right('00' + convert(varChar(2),2),2) + right('000000' + convert(varChar(6),OpDe.NoSerie),6))),'Sin Asignar') as Etiqueta,
     OpDe.Litros,convert(varchar,OpDe.FechaLLenado,105) as FechaLLenado,OpHis.IdOrden,
     isnull((('01' + right('00' + convert(varChar(2),1),2) + right('000000' + convert(varChar(6),OpHis.Consecutivo),6))),'Sin Asignar') as EtiquetaBarr,
     Al.Descripcion,Datepart(YYYY,L.Recepcion) as Recepcion,OpHis.Capacidad
@@ -80,9 +80,9 @@ if(strpos($permisos,',10,') !== false){
     $alcohol=$_GET['alcohol'];
     $codificacion=$_GET['codificacion'];
     $fecha=$_GET['fecha'];
-    $datos = "exec sp_InfoBarrilDetalle3 '$almacen','$area','$seccion','$alcohol','$codificacion','$fecha'";
+    $datos = "exec sp_InfoBarrilDetalle3_v2 '$almacen','$area','$seccion','$alcohol','$codificacion','$fecha'";
     imprimir($datos,$conn);
-  }else if(ISSET($_GET['detallesTanquesPlantel'])){//Reporte de descripcion
+  }else if(ISSET($_GET['detallesTanquesPlantel'])){//Reporte de descripcion_tanques
     $almacen=$_GET['almacen'];
     $area=$_GET['area'];
     $datos = "exec sp_TanquePlantelDetalle '$almacen','$area'";
@@ -91,7 +91,7 @@ if(strpos($permisos,',10,') !== false){
     $almacen=$_GET['almacen'];
     $area=$_GET['area'];
     $codificacion=$_GET['codificacion'];
-    $datos = "exec sp_BarrilPlantelDetalle '$almacen','$area','$codificacion'";
+    $datos = "exec sp_BarrilPlantelDetalle_v2 '$almacen','$area','$codificacion'";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['almacenes'])){
     $datos = "SELECT AlmacenId,Nombre from AA_Almacen ".($_GET['almacenes']!=="true"?"where AlmacenId=".$_GET['almacenes']:"")." order by Nombre";
@@ -106,7 +106,7 @@ if(strpos($permisos,',10,') !== false){
     $datos = "SELECT IdCodificacion,Codigo from CM_Codificacion ".($_GET['uso']!=="true"?"where IdCodificacion=".$_GET['uso']:"")." order by Codigo";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['edades'])){
-    $datos = "exec sp_ListaEdad";
+    $datos = "exec sp_ListaEdad_v2";
     imprimir($datos,$conn);
   }
 

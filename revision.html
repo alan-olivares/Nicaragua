@@ -222,23 +222,18 @@
          async function CargarTabla(){
            try {
              empezar();
+             $('#barriles').hide();
              const url='RestApi/GET/'+getApi;
              var result = await conexion("GET",url,"");
              var parsed =JSON.parse(result);
-             var transform = {"tag":"table", "children":[
-               {"tag":"tbody","children":[
-                 {"tag":"tr","children":[
-                   {"tag":"td","html":"${Num}"},
-                   {"tag":"td","html":"${Bod}"},
-                   {"tag":"td","html":"${Fecha_Li}"},
-                   {"tag":"td","html":"${Alcohol}"},
-                   {"tag":"td","html":"${Barril}"},
-                   {"tag":"td","html":"${Cantidad}"},
-                   {"tag":"td","html":"${Lts}"},
-                 ]}
-               ]}
-             ]};
-             $('#barriles > tbody').html(json2html.transform(parsed,transform));
+             if(parsed.length>0){
+               var content="";
+               for (var i = 0; i < parsed.length; i++) {
+                 content+="<tr><td>"+(i+1)+"</td><td>"+parsed[i].Bod+"</td><td>"+parsed[i].Fecha_Li+"</td><td>"+parsed[i].Alcohol+"</td><td>"+parsed[i].Barril+"</td><td>"+parsed[i].Cantidad+"</td><td>"+fomatoNumero(parsed[i].Litros)+"</td></tr>";
+               }
+               $('#barriles tbody').append(content);
+               $('#barriles').show();
+             }
              Recargar();
              parar();
            } catch(error) {
