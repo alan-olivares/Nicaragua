@@ -692,47 +692,43 @@ function insertarTablaDosInventario(json,hoja,inicio){
 
 }
 async function ponerEncabezadoInventario(bodega,alcohol,llenada,uso,hoja){
-  try {
-    convinarCeldas(hoja,["I5:J5","M5:N5","K5:L5"]);
-    hoja.range("I5:J5").style({bottomBorder:true,"borderColor": "000000"});
-    hoja.range("M5:N5").style({bottomBorder:true,"borderColor": "000000"});
-    hoja.cell('D5').value('Inventario').style({ bold: true, "horizontalAlignment":"left" });
-    hoja.cell('H5').value('Bodega:').style({ bold: true, "horizontalAlignment":"right" });
-    hoja.cell('K5').value('Alcohol:').style({ bold: true, "horizontalAlignment":"right" });
-    hoja.cell('O5').value('Año:').style({ bold: true, "horizontalAlignment":"right" });
-    hoja.cell('Q5').value('Uso:').style({ bold: true, "horizontalAlignment":"right" });
-    if(bodega===''){
-      hoja.cell('I5').value('Todos');
-    }else{
-      var url=servidor+'RestApi/GET/get_Reportes.php?almacenes='+bodega;
-      var result = await conexion(url);
-      var parsed =JSON.parse(result);
-      hoja.cell('I5').value(parsed[0].Nombre);
-    }
-    if(alcohol===''){
-      hoja.cell('M5').value('Todos');
-    }else{
-      var url=servidor+'RestApi/GET/get_Reportes.php?alcohol='+alcohol;
-      var result = await conexion(url);
-      var parsed =JSON.parse(result);
-      hoja.cell('M5').value(parsed[0].Descripcion);
-    }
-    if(llenada===''){
-      hoja.cell('P5').value('Todos').style({bottomBorder:true,"borderColor": "000000"});
-    }else{
-      hoja.cell('P5').value(llenada).style({bottomBorder:true,"borderColor": "000000"});
-    }
-    if(uso===''){
-      hoja.cell('R5').value('Todos').style({bottomBorder:true,"borderColor": "000000"});
-    }else{
-      var url=servidor+'RestApi/GET/get_Reportes.php?uso='+uso;
-      var result = await conexion(url);
-      var parsed =JSON.parse(result);
-      hoja.cell('R5').value(parsed[0].Codigo).style({bottomBorder:true,"borderColor": "000000"});
-    }
-  } catch (e) {
-    console.log(e);
-    res.send('..Error.. Hubo un problema al procesar la solicitud, intenta de nuevo más tarde');
+  convinarCeldas(hoja,["G6:I6","K6:M6","Q6:S6"]);
+  hoja.range("G6:I6").style({bottomBorder:true,"borderColor": "000000", "horizontalAlignment":"center"});
+  hoja.range("K6:M6").style({bottomBorder:true,"borderColor": "000000", "horizontalAlignment":"center"});
+  hoja.range("Q6:S6").style({bottomBorder:true,"borderColor": "000000", "horizontalAlignment":"center"});
+  hoja.cell('D5').value('Inventario').style({ bold: true, "horizontalAlignment":"left" });
+  hoja.cell('H5').value('Bodega:').style({ bold: true, "horizontalAlignment":"center" });
+  hoja.cell('L5').value('Alcohol:').style({ bold: true, "horizontalAlignment":"center" });
+  hoja.cell('O5').value('Año:').style({ bold: true, "horizontalAlignment":"center" });
+  hoja.cell('R5').value('Uso:').style({ bold: true, "horizontalAlignment":"center" });
+  if(bodega===''){
+    hoja.cell('G6').value('Todos');
+  }else{
+    var url=servidor+'RestApi/GET/get_Reportes.php?almacenesTod='+bodega;
+    var result = await conexion(url);
+    var parsed =JSON.parse(result);
+    hoja.cell('G6').value(parsed[0].Nombres);
+  }
+  if(alcohol===''){
+    hoja.cell('K6').value('Todos').style({ "horizontalAlignment":"center" });
+  }else{
+    var url=servidor+'RestApi/GET/get_Reportes.php?alcoholTod='+alcohol;
+    var result = await conexion(url);
+    var parsed =JSON.parse(result);
+    hoja.cell('K6').value(parsed[0].Nombres);
+  }
+  if(llenada==='0'){
+    hoja.cell('O6').value('Todos').style({bottomBorder:true,"borderColor": "000000", "horizontalAlignment":"center"});
+  }else{
+    hoja.cell('O6').value(llenada).style({bottomBorder:true,"borderColor": "000000", "horizontalAlignment":"center"});
+  }
+  if(uso===''){
+    hoja.cell('Q6').value('Todos');
+  }else{
+    var url=servidor+'RestApi/GET/get_Reportes.php?usoTod='+uso;
+    var result = await conexion(url);
+    var parsed =JSON.parse(result);
+    hoja.cell('Q6').value(parsed[0].Nombres);
   }
 
 }

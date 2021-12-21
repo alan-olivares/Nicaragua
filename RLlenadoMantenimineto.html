@@ -74,7 +74,7 @@
                      <a href="impresion.html"><i class="fa fa-print"></i> <span class="nav-label">Impresión de etiquetas</span></a>
                   </li>
                   <li class="seis active">
-                     <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Ordenes de trabajo</span><span class="fa arrow"></span></a>
+                     <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Órdenes de trabajo</span><span class="fa arrow"></span></a>
                      <ul class="nav nav-second-level">
                        <li class="active">
                            <a href="#">Llenado<span class="fa arrow"></span></a>
@@ -185,7 +185,7 @@
               <div class="col-md-12 d-flex justify-content-center text-center">
                 <div class="col-md-5 d-flex justify-content-center">
                   <h5><label>Fecha: </label>
-                    <input type="date" class="form-control b-r-xl" required="true" id="fecha" onchange="ObtenerDatos()">
+                    <input type="date" class="form-control b-r-xl" required="true" id="fecha" onchange="ObtenerDatos()" onkeydown="return false">
                   </h5>
                 </div>
               </div>
@@ -282,6 +282,8 @@
                tabla1.destroy();
                tabla2.destroy();
              }
+             $('#tabla1 tbody').empty();
+             $('#tabla2 tbody').empty();
              var url='RestApi/GET/'+getApi+'?OPDetalleMant=true&fecha='+$('#fecha').val();
              var result = await conexion("GET",url,"");
              var parsed =JSON.parse(result);

@@ -76,7 +76,7 @@
                      <a href="impresion.html"><i class="fa fa-print"></i> <span class="nav-label">Impresión de etiquetas</span></a>
                   </li>
                   <li class="seis">
-                     <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Ordenes de trabajo</span><span class="fa arrow"></span></a>
+                     <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Órdenes de trabajo</span><span class="fa arrow"></span></a>
                      <ul class="nav nav-second-level">
                        <li>
                            <a href="#">Llenado<span class="fa arrow"></span></a>
@@ -445,14 +445,14 @@
             </div>
             <div class="col-md-4 text-center " >
                <h5><label>  Revisado:   </label>
-                  <input type="date" class="form-control b-r-xl" name="revisado" id="revisado">
+                  <input type="date" class="form-control b-r-xl" name="revisado" id="revisado" onkeydown="return false">
                </h5>
             </div>
          </div>
          <div class="col-md-12 text-center  d-flex justify-content-center" >
             <div class="col-md-4 text-center " >
                <h5><label>  Relleno:   </label>
-                  <input type="date" class="form-control b-r-xl" name="relleno" id="relleno">
+                  <input type="date" class="form-control b-r-xl" name="relleno" id="relleno" onkeydown="return false">
                </h5>
             </div>
             <div class="col-md-4 text-center " >

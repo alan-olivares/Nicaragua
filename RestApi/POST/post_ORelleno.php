@@ -36,7 +36,9 @@ if(strpos($permisos,',6,') !== false){
       $tsql = "UPDATE PR_Orden SET Estatus=1 ,IdOperario=$operador, IdOperarioMon=$motaca,IdSupervisor=$supervisor where IdOrden=$orden";
       $stmt = sqlsrv_query( $conn , $tsql);
       if($stmt){
-        echo 'Ordenen asignada con exito';
+        echo 'Orden asignada con exito';
+        //Generamos la notificacion
+        generarNotificacion($orden,2,1,$usuario,'-1',$conn);
       }else{
         echo '..Error.. Hubo un problema al asignar la orden, intenta de nuevo mas tarde';
       }
@@ -52,7 +54,8 @@ if(strpos($permisos,',6,') !== false){
       $tsql = "UPDATE PR_Orden SET Estatus=3,IdOperario=0, IdOperarioMon=0,IdSupervisor=0 where IdOrden=$orden";
       $stmt = sqlsrv_query( $conn , $tsql);
       if($stmt){
-        echo 'Ordenen cancelada con exito';
+        echo 'Orden cancelada con exito';
+        generarNotificacion($orden,2,4,$usuario,'-1',$conn);
       }else{
         echo '..Error.. Hubo un problema al cancelar la orden, intenta de nuevo mas tarde';
       }

@@ -62,6 +62,49 @@ function isJson($string) {
  json_decode($string);
  return (json_last_error() == JSON_ERROR_NONE);
 }
+
+function generarNotificacion($referencia,$caso,$estatus,$enviador,$receptor,$conn){
+  //Borramos las notificaciones pasadas si existen
+  sqlsrv_query( $conn , "delete from ADM_Notificaciones where convert(varchar,fecha,105) <>convert(varchar,GETDATE(),105)");
+  //Generamos la notificacion
+  $titulo=($caso==1?'Lote de alcohol ':'Orden'.getCaso($caso)).$referencia.getMsgTipo($estatus).($caso==1?'o':'a');
+  $mensaje=' ha'.getMsgTipo($estatus).($caso==1?'o el lote ':'o la orden ').$referencia;
+  $tsql = "if not exists(select * from ADM_Notificaciones where referencia='$referencia' and Estatus='$estatus')
+  INSERT into ADM_Notificaciones(referencia,caso,Estatus,titulo,mensaje,idEnviador,idReceptor,fecha) values('$referencia','$caso',$estatus,'$titulo',
+  concat((select nombre from cm_usuario where Clave='$enviador'),'$mensaje'),ISNULL((select idusuario from cm_usuario where Clave='$enviador'),0),
+  ISNULL((select idusuario from cm_usuario where Clave='$receptor'),0),GETDATE())";
+  return sqlsrv_query( $conn , $tsql);
+}
+function getMsgTipo($estatus){
+  $regresar="";
+  if($estatus==1){
+    $regresar=' asignad';
+  }else if($estatus==2){
+    $regresar= ' conmenzad';
+  }else if($estatus==3){
+    $regresar= ' terminad';
+  }else if($estatus==4){
+    $regresar= ' cancelad';
+  }else{
+    return '';
+  }
+  return $regresar;
+}
+function getCaso($caso){
+  $regresar="";
+  if($caso==1){
+    $regresar=' de llenado ';
+  }else if($caso==2){
+    $regresar= ' de relleno ';
+  }else if($caso==3){
+    $regresar= ' de trasiego ';
+  }else if($caso==4){
+    $regresar= ' de trasiego hoover ';
+  }else{
+    return ' ';
+  }
+  return $regresar;
+}
 /**
  * Termina el script que se está ejecutando
  *

@@ -94,19 +94,28 @@ if(strpos($permisos,',10,') !== false){
     $datos = "exec sp_BarrilPlantelDetalle_v2 '$almacen','$area','$codificacion'";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['almacenes'])){
-    $datos = "SELECT AlmacenId,Nombre from AA_Almacen ".($_GET['almacenes']!=="true"?"where AlmacenId=".$_GET['almacenes']:"")." order by Nombre";
+    $datos = "SELECT AlmacenId,Nombre from AA_Almacen ".($_GET['almacenes']!=="true"?"where AlmacenId in(".$_GET['almacenes'].")":"")." order by Nombre";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['alcohol'])){
-    $datos = "SELECT IdAlcohol,Descripcion from CM_Alcohol Where IdAlcohol <> 4 ".($_GET['alcohol']!=="true"?"and IdAlcohol=".$_GET['alcohol']:"")." order by Descripcion";
+    $datos = "SELECT IdAlcohol,Descripcion from CM_Alcohol Where IdAlcohol <> 4 ".($_GET['alcohol']!=="true"?"and IdAlcohol in(".$_GET['alcohol'].")":"")." order by Descripcion";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['Allenada'])){
     $datos = "SELECT Distinct YEAR(Recepcion) as Anio from PR_Lote order by YEAR(Recepcion)";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['uso'])){
-    $datos = "SELECT IdCodificacion,Codigo from CM_Codificacion ".($_GET['uso']!=="true"?"where IdCodificacion=".$_GET['uso']:"")." order by Codigo";
+    $datos = "SELECT IdCodificacion,Codigo from CM_Codificacion ".($_GET['uso']!=="true"?"where IdCodificacion in(".$_GET['uso'].")":"")." order by Codigo";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['edades'])){
     $datos = "exec sp_ListaEdad_v2";
+    imprimir($datos,$conn);
+  }else if(ISSET($_GET['almacenesTod'])){
+    $datos = "SELECT STRING_AGG(Nombre, ', ') AS Nombres FROM AA_Almacen ".($_GET['almacenesTod']!=="true"?"where AlmacenId in(".$_GET['almacenesTod'].")":"");
+    imprimir($datos,$conn);
+  }else if(ISSET($_GET['alcoholTod'])){
+    $datos = "SELECT STRING_AGG(Descripcion, ', ') AS Nombres FROM CM_Alcohol Where IdAlcohol <> 4 ".($_GET['alcoholTod']!=="true"?"and IdAlcohol in(".$_GET['alcoholTod'].")":"");
+    imprimir($datos,$conn);
+  }else if(ISSET($_GET['usoTod'])){
+    $datos = "SELECT STRING_AGG(Codigo, ', ') AS Nombres FROM CM_Codificacion ".($_GET['usoTod']!=="true"?"where IdCodificacion in(".$_GET['usoTod'].")":"");
     imprimir($datos,$conn);
   }
 

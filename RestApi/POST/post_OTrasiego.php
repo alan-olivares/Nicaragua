@@ -5,7 +5,7 @@ if(strpos($permisos,',6,') !== false){//Agregar ordenes
     if(isJson($_POST["data"])){
       $data = json_decode($_POST["data"], true);
       $enviar="";
-      $contar=0;$contarErr=0;
+      $contarErr=0;
       foreach($data as $campo) {
         $query="exec sp_OrdenTrasInsert_v2 '".$usuario."','".$campo['bodega']."','".$campo['year']."','".$campo['Alcohol']."','".$campo['Uso']."','".$campo['Cantidad']."','".$campo['tanque']."', 5";
         $stmtCheck = sqlsrv_query( $conn , $query);
@@ -36,7 +36,8 @@ if(strpos($permisos,',6,') !== false){//Agregar ordenes
       $tsql = "UPDATE PR_Orden SET Estatus=1 ,IdOperario=$operador, IdOperarioMon=$motaca,IdSupervisor=$supervisor where IdOrden=$orden";
       $stmt = sqlsrv_query( $conn , $tsql);
       if($stmt){
-        echo 'Ordenen asignada con exito';
+        echo 'Orden asignada con exito';
+        generarNotificacion($orden,3,1,$usuario,'-1',$conn);
       }else{
         echo '..Error.. Hubo un problema al asignar la orden, intenta de nuevo mas tarde';
       }
@@ -52,7 +53,8 @@ if(strpos($permisos,',6,') !== false){//Agregar ordenes
       $tsql = "UPDATE PR_Orden SET Estatus=3,IdOperario=0, IdOperarioMon=0,IdSupervisor=0 where IdOrden=$orden";
       $stmt = sqlsrv_query( $conn , $tsql);
       if($stmt){
-        echo 'Ordenen cancelada con exito';
+        echo 'Orden cancelada con exito';
+        generarNotificacion($orden,3,4,$usuario,'-1',$conn);
       }else{
         echo '..Error.. Hubo un problema al cancelar la orden, intenta de nuevo mas tarde';
       }

@@ -67,6 +67,7 @@ if(strpos($permisos,',8,') !== false){
     $tsql = "if exists(SELECT * from WM_RecDetail where IdRecDetail='$tanque' and Estatus='0')
     UPDATE WM_RecDetail set Estatus='1',Merma=(select Litros-Consumo from WM_RecDetail where IdRecDetail='$tanque') where IdRecDetail='$tanque'";
     ejecutar2($tsql,$conn,"actualizados");
+    generarNotificacion(ObtenerDatoSimple("SELECT IdLote from WM_RecDetail where IdRecDetail='$tanque' and Estatus='0'",$conn),1,3,$usuario,'-1',$conn);
   }else if(ISSET($_POST['nuevoEnvio'])){
     $tanque=$_POST['tanque'];$litros=$_POST['litros'];$medida=$_POST['medida'];$IdAlcohol=$_POST['IdAlcohol'];
     $anno=$_POST['anno'];$para=$_POST['para'];$fecha=$_POST['fecha'];$envio=$_POST['envio'];
@@ -86,6 +87,7 @@ if(strpos($permisos,',8,') !== false){
       $IdRecDetail=ObtenerDatoSimple($tsql,$conn);
       if($idRecepcion!=null && $IdRecDetail!=null){
         echo "Envío guardado correctamente con IdRecepcion=".$idRecepcion." y IdDetalle=".$IdRecDetail;
+        generarNotificacion($idLote,1,1,$usuario,'-1',$conn);
       }else{
         echo "..Error.. Se produjo un error al guardar el envio, por favor intenta de nuevo más tarde";
       }

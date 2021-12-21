@@ -4,6 +4,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Reportes</title>
+      <link href="css/plugins/chosen/bootstrap-chosen.css" rel="stylesheet">
       <link href="css/bootstrap.min.css" rel="stylesheet">
       <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
       <link rel="icon" href="img\TBRE.ico">
@@ -12,6 +13,8 @@
       <link href="css/style.css" rel="stylesheet">
       <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
       <link href="css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
+      <link href="css/plugins/select2/select2.min.css" rel="stylesheet">
+
    </head>
    <body >
       <script src="js/revisar_sesion.js"></script>
@@ -74,7 +77,7 @@
                      <a href="impresion.html"><i class="fa fa-print"></i> <span class="nav-label">Impresión de etiquetas</span></a>
                   </li>
                   <li class="seis">
-                     <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Ordenes de trabajo</span><span class="fa arrow"></span></a>
+                     <a href="#"><i class="fa fa-briefcase"></i> <span class="nav-label">Órdenes de trabajo</span><span class="fa arrow"></span></a>
                      <ul class="nav nav-second-level">
                        <li>
                            <a href="#">Llenado<span class="fa arrow"></span></a>
@@ -169,35 +172,30 @@
                </nav>
             </div>
             <div class="row wrapper border-bottom white-bg page-heading" >
-               <div class="col-md-8 text-center  d-flex justify-content-center" >
-                  <div class="form-inline text-center d-flex justify-content-center">
-                     <h5>
-                        <label>  Bodega:  </label>
-                        <select class="form-control b-r-xl" name="bodega" id="bodega">
-                           <option value="">Todos</option>
-                        </select>
-                     </h5>
-                     <h5>
-                        <label>  Alcohol:   </label>
-                        <select class="form-control b-r-xl" name="alcohol" id="alcohol">
-                           <option value="">Todos</option>
-                        </select>
-                     </h5>
-                     <h5>
-                        <label>  Año llenada:   </label>
-                        <select class="form-control b-r-xl" name="llenada" id="llenada">
-                           <option value="">Todos</option>
-                        </select>
-                     </h5>
-                     <h5>
-                        <label>  Uso:   </label>
-                        <select class="form-control b-r-xl" name="uso" id="uso">
-                           <option value="">Todos</option>
-                        </select>
-                     </h5>
-                     <button class="ladda-button btn btn-primary b-r-xl" style="margin-top: 21px;" onclick="cargarDatos();" id="cargando" data-style="zoom-in"><span class="glyphicon glyphicon-search"></span></button>
-                  </div>
-               </div>
+              <div class="col-md-12 form-inline d-flex justify-content-center">
+                 <h5 class="col-md-2">
+                   <label class="font-normal">  Bodega:  </label>
+                   <select data-placeholder="Todos" class="chosen-select" multiple  tabindex="4" multiple id="bodega">
+                   </select>
+                 </h5>
+                 <h5 class="col-md-2">
+                    <label>  Alcohol:   </label>
+                    <select data-placeholder="Todos" class="chosen-select" multiple  tabindex="4" multiple id="alcohol">
+                    </select>
+                 </h5>
+                 <h5 class="col-md-2 text-center">
+                    <label>  Año llenada:   </label>
+                    <select class="form-control" id="llenada" >
+                      <option value="0">Todos</option>
+                    </select>
+                 </h5>
+                 <h5 class="col-md-2">
+                    <label>  Uso:   </label>
+                    <select data-placeholder="Todos" class="chosen-select"  tabindex="4" multiple id="uso">
+                    </select>
+                 </h5>
+                 <button class="ladda-button btn btn-primary b-r-xl" style="margin-top: 21px;" onclick="cargarDatos();" id="cargando" data-style="zoom-in"><span class="glyphicon glyphicon-search"></span></button>
+              </div>
                <div class="col-md-12">
                  <div class="table-responsive col-md-12">
                    <div class="sk-spinner spinner1">
@@ -226,7 +224,7 @@
                      </table>
                    </div>
                  </div>
-                 <div class="col-md-12  d-flex justify-content-center">
+                 <div class="col-md-12 table-responsive  d-flex justify-content-center">
                    <table class="tabla col-md-11" style="margin-bottom:30px;" id="tabla3" >
                      <thead>
                        <tr>
@@ -304,6 +302,7 @@
       <script src="js/popper.min.js"></script>
       <script src="js/bootstrap.js"></script>
       <script src="js/bootstrap-waitingfor.js"></script>
+      <script src="js/plugins/chosen/chosen.jquery.js"></script>
       <script src="js/plugins/sweetalert/sweetalert.min.js"></script>
       <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
       <script src="js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
@@ -312,6 +311,8 @@
       <script src="js/plugins/ladda/spin.min.js"></script>
       <script src="js/plugins/ladda/ladda.min.js"></script>
       <script src="js/plugins/ladda/ladda.jquery.min.js"></script>
+      <script src="js/plugins/select2/select2.full.min.js"></script>
+
       <!-- Custom and plugin javascript -->
       <script src="js/inspinia.js"></script>
       <script src="js/plugins/pace/pace.min.js"></script>
@@ -358,6 +359,7 @@
 
             }else{
               limpiarDatos();
+              alert('La busqueda no arrojo datos');
             }
           } catch(error) {
             await mensajeError(error);
@@ -387,8 +389,12 @@
              var result = await conexion("GET",url,"");
              var parsed =JSON.parse(result);
              llenarSelect(campo,id,nombre,parsed);
+
            } catch (e) {
              mensajeError(e);
+           }finally{
+             if(campo!=='#llenada')
+                $(campo).chosen({width: "100%",no_results_text: "No hay resultados con: "});
            }
          }
 
@@ -517,6 +523,7 @@
            cargarCampos('RestApi/GET/'+getApi+'?alcohol=true',"IdAlcohol","Descripcion",'#alcohol');
            cargarCampos('RestApi/GET/'+getApi+'?Allenada=true',"Anio","Anio",'#llenada');
            cargarCampos('RestApi/GET/'+getApi+'?uso=true',"IdCodificacion","Codigo",'#uso');
+
          });
 
 
