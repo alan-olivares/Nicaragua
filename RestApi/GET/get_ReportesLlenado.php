@@ -5,8 +5,9 @@ if(strpos($permisos,',6,') !== false){
     $fecha=$_GET['fecha'];
     $datos = "exec sp_RepOPDetalleLlen_v2 '$fecha'";
     imprimir($datos,$conn);
-  }else if(ISSET($_GET['OPDetalleMant']) && ISSET($_GET['fecha'])){// Reporte Detalle de Barriles en Mantenimiento
+  }else  if(ISSET($_GET['OPDetalleMantGen']) && ISSET($_GET['fecha'])){// Reporte Detalle de Barriles en Mantenimiento
     $fecha=$_GET['fecha'];
+    $fecha2=ISSET($_GET['fecha2'])?$_GET['fecha2']:$fecha;
     $datos = "SELECT Case M.IdTipoMant When 1 then 'Cambio de Aro' When 2 Then 'Reparacion Gral' end as 'Reparación',
              C.Codigo as Uso,
              count(M.IdtipoMant) as Total
@@ -14,21 +15,32 @@ if(strpos($permisos,',6,') !== false){
              inner Join CM_CodEdad CE on CE.IdCodEdad = B.IdCodificacion
              inner join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
              inner join CM_Usuario_WEB U on U.IdUsuario = M.IdUsuario
-             Where Convert(Date,M.Fecha) = Convert(Date,'$fecha')
-             group by M.IdTipoMant, C.Codigo";
+             Where Convert(Date,M.Fecha) between Convert(Date,'$fecha') and Convert(Date,'$fecha2')
+             group by M.IdTipoMant, C.Codigo order by M.IdTipoMant, C.Codigo";
     imprimir($datos,$conn);
-
-  }else if(ISSET($_GET['OPDetalleMantDet']) && ISSET($_GET['fecha'])){// Reporte Remisión Alcoholes de Entrega Blending
+  }else if(ISSET($_GET['OPDetalleMant']) && ISSET($_GET['fecha'])){// Reporte Detalle de Barriles en Mantenimiento
     $fecha=$_GET['fecha'];
-    $datos = "SELECT isnull((('01' + right('00' + convert(varChar(2),1),2) + right('000000' + convert(varChar(6),B.Consecutivo),6))),'Sin Asignar') as Etiqueta,
+    $fecha2=ISSET($_GET['fecha2'])?$_GET['fecha2']:$fecha;
+    $datos = "SELECT Convert(varchar(10),M.Fecha,120) as fecha, Case M.IdTipoMant When 1 then 'Cambio de Aro' When 2 Then 'Reparacion Gral' end as 'Reparación',
              C.Codigo as Uso,
-             U.Nombre as Operador,
-             Case M.IdTipoMant When 1 then 'Cambio de Aro' When 2 Then 'Reparacion Gral' end as 'Reparación'
+             count(M.IdtipoMant) as Total
              from PR_Mantenimiento M inner join WM_Barrica B on B.IdBarrica = M.IdBarrica
              inner Join CM_CodEdad CE on CE.IdCodEdad = B.IdCodificacion
              inner join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
              inner join CM_Usuario_WEB U on U.IdUsuario = M.IdUsuario
-             Where Convert(Date,M.Fecha) = Convert(Date,'$fecha') order by C.Codigo";
+             Where Convert(Date,M.Fecha) between Convert(Date,'$fecha') and Convert(Date,'$fecha2')
+             group by M.IdTipoMant, C.Codigo,Convert(varchar(10),M.Fecha,120) order by Convert(varchar(10),M.Fecha,120),M.IdTipoMant, C.Codigo";
+    imprimir($datos,$conn);
+
+  }else if(ISSET($_GET['OPDetalleMantDet']) && ISSET($_GET['fecha'])){// Reporte Remisión Alcoholes de Entrega Blending
+    $fecha=$_GET['fecha'];
+    $datos = "SELECT M.Fecha,	isnull((('01' + right('00' + convert(varChar(2),1),2) + right('000000' + convert(varChar(6),B.Consecutivo),6))),'Sin Asignar') as Etiqueta
+    ,C.Codigo as Uso,	U.Nombre as Operario,   M.IdTipoMant,	Case M.IdTipoMant When 1 then 'Cambio de Aro' When 2 Then 'Reparacion Gral' end TipoMant
+    ,Det.CAro,	Det.CTapas,	Det.CDuela,	Case Det.CepDuela When 0 then 'No' When 1 then 'Si' end As CepDuela,	Case Det.RepCanal When 0 then 'No' When 1 then 'Si' end As RepCanal
+    ,	Case Det.CanalNvo When 0 then 'No' When 1 then 'Si' end As CanalNvo from PR_Mantenimiento M inner join WM_Barrica B on B.IdBarrica = M.IdBarrica
+    inner Join CM_CodEdad CE on CE.IdCodEdad = B.IdCodificacion inner join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
+    inner join CM_Usuario U on U.IdUsuario = M.IdUsuario left join PR_MantAcciones Det on M.IdMantenimiento=Det.IdMantenimiento
+    Where Convert(Date,M.Fecha)= Convert(Date,'$fecha') order by M.Fecha,M.IdTipoMant,C.Codigo,B.Consecutivo";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['RepOpRevisado']) && ISSET($_GET['fecha'])){
     $fecha=$_GET['fecha'];
@@ -41,7 +53,7 @@ if(strpos($permisos,',6,') !== false){
     imprimir($datos,$conn);
   }else if(ISSET($_GET['RepOpRevisadoTotal']) && ISSET($_GET['fecha'])){
     $fecha=$_GET['fecha'];
-    $datos = "SELECT C.Codigo as Uso, CONCAT('Total barriles: ', FORMAT(count(B.Consecutivo), '#,###'))  as Barriles, CONCAT('Total Lts: ',FORMAT(sum(B.Capacidad), '#,###.##') ) as Litros
+    $datos = "SELECT C.Codigo as Uso, 'Total barriles: '+ count(B.Consecutivo)  as Barriles, 'Total Lts: '+sum(B.Capacidad) as Litros
     from WM_Barrica B inner Join WM_LoteBarrica LB on LB.IdLoteBarica = B.IdLoteBarrica
     inner Join CM_CodEdad CE on CE.IdCodEdad = B.IdCodificacion inner Join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
     Where B.FechaRevisado = CONVERT(date, '$fecha') group by C.Codigo";

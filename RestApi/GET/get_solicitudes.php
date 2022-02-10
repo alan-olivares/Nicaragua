@@ -38,9 +38,9 @@ if(strpos($permisos,',2,') !== false || strpos($permisos,',1,') !== false){
     $opc=$_GET["opc"];
     if($tipo==='1'){
       $barril = "SELECT De.Consecutivo,De.Capacidad,
-      CASE WHEN Am.Nombre is null THEN 'Barril sin ubicación' ELSE CONCAT(Am.Nombre,', ', REPLACE(Ar.Nombre, 'COSTADO', 'Cos: '),', ',REPLACE(Se.Nombre, 'FILA', 'F: '),',', REPLACE(Po.Nombre, 'TORRE', 'T: ') ,',', REPLACE(N.Nombre, 'NIVEL', 'N: ')) END AS Ubicación,
+      CASE WHEN Am.Nombre is null THEN 'Barril sin ubicación' ELSE Am.Nombre+', '+ REPLACE(Ar.Nombre, 'COSTADO', 'Cos: ')+', '+REPLACE(Se.Nombre, 'FILA', 'F: ')+','+ REPLACE(Po.Nombre, 'TORRE', 'T: ') +','+ REPLACE(N.Nombre, 'NIVEL', 'N: ') END AS Ubicación,
       C.Codigo as Uso,E.Codigo as Edad,es.Descripcion as Estado,convert(varchar, De.FechaRevisado, 23) as 'F.Revisado',
-      convert(varchar, De.FechaRelleno, 23) as 'F.Relleno',Datepart(YYYY,L.Recepcion) as Recepción, Al.Descripcion as Alcohol from ADM_logBAjuste De
+      convert(varchar, De.FechaRelleno, 23) as 'F.Relleno',Datepart(YYYY,L.Recepcion) as Recepción, Al.Descripcion as Alcohol, De.NoTapa as Tapa from ADM_logBAjuste De
                   left Join CM_CodEdad CE on CE.IdCodEdad = De.IdCodificacion
                   left Join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
                   left Join CM_Edad E on E.IdEdad = CE.IdEdad
@@ -54,7 +54,7 @@ if(strpos($permisos,',2,') !== false || strpos($permisos,',1,') !== false){
                   left Join AA_Almacen Am on Ar.AlmacenId=Am.AlmacenID where IdAjuste=$idAjuste and op=$opc";
     }else if($tipo==='2'){
       $barril = "SELECT NoSerie,Litros,
-      CASE WHEN Am.Nombre is null THEN 'Tanque sin ubicación' ELSE CONCAT(Am.Nombre,', ', REPLACE(Ar.Nombre, 'COSTADO', 'Cos: '),', ',REPLACE(Se.Nombre, 'FILA', 'F: '),',', REPLACE(Po.Nombre, 'TORRE', 'T: ') ,',', REPLACE(N.Nombre, 'NIVEL', 'N: ')) END AS Ubicación,
+      CASE WHEN Am.Nombre is null THEN 'Tanque sin ubicación' ELSE Am.Nombre+', '+ REPLACE(Ar.Nombre, 'COSTADO', 'Cos: ')+', '+REPLACE(Se.Nombre, 'FILA', 'F: ')+','+ REPLACE(Po.Nombre, 'TORRE', 'T: ') +','+ REPLACE(N.Nombre, 'NIVEL', 'N: ') END AS Ubicación,
       convert(varchar(10), FechaLLenado, 120) as 'F. Llenado',E.Descripcion as Estado
       from ADM_logTAjuste l left join CM_Estado E on l.IdEstado=E.IdEstado left Join WM_Pallet P on P.Idpallet = l.IdPallet
       left join WM_RackLoc R on P.RackLocID=R.RackLocID left Join AA_Nivel N on R.NivelID=N.NivelID left Join AA_Posicion Po on N.PosicionId=Po.PosicionID

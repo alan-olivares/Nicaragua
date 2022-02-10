@@ -1,6 +1,6 @@
 'use strict'
 
-const servidor="http://localhost:80/Nicaragua/";
+const servidor="http://localhost:80/";
 const Excel = require('exceljs');
 const XlsxPopulate = require('xlsx-populate');
 var http = require('http');

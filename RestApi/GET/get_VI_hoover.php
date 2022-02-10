@@ -33,13 +33,12 @@ if(strpos($permisos,',2,') !== false){
   }else if(ISSET($_GET['id'])){
     $NoSerie=$_GET["id"];
     $barril = "SELECT T.NoSerie,T.Capacidad,T.Litros,CONVERT(varchar(10),T.FechaLLenado, 120) as llenado, Es.Descripcion as Estado,
-    CASE WHEN Am.Nombre is null THEN 'Tanque sin ubicación' ELSE CONCAT(Am.Nombre,', ', REPLACE(Ar.Nombre, 'COSTADO', 'Cos: '),', ',REPLACE(Se.Nombre, 'FILA', 'F: '),',', REPLACE(Po.Nombre, 'TORRE', 'T: ') ,',', REPLACE(N.Nombre, 'NIVEL', 'N: ')) END AS Ubicacion
+    CASE WHEN Am.Nombre is null THEN 'Tanque sin ubicación' ELSE Am.Nombre+', '+ REPLACE(Ar.Nombre, 'COSTADO', 'Cos: ')+', '+REPLACE(Se.Nombre, 'FILA', 'F: ')+','+ REPLACE(Po.Nombre, 'TORRE', 'T: ') +','+ REPLACE(N.Nombre, 'NIVEL', 'N: ') END AS Ubicacion
     from WM_Tanques T left Join WM_Pallet P on P.Idpallet = T.IdPallet left Join CM_Estado ES on Es.IdEstado = T.IdEstado
     left join WM_RackLoc R on P.RackLocID=R.RackLocID left Join AA_Nivel N on R.NivelID=N.NivelID
     left Join AA_Posicion Po on N.PosicionId=Po.PosicionID left Join AA_Seccion Se on Po.SeccionID=Se.SeccionID left Join AA_Area Ar on Se.AreaId = Ar.AreaId
     left Join AA_Almacen Am on Ar.AlmacenId=Am.AlmacenID where T.NoSerie='$NoSerie'";
     imprimir($barril,$conn);
-
   }else if(ISSET($_GET['razones'])){
     $razones = "SELECT IdRazon,Descripcion from ADM_Razones where IdCaso=".$_GET['razones'];
     imprimir($razones,$conn);

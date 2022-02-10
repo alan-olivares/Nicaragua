@@ -128,7 +128,12 @@
                      <a href="disenoAlmacen.html"><i class="fa fa-building"></i> <span class="nav-label">Diseñar almacenes</span></a>
                   </li>
                   <li class="nueve">
-                     <a href="AjustesInventario.html"><i class="fa fa-edit"></i> <span class="nav-label">Ajustes de inventario</span></a>
+                    <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">Ajustes de inventario</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse">
+                       <li><a href="AjustesInventario.html">Inventario</a></li>
+                       <li><a href="AjustesLlenado.html">Llenado</a></li>
+                       <li><a href="AjustesRelleno.html">Relleno</a></li>
+                    </ul>
                   </li>
                   <li class="tres-cuatro">
                      <a href="#"><i class="fa fa-gear"></i> <span class="nav-label">Administración</span><span class="fa arrow"></span></a>
@@ -171,7 +176,7 @@
                </nav>
             </div>
             <div class="row wrapper border-bottom white-bg page-heading " >
-               <div class="col-md-12 text-center  d-flex justify-content-center " >
+               <div class="col-md-10 text-center  d-flex justify-content-center " >
                   <div class="form-inline text-center d-flex justify-content-center"  >
                     <h5>
                        <label>  Planta:  </label>
@@ -199,6 +204,9 @@
                         </select>
                      </h5>
                   </div>
+               </div>
+               <div class="col-md-2 text-center  d-flex justify-content-center " >
+                 <button class="button5 btn btn-primary b-r-xl" onclick="">Buscar barril</button>
                </div>
                <div class="col-md-12 d-flex justify-content-center text-center ">
                   <button class="button6 btn btn-primary animated b-r-xl" onclick="Agregar();" id="Agregar">Agregar</button>
@@ -435,7 +443,7 @@
          <div class="col-md-12 text-center  d-flex justify-content-center" >
             <div class="col-md-4 text-center " >
                <h5><label>  Tapa:   </label>
-                  <input type="text" class="form-control b-r-xl" required="true" name="tapa" id="tapa">
+                  <input type="number" class="form-control b-r-xl" required="true" name="tapa" id="tapa">
                </h5>
             </div>
             <div class="col-md-4 text-center " >
@@ -470,7 +478,7 @@
                         while( $row = sqlsrv_fetch_array( $stmtEstados, SQLSRV_FETCH_NUMERIC))
                         {
                         ?>
-                     <option value="<?php echo $row[0]?>"><?php echo utf8_encode($row[1])?></option>
+                     <option value="<?php echo $row[0]?>"><?php echo $row[1]?></option>
                      <?php
                         }
                         sqlsrv_free_stmt( $stmtEstados);

@@ -127,7 +127,12 @@
                      <a href="disenoAlmacen.html"><i class="fa fa-building"></i> <span class="nav-label">Diseñar almacenes</span></a>
                   </li>
                   <li class="nueve">
-                     <a href="AjustesInventario.html"><i class="fa fa-edit"></i> <span class="nav-label">Ajustes de inventario</span></a>
+                    <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">Ajustes de inventario</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse">
+                       <li><a href="AjustesInventario.html">Inventario</a></li>
+                       <li><a href="AjustesLlenado.html">Llenado</a></li>
+                       <li><a href="AjustesRelleno.html">Relleno</a></li>
+                    </ul>
                   </li>
                   <li class="tres-cuatro">
                      <a href="#"><i class="fa fa-gear"></i> <span class="nav-label">Administración</span><span class="fa arrow"></span></a>
@@ -260,20 +265,21 @@
            var fecha=new Date();
            if(opc){
              for (var i = inicio; i <= fin; i++) {
-               enviar+=cuerpo.replace('DT2', dateFormato(fecha,'/')).replace('DT1',GenerarEtiqueta(i,tipo)).replace('PQ1','PQ'+copias)+'\n\n';
+               enviar+=cuerpo.replaceAll('DT2', dateFormato(fecha,'/')).replaceAll('DT1',GenerarEtiqueta(i,tipo)).replaceAll('PQ1','PQ'+copias)+'\n\n';
              }
            }else{
              var aux=cuerpo;
              var cont=0;
              for (var i = inicio; i <= fin; i++) {
                cont++;
-               aux=aux.replace(('DT'+cont),GenerarEtiqueta(i,tipo));
+               aux=aux.replaceAll(('DT'+cont),GenerarEtiqueta(i,tipo));
                if(cont%8==0 || i==fin){
-                 enviar+=aux.replace('PQ1','PQ'+copias)+'\n';
+                 enviar+=aux+'\n';
                  aux=cuerpo;
                  cont=0;
                }
              }
+             enviar=enviar.replaceAll('PQ1','PQ'+copias)+'\n';
            }
            enviar+='^XA^ID000.GRF^FS^XZ';
            if(selected_device.name===undefined){
@@ -361,11 +367,11 @@
 
          }
          function imprimir(dataToWrite){
-         	//selected_device.send(dataToWrite, undefined, errorCallback);
-           //Registro();
+         	 selected_device.send(dataToWrite, undefined, errorCallback);
+           console.log(dataToWrite);
            progress();
            selected_device.isPrinterReady().then(function(){
-             //Registro();
+             Registro();
              return selected_device.send(dataToWrite, undefined, errorCallback);
            }).catch(function(error){
              mensajeError(error);
@@ -390,14 +396,14 @@
                     waitingDialog.message(e.prog+'% ...');
                  }
                   waitingDialog.progress(e.prog);
-              },(i+1)*1500);
+              },(i+1)*1000);
          });
 
          setTimeout(function () {
 
                  waitingDialog.hide();
 
-         }, (mocks.length+0.5)*2000);
+         }, (mocks.length+0.5)*1000);
          }
 
 
@@ -414,6 +420,7 @@
          }
          var errorCallback = function(errorMessage){
          	mensajeError("Error: " + errorMessage);
+          waitingDialog.hide();
          }
          function readFromSelectedPrinter()
          {

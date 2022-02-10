@@ -399,6 +399,7 @@ async function cargaPlantas(){
     var result = await conexion("GET",url,"");
     var parsed =JSON.parse(result);
     llenarSelect('#planta',"PlantaID","Nombre",parsed);
+    $("#planta").val("1").change();
   } catch (e) {
     mensajeError(e);
   }

@@ -41,7 +41,9 @@ if(strpos($permisos,',2,') !== false){
               left join  WM_LoteBarrica w on b.IdLoteBarrica=w.IdLoteBarica
               left join PR_Lote l on l.IdLote=w.IdLote
               left join CM_Alcohol A on l.IdAlcohol=A.IdAlcohol where b.NoTapa=$tapa and Datepart(YYYY, w.Fecha)='$year';";
-    imprimir($barril,$conn);
+    if(ObtenerCantidad($barril,$conn)!=0){
+      echo '..Error.. Este número de tapa ya esta ocupado por otro barril';
+    }
   }else if(ISSET($_GET['loteA'])){
     $loteA=$_GET["loteA"];
     $barril = "SELECT COUNT(*) from WM_LoteBarrica where IdLoteBarica='$loteA';";
@@ -59,7 +61,7 @@ if(strpos($permisos,',2,') !== false){
     imprimir($barril,$conn);
   }else if(ISSET($_GET['fechaLoteB'])){//Obtenemos informacion de los lotes por la fecha
     $IdLoteB=$_GET["fechaLoteB"];
-    $barril = "SELECT w.IdLoteBarica,convert(varchar, w.Fecha, 23) as Lote,CONCAT(convert(varchar, l.Recepcion, 23),' ',A.Descripcion) as Recepcion
+    $barril = "SELECT w.IdLoteBarica,convert(varchar, w.Fecha, 23) as Lote,convert(varchar, l.Recepcion, 23)+' '+A.Descripcion as Recepcion
                 from  WM_LoteBarrica w
                 inner join PR_Lote l on l.IdLote=w.IdLote
                 left join CM_Alcohol A on l.IdAlcohol=A.IdAlcohol where convert(varchar, w.Fecha, 23)='$IdLoteB';";

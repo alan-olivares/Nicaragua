@@ -129,7 +129,12 @@
                      <a href="disenoAlmacen.html"><i class="fa fa-building"></i> <span class="nav-label">Diseñar almacenes</span></a>
                   </li>
                   <li class="nueve">
-                     <a href="AjustesInventario.html"><i class="fa fa-edit"></i> <span class="nav-label">Ajustes de inventario</span></a>
+                    <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">Ajustes de inventario</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse">
+                       <li><a href="AjustesInventario.html">Inventario</a></li>
+                       <li><a href="AjustesLlenado.html">Llenado</a></li>
+                       <li><a href="AjustesRelleno.html">Relleno</a></li>
+                    </ul>
                   </li>
                   <li class="tres-cuatro">
                      <a href="#"><i class="fa fa-gear"></i> <span class="nav-label">Administración</span><span class="fa arrow"></span></a>
@@ -186,7 +191,7 @@
                  <h5 class="col-md-2 text-center">
                     <label>  Año llenada:   </label>
                     <select class="form-control" id="llenada" >
-                      <option value="0">Todos</option>
+                      <option value="">Todos</option>
                     </select>
                  </h5>
                  <h5 class="col-md-2">
@@ -338,7 +343,7 @@
             if(parsed.length>0){
               mostrarDatos();
               for (var i = 0; i < parsed.length; i++) {
-                content+="<tr><td>"+parsed[i].Fecha_Li+"</td><td>"+parsed[i].Alcohol+"</td><td>"+parsed[i].Barril+"</td><td style='text-align: right;'>"+parseInt(parsed[i]['Total Barriles'])+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i]['Total Litros'])+"</td></tr>";
+                content+="<tr><td>"+parsed[i].Fecha_Li+"</td><td>"+parsed[i].Alcohol+"</td><td>"+parsed[i].Barril+"</td><td style='text-align: right;'>"+parsed[i]['Total Barriles']+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i]['Total Litros'])+"</td></tr>";
               }
               $('#tabla2 tbody').append(content);
               url='RestApi/GET/'+getApi+'?inventario=true&bodega='+$('#bodega').val()+'&alcohol='+$('#alcohol').val()+'&llenada='+$('#llenada').val()+'&uso='+$('#uso').val();
@@ -352,10 +357,12 @@
                 +"</td><td style='text-align: right;'>"+parsed[i].A+"</td><td style='text-align: right;'>"+parsed[i].B+"</td><td style='text-align: right;'>"+parsed[i].C+"</td><td style='text-align: right;'>"+parsed[i].D+"</td><td style='text-align: right;'>"+parsed[i].RC
                 +"</td><td style='text-align: right;'>"+parsed[i].E+"</td><td style='text-align: right;'>"+parsed[i].F+"</td><td style='text-align: right;'>"+parsed[i].TotalBarriles+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i].totallitros)+"</td></tr>";
               }
+              console.log(content);
+              console.log(parsed.length);
               $('#tabla3 tbody').append(content);
               setTimeout(function() {
                 recargarTablas();
-              }, 500);
+              }, 1000);
 
             }else{
               limpiarDatos();

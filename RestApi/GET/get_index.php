@@ -49,15 +49,15 @@ sqlsrv_close($conn);
 function obtenerTiempos($conn,$campo,$hora1,$hora2,$arrayDias){
   $llenados = "SELECT ".$campo.", count(distinct idbarrica) as Barriles
   from adm_logregbarril l inner join PR_RegBarril r on r.idregbarril=l.IdregBarril
-  where l.fecha between '$hora1' and '$hora2' and r.TipoReg=1
+  where l.fecha between '$hora1' and '$hora2' and r.TipoReg=1 and l.TipoOp='I'
   group by ".$campo." order by ".$campo;
   $rellenados ="SELECT ".$campo.", count(distinct idbarrica) as Barriles
   from adm_logregbarril l inner join PR_RegBarril r on r.idregbarril=l.IdregBarril
-  where l.fecha between '$hora1' and '$hora2' and r.TipoReg in (2,4,5)
+  where l.fecha between '$hora1' and '$hora2' and r.TipoReg in (2,4,5) and l.TipoOp='I'
   group by ".$campo." order by ".$campo;
   $trasiegos="SELECT ".$campo.", count(distinct idbarrica) as Barriles
   from adm_logregbarril l inner join PR_RegBarril r on r.idregbarril=l.IdregBarril
-  where l.fecha between '$hora1' and '$hora2' and r.TipoReg=3
+  where l.fecha between '$hora1' and '$hora2' and r.TipoReg=3 and l.TipoOp='I'
   group by ".$campo." order by ".$campo;
   $reparados="SELECT ".$campo.", count(distinct M.idbarrica) as Barriles
   FROM PR_Mantenimiento M INNER JOIN ADM_logMantenimiento L ON M.IdMantenimiento=L.IdMantenimiento
@@ -76,13 +76,13 @@ function obtenerTiempos($conn,$campo,$hora1,$hora2,$arrayDias){
 function obtenerTotales($conn,$hora1,$hora2){
   $llenados="SELECT count(distinct idbarrica)
   from adm_logregbarril l inner join PR_RegBarril r on r.idregbarril=l.IdregBarril
-  where l.fecha between '$hora1' and '$hora2' and r.TipoReg=1";
+  where l.fecha between '$hora1' and '$hora2' and r.TipoReg=1 and l.TipoOp='I'";
   $rellenados="SELECT count(distinct idbarrica)
   from adm_logregbarril l inner join PR_RegBarril r on r.idregbarril=l.IdregBarril
-  where l.fecha between '$hora1' and '$hora2' and r.TipoReg in (2,4,5)";
+  where l.fecha between '$hora1' and '$hora2' and r.TipoReg in (2,4,5) and l.TipoOp='I'";
   $trasiegos="SELECT count(distinct idbarrica)
   from adm_logregbarril l inner join PR_RegBarril r on r.idregbarril=l.IdregBarril
-  where l.fecha between '$hora1' and '$hora2' and r.TipoReg=3";
+  where l.fecha between '$hora1' and '$hora2' and r.TipoReg=3 and l.TipoOp='I'";
   $reparados="SELECT count(distinct M.idbarrica)
   FROM PR_Mantenimiento M INNER JOIN ADM_logMantenimiento L ON M.IdMantenimiento=L.IdMantenimiento
   WHERE L.TipoOp='I' AND M.Fecha between '$hora1' and '$hora2'";

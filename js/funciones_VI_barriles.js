@@ -507,6 +507,7 @@ async function cargaPlantas(){
     var result = await conexion("GET",url,"");
     var parsed =JSON.parse(result);
     llenarSelect('#planta',"PlantaID","Nombre",parsed);
+    $("#planta").val("1").change();
   } catch (e) {
     mensajeError(e);
   }
@@ -531,6 +532,7 @@ $(document).ready(function(){
   cargaMotivos('#MotivoE','2');
   const url='RestApi/GET/'+getApi+'?fechasLotes=true';
   cargaPlantas();
+
   ActualizarFechasLotes(url);
   $("#scrollingtable").hide();
   $("#Agregar").hide();

@@ -323,6 +323,7 @@ function crearTablaJson(json,tabla){
 
   }else{
     $(tabla+' > thead').html('<tr><th>Tabla sin datos</th></tr>');
+    $(tabla+' > tbody').html('<tr><td></td></tr>');
   }
   revisarTema();
 }

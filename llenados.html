@@ -307,7 +307,7 @@
               var tamano=parsed.length;
               mostrarDatos();
               for (var i = 0; i < parsed.length; i++) {
-                content+="<tr><td>"+parsed[i].Fecha+"</td><td>"+parsed[i].FechaLote+"</td><td>"+parsed[i].Alcohol+"</td><td>"+parsed[i].Tanque+"</td><td>"+parsed[i].Uso+"</td><td style='text-align: right;'>"+parsed[i].T_Barril+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i].T_Lts)+"</td></tr>";
+                content+="<tr><td>"+parsed[i].Fecha+"</td><td>"+parsed[i].FechaLote+"</td><td>"+parsed[i].Alcohol+"</td><td>"+parsed[i].Tanque+"</td><td>"+parsed[i].Uso+"</td><td style='text-align: right;'>"+parsed[i].T_Barril+"</td><td style='text-align: right;'>"+parsed[i].T_Lts+"</td></tr>";
               }
               $('#tabla1 tbody').append(content);
               url='RestApi/GET/'+getApi+'?llenadosT2=true&fecha1='+$('#date1').val()+'&fecha2='+$('#date2').val();

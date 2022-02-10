@@ -22,7 +22,7 @@ if(strpos($permisos,',2,') !== false){
         (select '$IdAjuste',1, W.IdPallet,W.IdLoteBarrica,E.IdCodEdad,'$consecutivo',W.IdEstado,W.Capacidad,W.FechaRevisado,W.FechaRelleno,W.NoTapa
         from WM_Barrica W left join CM_CodEdad E on W.IdCodificacion=E.IdCodEdad where Consecutivo='$consecutivo')";
         $resultADM_logBAjuste1 = sqlsrv_query( $conn , $queryADM_logBAjuste1);
-        if($_POST['restablecer']=='pasado'){//Esta pasando de vacío a lleno, por lo tanto buscamos el último regirtro encontrado en adm_logbarril
+        if($_POST['restablecer']=='pasado'){//Esta pasando de vacío a lleno, por lo tanto buscamos el último registro encontrado en adm_logbarril
           $queryADM_logBAjuste2="INSERT into ADM_logBAjuste (IdAjuste,Op,IdPallet,IdLoteBarica,IdCodificacion,Consecutivo,IdEstado,Capacidad,FechaRevisado,FechaRelleno,NoTapa)
           SELECT top 1 '$IdAjuste',2,IdPallet,IdLoteBarrica,IdCodificacion,'$consecutivo',1,Capacidad,Revisado,Relleno,NoTapa from adm_logbarrildet
            where Consecutivo='$consecutivo' and op=1 and idestado=1 order by logid desc";

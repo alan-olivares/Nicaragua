@@ -12,6 +12,7 @@
       <link href="css/style.css" rel="stylesheet">
       <link rel="stylesheet" href="/resources/demos/style.css">
       <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+      <link href="css/plugins/ladda/ladda-themeless.min.css" rel="stylesheet">
    </head>
    <body>
       <script src="js/revisar_sesion.js"></script>
@@ -126,7 +127,12 @@
                      <a href="disenoAlmacen.html"><i class="fa fa-building"></i> <span class="nav-label">Diseñar almacenes</span></a>
                   </li>
                   <li class="nueve">
-                     <a href="AjustesInventario.html"><i class="fa fa-edit"></i> <span class="nav-label">Ajustes de inventario</span></a>
+                    <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">Ajustes de inventario</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse">
+                       <li><a href="AjustesInventario.html">Inventario</a></li>
+                       <li><a href="AjustesLlenado.html">Llenado</a></li>
+                       <li><a href="AjustesRelleno.html">Relleno</a></li>
+                    </ul>
                   </li>
                   <li class="tres-cuatro">
                      <a href="#"><i class="fa fa-gear"></i> <span class="nav-label">Administración</span><span class="fa arrow"></span></a>
@@ -182,16 +188,28 @@
                 </div>
               </div>
 
-              <div class="col-md-12 d-flex justify-content-center text-center">
-                <div class="col-md-5 d-flex justify-content-center">
+              <div class="col-md-12 justify-content-center text-center row">
+                <div class="col-md-12 d-flex justify-content-center form-inline text-center">
                   <h5><label>Fecha: </label>
-                    <input type="date" class="form-control b-r-xl" required="true" id="fecha" onchange="ObtenerDatos()" onkeydown="return false">
+                    <input type="date" class="form-control b-r-xl" required="true" id="fecha" onchange="" onkeydown="return false">
+                  </h5>
+                  <div id="ffinalHide" hidden>
+                    <h5><label>Fecha final: </label>
+                      <input type="date" class="form-control b-r-xl" required="true" id="fecha2" onchange="" onkeydown="return false">
+                    </h5>
+                  </div>
+                  <button class="ladda-button btn btn-primary b-r-xl" onclick="ObtenerDatos();" style="margin-top: 21px;" id="cargando" data-style="zoom-in"><span class="glyphicon glyphicon-search"></span></button>
+                </div>
+                <div class="col-md-12">
+                  <h5><label>  Usar fecha final:   </label>
+                     <input type="checkbox" onchange='$("#ffinalHide").attr("hidden",!this.checked)' style="margin-right:40px;" id="usaFecha">
                   </h5>
                 </div>
               </div>
               <div class="col-md-12 justify-content-center text-center" style="margin-top:20px;">
                 <div class="table-responsive col-md-8 centro">
-                  <table class="table-bordered cell-border col-md-12" id="tabla1">
+                  <h4>Total general </h4>
+                  <table class="table-bordered cell-border col-md-12" id="tablaGen">
                     <thead>
                     </thead>
                     <tbody>
@@ -199,13 +217,7 @@
                   </table>
                 </div>
               </div>
-              <div class="col-md-12  justify-content-center text-center" style="margin-top:15px;">
-                <div class="table-responsive col-md-8 centro">
-                  <table class="table-bordered cell-border col-md-12" id="tabla2" >
-                    <thead></thead>
-                    <tbody></tbody>
-                  </table>
-                </div>
+              <div class="col-md-12 justify-content-center text-center" style="margin-top:20px;" id="contenido">
               </div>
               <div class="col-md-10 d-flex justify-content-center" style="margin-bottom:20px;">
                 <div class="sk-spinner sk-spinner-three-bounce col-md-12">
@@ -271,94 +283,123 @@
       <script src="js/plugins/ladda/ladda.jquery.min.js"></script>
       <script>
          const getApi="get_ReportesLlenado.php";
-
+         var fecha1="",fecha2="";
          async function ObtenerDatos(){
            if($('#fecha').val()===''){
              return;
            }
+           fecha1=$('#fecha').val();
+           fecha2=$('#usaFecha').is(':checked')?$('#fecha2').val():fecha1;
+           $('#contenido').empty();
            try {
-             empezar();
-             if(tabla1!=null){
-               tabla1.destroy();
-               tabla2.destroy();
-             }
+             var l = $('#cargando').ladda();
+             l.ladda('start');
              $('#tabla1 tbody').empty();
              $('#tabla2 tbody').empty();
-             var url='RestApi/GET/'+getApi+'?OPDetalleMant=true&fecha='+$('#fecha').val();
+             var url='RestApi/GET/'+getApi+'?OPDetalleMantGen=true&fecha='+fecha1+'&fecha2='+fecha2;
              var result = await conexion("GET",url,"");
              var parsed =JSON.parse(result);
-             crearTablaJson(parsed,'#tabla1')
-             url='RestApi/GET/'+getApi+'?OPDetalleMantDet=true&fecha='+$('#fecha').val();
+             crearTablaJson(parsed,'#tablaGen')
+             url='RestApi/GET/'+getApi+'?OPDetalleMant=true&fecha='+fecha1+'&fecha2='+fecha2;
              result = await conexion("GET",url,"");
              parsed =JSON.parse(result);
-             crearTablaJson(parsed,'#tabla2');
-             inzializar();
+             if(parsed.length>0){
+               await tablaXDia(parsed);
+             }
+             //tablaDetalles(parsed);
+             //crearTablaJson(parsed,'#tabla2');
+             //inzializar();
            } catch(error) {
              await mensajeError(error);
            }finally {
-             parar();
+             l.ladda('stop');
            }
          }
-         var tabla1=null;
-         var tabla2=null;
 
-         function generate() {
-           try {
-             var doc = new jsPDF('p', 'pt', 'letter');
-             var res1,res0;
-             if($('#tabla1 tbody tr').length > 0 || $('#tabla2 tbody tr').length > 0){
-             // first table
-              res0 = doc.autoTableHtmlToJson(document.getElementById('tabla1'));
-             //get the columns & rows for first tabl
-             var img = new Image();
-             doc.setFontSize(11);
-              doc.text("Reporte Diario de Reparación de barriles      Fecha: "+$('#fecha').val(),40,110);
-              doc.text("Trazabilidad de Barriles y Rones Envejecidos",300,50);
-              doc.addImage(document.getElementById('imagenLogo'), 10, 10);
-              doc.autoTable(res0.columns, res0.data, {
-                createdCell: function (cell, data) {
-                  cell.styles.fillColor = '#ffffff';
-                  cell.styles.textColor = "black";
-                },
-                styles: { fillColor: "#F5F5F6",textColor:"black" },
-                theme: 'grid',
-                margin: {top: 120},
-                columnStyles: {
-                  2: {
-                    fontStyle: 'bold',
-                    halign: 'right',
-                  }
-              }});
-             // second table
-              res1 = doc.autoTableHtmlToJson(document.getElementById('tabla2'));
-              var options = {
-                createdCell: function (cell, data) {
-                  cell.styles.fillColor = '#ffffff';
-                  cell.styles.textColor = "black";
-                },
-                theme: 'grid',
-                tableWidth: 'auto',
-                columnWidth: 'auto',
-                margin: {
-                  top: 80
-                },
-                styles: {
-                  overflow: 'linebreak',
-                  fillColor: "#F5F5F6",
-                  textColor:"black"
-                },
-                fontSize:9,
-                startY: doc.autoTableEndPosY() + 20
-               };
-              doc.autoTable(res1.columns, res1.data, options);
-              doc.save("Barriles reparados "+$('#fecha').val()+".pdf");
-             }else{
-               mensajeError("No hay información para exportar")
+        async function tablaXDia(parsed){
+           /*var content='<h4>Totales en fecha: </h4>
+           <div class="col-md-12 justify-content-center text-center" style="margin-top:20px;">
+             <div class="table-responsive col-md-8 centro">
+               <table class="table-bordered cell-border col-md-12" id="tabla1">
+                 <thead>
+
+                 </thead>
+                 <tbody>
+                 </tbody>
+               </table>
+             </div>
+           </div>
+           <div class="col-md-12  justify-content-center text-center" style="margin-top:15px;">
+             <div class="table-responsive col-md-8 centro">
+               <table class="table-bordered cell-border col-md-12" id="tabla2" >
+                 <thead>
+                   <tr>
+                     <th>Etiqueta</th>
+                     <th>Uso</th>
+                     <th>Operador</th>
+                     <th colspan="6">Reparación</th>
+                   </tr>
+                 </thead>
+                 <tbody></tbody>
+               </table>
+             </div>
+           </div>';*/
+           var fecha=parsed[0].fecha;
+           var content=inicioTabla(fecha);
+           for(var x=0;x<parsed.length;x++){
+             if(fecha!==parsed[x].fecha){
+               content+=await interTabla(fecha);
+               //content+=tablaDetalles(parsed);
+               fecha=parsed[x].fecha;
+               content+=inicioTabla(fecha);
              }
-           } catch (e) {
-             mensajeError(e)
+             content+='<tr><td>'+parsed[x].Reparación+'</td><td>'+parsed[x].Uso+'</td><td>'+parsed[x].Total+'</td></tr>'
            }
+           content+=await interTabla(fecha);
+           //content+='</tbody></table></div></div>';
+           $('#contenido').append(content);
+           $('.colapsar').each(function(i, obj) {
+             colapsar(obj);
+           });
+         }
 
+         async function interTabla(fecha){
+           var content='</tbody></table></div></div><div class="col-md-12  justify-content-center text-center" style="margin-top:15px;">'+
+           '<div class="table-responsive col-md-8 centro"><table class="table-bordered cell-border col-md-12" id="tabla2" ><thead>'+
+           '<tr><th>Etiqueta</th><th>Uso</th><th>Operador</th><th colspan="6">Reparación</th></tr></thead><tbody>';
+           var url='RestApi/GET/'+getApi+'?OPDetalleMantDet=true&fecha='+fecha;
+           var result = await conexion("GET",url,"");
+           var parsed =JSON.parse(result);
+           content+=tablaDetalles(parsed);
+           content+='</tbody></table></div></div>';
+           return content;
+         }
+         function inicioTabla(fecha){
+           return '<div class="col-md-12 justify-content-center text-center" style="margin-top:20px;"><h4>Fecha: '+fecha+'</h4>'+
+           '<div class="table-responsive col-md-8 centro"><table class="table-bordered cell-border col-md-12">'+
+           '<thead><tr><th>Reparación</th><th>Uso</th><th>Total</th></tr></thead><tbody>';
+         }
+
+         function tablaDetalles(parsed){
+           //$('#tabla2 tbody').empty();
+           var content="",etiqueta="";
+           for(var x=0;x<parsed.length;x++){
+             if(etiqueta!==parsed[x].Etiqueta){
+               etiqueta=parsed[x].Etiqueta;
+               var isGnr=parsed[x].IdTipoMant==2?'<tr class="colapsar" onclick="colapsar(this)"><td><span class="fa fa-angle-down" style="float:left; margin-left:5px;"></span>'+parsed[x].Etiqueta+'</td>':'<tr class="colapsar"><td>'+etiqueta+'</td>'
+               content+=isGnr+'<td>'+parsed[x].Uso+'</td><td>'+parsed[x].Operario+'</td><td colspan="6">'+parsed[x].TipoMant+'</td></tr>';
+               content+=parsed[x].IdTipoMant==2?'<tr><th colspan="3"></th><th>Aros</th><th>Tapas</th><th>Duelas</th><th>Cep Duela</th><th>Rep Canal</th><th>Canal Nvo</th></tr><tr><td colspan="3"></td><td>'+parsed[x].CAro+'</td><td>'+parsed[x].CTapas+'</td><td>'+parsed[x].CDuela+'</td><td>'+parsed[x].CepDuela+'</td><td>'+parsed[x].RepCanal+'</td><td>'+parsed[x].CanalNvo+'</td></tr>':'';
+             }else if(parsed[x].IdTipoMant==2){
+               content+='<tr><td colspan="3"></td><td>'+parsed[x].CAro+'</td><td>'+parsed[x].CTapas+'</td><td>'+parsed[x].CDuela+'</td><td>'+parsed[x].CepDuela+'</td><td>'+parsed[x].RepCanal+'</td><td>'+parsed[x].CanalNvo+'</td></tr>';
+             }
+           }
+           return content;
+           /*$('#tabla2 tbody').append(content);
+           return content;
+           $('.colapsar').each(function(i, obj) {
+             //colapsar(obj);
+           });
+           */
          }
 
          async function generar(tipo,boton){
@@ -382,168 +423,26 @@
            }
          }
 
+         function colapsar(boton){
+           if($(boton).find('span').hasClass('fa-angle-down') ){
+             $(boton).find('span').removeClass('fa-angle-down');
+             $(boton).find('span').addClass('fa-angle-right');
+           }else{
+             $(boton).find('span').removeClass('fa-angle-right');
+             $(boton).find('span').addClass('fa-angle-down');
+           }
+           $(boton).nextUntil('tr.colapsar').slideToggle(100, function(){});
+           $("#tabla2").css("margin-bottom","50px");
+         }
+
          $(document).ready(function(){
            //ObtenerDatos();
            permisos(["6"]);
            document.getElementById('fecha').valueAsDate=new Date();
+           document.getElementById('fecha2').valueAsDate=new Date();
            ObtenerDatos();
          });
 
-         function inzializar() {
-             tabla1=$('#tabla1').DataTable({
-                 responsive: true,
-                 "bPaginate": false,
-                 "paging": false,
-                 "ordering": false,
-                 "info": false,
-                 dom: '<"html5buttons"B>lTfgitp',
-                 language: {
-                     searchPlaceholder: "Busca algún dato aquí",
-                     search: "",
-                 },
-                 buttons: [{
-                         extend: 'copy',
-                         text: 'Copiar'
-                     },
-                     {
-                         extend: 'csv',
-                         text: 'CSV',
-                         title: 'Reporte Reparacion',
-                         footer: true,
-                         customize: function(csv) {
-                             var buffer = new ArrayBuffer(3);
-                             var dataView = new DataView(buffer);
-                             dataView.setUint8(0, 0xef);
-                             dataView.setUint8(1, 0xbb);
-                             dataView.setUint8(2, 0xbf);
-                             var read = new Uint8Array(buffer);
-                             var blob = new Blob([read, csv], {
-                                 type: 'text/csv;charset=utf-8'
-                             });
-                             return blob;
-                         }
-                     },
-                     {
-                         extend: 'excel',
-                         text: 'Excel',
-                         title: 'Reporte Reparacion',
-                         footer: true
-                     },
-                     {
-                         extend: 'pdf',
-                         text: 'PDF',
-                         title: function() {
-                             return "Reporte Reparacion";
-                         },
-                         footer: true,
-                         customize: function(doc) {
-                             doc.styles.tableHeader.fillColor = '#1ab394';
-                             doc.styles.title.alignment = 'left';
-                             doc.styles.tableFooter.fillColor = '#1ab394';
-                             doc.styles.tableBodyEven = {
-                                 alignment: 'center'
-                             };
-                             doc.styles.tableBodyOdd = {
-                                 alignment: 'center'
-                             };
-                         }
-                     },
-
-                     {
-                         extend: 'print',
-                         text: 'Imprimir',
-                         customize: function(win) {
-                             $(win.document.body).addClass('white-bg');
-                             $(win.document.body).css('font-size', '10px');
-
-                             $(win.document.body).find('table')
-                                 .addClass('compact')
-                                 .css('font-size', 'inherit');
-                         }
-                     }
-                 ]
-
-             });
-             tabla2=$('#tabla2').DataTable({
-                 responsive: true,
-                 "bPaginate": false,
-                 "paging": false,
-                 "ordering": false,
-                 "info": false,
-                 dom: '<"html5buttons"B>lTfgitp',
-                 language: {
-                     searchPlaceholder: "Busca algún dato aquí",
-                     search: "",
-                 },
-                 buttons: [{
-                         extend: 'copy',
-                         text: 'Copiar'
-                     },
-                     {
-                         extend: 'csv',
-                         text: 'CSV',
-                         title: 'Reporte Detalle Reparacion',
-                         footer: true,
-                         customize: function(csv) {
-                             var buffer = new ArrayBuffer(3);
-                             var dataView = new DataView(buffer);
-                             dataView.setUint8(0, 0xef);
-                             dataView.setUint8(1, 0xbb);
-                             dataView.setUint8(2, 0xbf);
-                             var read = new Uint8Array(buffer);
-                             var blob = new Blob([read, csv], {
-                                 type: 'text/csv;charset=utf-8'
-                             });
-                             return blob;
-                         }
-                     },
-                     {
-                         extend: 'excel',
-                         text: 'Excel',
-                         title: 'Reporte Detalle Reparacion',
-                         footer: true,
-                         customize: function(xlsx) {
-
-                             var sheet = xlsx.xl.worksheets['sheet1.xml'];
-                             //list of columns that should get a 1000 separator depending on local Excel installation
-                             $('row c[r^="A"]', sheet).attr('s', '');
-                         }
-                     },
-                     {
-                         extend: 'pdf',
-                         text: 'PDF',
-                         title: function() {
-                             return "Reporte Detalle Reparacion";
-                         },
-                         footer: true,
-                         customize: function(doc) {
-                             doc.styles.tableHeader.fillColor = '#1ab394';
-                             doc.styles.title.alignment = 'left';
-                             doc.styles.tableFooter.fillColor = '#1ab394';
-                             doc.styles.tableBodyEven = {
-                                 alignment: 'center'
-                             };
-                             doc.styles.tableBodyOdd = {
-                                 alignment: 'center'
-                             };
-                         }
-                     },
-
-                     {
-                         extend: 'print',
-                         text: 'Imprimir',
-                         customize: function(win) {
-                             $(win.document.body).addClass('white-bg');
-                             $(win.document.body).css('font-size', '10px');
-
-                             $(win.document.body).find('table')
-                                 .addClass('compact')
-                                 .css('font-size', 'inherit');
-                         }
-                     }
-                 ]
-             });
-         }
       </script>
    </body>
 </html>

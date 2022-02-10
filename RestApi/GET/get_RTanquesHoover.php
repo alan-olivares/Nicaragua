@@ -3,7 +3,7 @@ include '../general_connection.php';
 if(strpos($permisos,',8,') !== false){
   if(ISSET($_GET['tanques'])){//Ultimo consecutivo e impresión
     $barriles = "SELECT T.NoSerie as 'N° de serie',
-    CASE WHEN Am.Nombre is null THEN 'Tanque sin ubicación' ELSE CONCAT(Am.Nombre,', ', REPLACE(Ar.Nombre, 'COSTADO', 'Cos: '),', ',REPLACE(Se.Nombre, 'FILA', 'F: '),',', REPLACE(Po.Nombre, 'TORRE', 'T: ') ,',', REPLACE(N.Nombre, 'NIVEL', 'N: ')) END AS Ubicación,
+    CASE WHEN Am.Nombre is null THEN 'Tanque sin ubicación' ELSE Am.Nombre+', '+ REPLACE(Ar.Nombre, 'COSTADO', 'Cos: ')+', '+REPLACE(Se.Nombre, 'FILA', 'F: ')+','+ REPLACE(Po.Nombre, 'TORRE', 'T: ') +','+ REPLACE(N.Nombre, 'NIVEL', 'N: ') END AS Ubicación,
     T.Capacidad,T.Litros,Convert(varchar,T.FechaLLenado,105) as 'Fecha de llenado',Convert(varchar,T.FechaRecepcion,105) as 'Fecha de recepción',E.Descripcion as Estado
     from WM_Tanques T left join CM_Estado E on E.IdEstado=T.IdEstado left Join WM_Pallet P on P.Idpallet = T.IdPallet
     left join WM_RackLoc R on P.RackLocID=R.RackLocID left Join AA_Nivel N on R.NivelID=N.NivelID

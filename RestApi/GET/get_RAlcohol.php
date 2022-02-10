@@ -24,9 +24,9 @@ if(strpos($permisos,',8,') !== false){
     imprimir($barriles,$conn);
   }else if(ISSET($_GET['envios'])){//Envios existentes
     $barriles = "SELECT Re.IdRecDetail, T.Descripcion as tanque,Re.Litros,Re.Medida,A.Codigo as CodAlcohol,A.Descripcion as alcohol,Re.Estatus from WM_Recepcion R
-    left join WM_RecDetail Re on R.IdRecepcion=Re.IdRecepcion
-    left join CM_Tanque T on Re.IdTanque=T.IDTanque
-    left join CM_Alcohol A on A.IdAlcohol = Re.IdAlcohol where R.EnvioNo='".$_GET['envios']."'";
+    inner join WM_RecDetail Re on R.IdRecepcion=Re.IdRecepcion
+    inner join CM_Tanque T on Re.IdTanque=T.IDTanque
+    inner join CM_Alcohol A on A.IdAlcohol = Re.IdAlcohol where R.EnvioNo='".$_GET['envios']."'";
     imprimir($barriles,$conn);
   }else if(ISSET($_GET['checkTanque'])){
     $tanque=$_GET['checkTanque'];
@@ -38,8 +38,8 @@ if(strpos($permisos,',8,') !== false){
     $tanques = "SELECT R.EnvioNo,R.Para,REPLACE(CONVERT(varchar, R.Fecha, 102),'.','-') as Creación,R.AñoAlcohol as 'Año Alcohol',
     T.Descripcion as Tanque,Re.Litros,cast(Re.Consumo as decimal(10,3)) as Cosumo,cast(Re.Merma as decimal(10,3)) as Merma,A.Descripcion as Alcohol,
     REPLACE(CONVERT(varchar, L.Recepcion, 102),'.','-') as 'Fecha Lote',case when Re.Estatus=0 then 'Activo' else 'Terminada' end as Estatus
-    from WM_Recepcion R left join WM_RecDetail Re on R.IdRecepcion=Re.IdRecepcion left join CM_Tanque T on Re.IdTanque=T.IDTanque
-    left join CM_Alcohol A on Re.IdAlcohol=A.IdAlcohol left join PR_Lote L on Re.IdLote=L.IdLote order by ABS(REPLACE(R.EnvioNo,'-','.')) ";
+    from WM_Recepcion R left join WM_RecDetail Re on R.IdRecepcion=Re.IdRecepcion inner join CM_Tanque T on Re.IdTanque=T.IDTanque
+    inner join CM_Alcohol A on Re.IdAlcohol=A.IdAlcohol inner join PR_Lote L on Re.IdLote=L.IdLote order by ABS(REPLACE(R.EnvioNo,'-','.')) ";
     imprimir($tanques,$conn);
   }
 }else{
