@@ -254,6 +254,7 @@
       <script>
         const getApi="get_index.php";
         var caso="date";
+        var t=null;
         function cambiarBoton(boton,tipo){
           $('#diaB').addClass('btn-outline');
           $('#mesB').addClass('btn-outline');
@@ -263,7 +264,15 @@
           $('#date1').get(0).type = tipo;
           document.getElementById("date1").valueAsDate= fecha;
           caso=tipo;
+          crearThread();
+        }
+
+        function crearThread(){
           obtenerDatos();
+          if(t!=null){
+            clearInterval(t);
+          }
+          t=setInterval(obtenerDatos,10000);
         }
 
         function crearGrafica(dataset,ticks,mensaje){
@@ -342,8 +351,6 @@
           try {
             var url='RestApi/GET/'+getApi+'?fecha='+$('#date1').val()+"&"+caso+"=true";
             var result = await conexion("GET",url,"");
-            //alert(result)
-            console.log(result);
             var dataset =JSON.parse(result);
             crearGrafica(dataset,obtenerTicks(),obtenerMensaje());
             url='RestApi/GET/'+getApi+'?fecha='+$('#date1').val()+"&"+caso+"=true&total=true";
@@ -410,7 +417,7 @@
          $(document).ready(function() {
            permisos(["11"]);
            document.getElementById("date1").valueAsDate= new Date();
-           obtenerDatos();
+           crearThread();
            setTimeout(function() {
                toastr.options = {
                    closeButton: true,
@@ -419,8 +426,8 @@
                    timeOut: 4000
                };
                var today  = new Date();
-               var options = {hour: 'numeric',minute:'numeric' , year: "numeric", month: "long", day: "numeric"};
-               toastr.success('Información actualizada del día '+today.toLocaleDateString("es-MX",options));
+               var options = { year: "numeric", month: "long", day: "numeric"};
+               toastr.success('Información en vivo del día '+today.toLocaleDateString("es-MX",options));
            }, 1300);
          });
       </script>

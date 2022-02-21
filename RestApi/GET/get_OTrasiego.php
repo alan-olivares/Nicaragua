@@ -29,7 +29,7 @@ if(strpos($permisos,',6,') !== false){
     $usuarios = "SELECT Nombre,IdUsuario as Id from CM_Usuario_WEB where IdGrupo=$operador";
     imprimir($usuarios,$conn);
   }else if(ISSET($_GET['tanques'])){//Operadores dado a un grupo
-    $usuarios = "SELECT IDTanque,Descripcion from CM_Tanque";
+    $usuarios = "SELECT IDTanque,Descripcion from CM_Tanque order by case IsNumeric(Codigo) when 1 then Replicate('0', 100 - Len(Codigo)) + Codigo else Codigo end";
     imprimir($usuarios,$conn);
   }
 }else{

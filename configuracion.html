@@ -176,8 +176,9 @@
 
             <div class="tabs-container">
               <ul class="nav nav-tabs d-flex justify-content-center" role="tablist">
-                 <li><a class="nav-link active" data-toggle="tab" href="#conf">Configuración del sistema</a></li>
-                 <li><a class="nav-link" data-toggle="tab" href="#mov">Motivos de movimientos</a></li>
+                 <li><a class="nav-link active" data-toggle="tab" href="#conf">Sistema</a></li>
+                 <li><a class="nav-link" data-toggle="tab" href="#mov">Motivos</a></li>
+                 <li><a class="nav-link" data-toggle="tab" href="#prove">Proveedores</a></li>
               </ul>
               <div class="tab-content" >
                 <div role="tabpanel" id="conf" class="tab-pane active">
@@ -219,6 +220,25 @@
                         <button class="button2 btn btn-danger b-r-xl" onclick="BorrarRazon();" id="del">Borrar</button>
                       </div>
                     </div>
+                  </div>
+                </div>
+                <div role="tabpanel" id="prove" class="tab-pane">
+                  <div class="col-md-12 text-center white-bg d-flex justify-content-center row" >
+                     <div class="table-responsive col-md-7" style="margin-top:25px;">
+                       <table class="table-bordered cell-border col-md-12" id="proveedoresT" >
+                         <thead>
+                           <tr>
+                              <th>Código</th>
+                              <th>Descripción</th>
+                              <th>Opciones</th>
+                           </tr>
+                         </thead>
+                         <tbody></tbody>
+                       </table>
+                     </div>
+                     <div class="col-md-12" style="margin-top:35px;">
+                       <button class="b-r-xl btn btn-primary " onclick="agregarProveedor()" id="agregarPro" style="margin-bottom:20px">Nuevo</button>
+                     </div>
                   </div>
                 </div>
               </div>
@@ -452,9 +472,111 @@
          }
          //Termina código de motivos
 
+         //Inicia código de proveedores
+
+         async function cargarProveedores(){
+           try {
+             $('#proveedoresT tbody').empty();
+             var url='RestApi/GET/'+getApi+"?proveedores=true";
+             var result = await conexion("GET",url,"");
+             var parsed =JSON.parse(result);
+             var content="";
+             for(var x=0;x<parsed.length;x++){
+               content+='<tr><td><input type="text" id="codi" value="'+parsed[x].Codigo+'" class="form-control"></td><td><input type="text" id="descrip" value="'+parsed[x].Descripcion+'" class="form-control"></td>'+
+               '<td><button class="btn btn-danger b-r-xl fa fa-trash" onclick="eliminarProveedor(\''+parsed[x].IdProveedor+'\',\''+parsed[x].Descripcion+'\')"></button>'+
+               '<button class="btn btn-primary b-r-xl fa fa-edit" onclick="editarProveedor(\''+parsed[x].IdProveedor+'\',\''+parsed[x].Descripcion+'\',this)"></button></td></tr>';
+             }
+             $('#proveedoresT tbody').append(content);
+             revisarTema();
+           } catch (e) {
+             mensajeError(e);
+           }
+         }
+         function agregarProveedor(){
+           $('#proveedoresT tbody').append('<tr><td><input type="text" id="codi" class="form-control"></td>'+
+           '<td><input type="text" class="form-control"  id="descrip" ></td>'+
+           '<td><button class="btn btn-danger b-r-xl fa fa-trash" onclick="cancelarProveedor(this)"></button>'+
+           '<button class="btn btn-primary b-r-xl fa fa-save" onclick="agregaNuevoProv(this)"></button></td></tr>');
+           revisarTema();
+         }
+
+         function cancelarProveedor(campo){
+           var $row = $(campo).closest('tr');
+           $row.remove();
+           if ($('#tablaPrincipal tr').length == 1) {
+             $('#tablaPrincipal').hide();
+           }
+         }
+         async function agregaNuevoProv(campo){
+           var $row = $(campo).closest('tr');
+           var codigo,descripcion;
+           codigo=$row.find('td').find("#codi").val() || "";
+           descripcion=$row.find('td').find("#descrip").val() || "";
+           if(codigo!=="" && descripcion!==""){
+             var url='RestApi/POST/'+postApi;
+             var params='codigo='+codigo+'&descripcion='+descripcion+'&agregarProvee=true';
+             try {
+               var resultado=await conexion("POST", url,params);
+               await mensajeSimple(resultado);
+               cargarProveedores();
+             } catch (e) {
+               mensajeError(e);
+             }
+           }else{
+             mensajeError("Todos los campos deben ser llenados antes de guardar");
+           }
+         }
+
+         async function editarProveedor(id,descripcionV,campo){
+           var $row = $(campo).closest('tr');
+           var codigo,descripcion;
+           codigo=$row.find('td').find("#codi").val() || "";
+           descripcion=$row.find('td').find("#descrip").val() || "";
+           if(codigo==="" || descripcion===""){
+             mensajeError("Todos los campos deben ser llenados antes de editar");
+             return;
+           }
+           if(await mensajeOpcional('¿Estás seguro de editar al proveedor '+descripcionV+'?')){
+             var url='RestApi/POST/'+postApi;
+             var params='IdProveedor='+id+"&codigo="+codigo+"&descripcion="+descripcion+"&updateProvee=true";
+             try {
+               var resultado=await conexion("POST", url,params);
+               setTimeout(async function() {
+                 await mensajeSimple(resultado);
+                 cargarProveedores();
+               }, 500);
+             } catch (e) {
+               setTimeout(async function() {
+                 mensajeError(e);
+               }, 500);
+             }
+           }
+
+         }
+         async function eliminarProveedor(id,descripcion){
+           if(await mensajeOpcional('¿Estás seguro de eliminar al proveedor '+descripcion+'?')){
+             var url='RestApi/POST/'+postApi;
+             var params='IdProveedor='+id+"&borrarProvee=true";
+             try {
+               var resultado=await conexion("POST", url,params);
+               setTimeout(async function() {
+                 await mensajeSimple(resultado);
+                 cargarProveedores();
+               }, 500);
+             } catch (e) {
+               setTimeout(async function() {
+                 mensajeError(e);
+               }, 500);
+             }
+           }
+         }
+
+         //Termina código de proveedores
+
          $(document).ready(function(){
            permisos(["4"]);
            ObtenerDatos();
+           cargarProveedores();
            $("#add").prop("disabled", true);
            $("#del").prop("disabled", true);
            $("#upd").prop("disabled", true);

@@ -27,6 +27,7 @@ $( function() {
   dialogEditar = $( "#editarDialog" ).dialog(options);
   dialogMover = $( "#moverDialog" ).dialog(options);
   dialogAgregar = $( "#agregarDialog" ).dialog(options);
+  dialogBuscar = $( "#buscarDialog" ).dialog(options);
 $( ".cerrar" ).button().on( "click", function() {
   dialogEditar.dialog( "close" );
   dialogMover.dialog( "close" );
@@ -36,6 +37,40 @@ $( ".cerrar" ).button().on( "click", function() {
 
 } );
 
+function search(ele) {
+    if(event.key === 'Enter') {
+        BuscaConse();
+    }
+}
+async function BuscaConse(){
+  if($('#buscaConse').val()===''){
+    alert('El número de serie no puede estar vacío');
+    return;
+  }
+  const url='RestApi/GET/'+getApi+'?serieBus='+$('#buscaConse').val();
+  var result = await conexion("GET",url,"");
+  var parsed =JSON.parse(result);
+  if(parsed.length>0){
+    $("#planta").val(parsed[0].PlantaID);
+    await getInfo(document.getElementById("planta"),'bodegas','Nombre','AlmacenId','bodega');
+    $("#bodega").val(parsed[0].AlmacenID);
+    await getInfo(document.getElementById("bodega"),'bodega','Costados','ID','Costado');
+    $("#Costado").val(parsed[0].AreaId);
+    await getInfo(document.getElementById("Costado"),'area','Filas','ID','Filas');
+    $("#Filas").val(parsed[0].SeccionID);
+    await getInfo(document.getElementById("Filas"),'fila','Torres','ID','Torres');
+    $("#Torres").val(parsed[0].PosicionID);
+    await getInfo(document.getElementById("Torres"),'torre','Niveles','RackLocID','Niveles');
+    setTimeout(function() {
+      dialogBuscar.dialog( "close" );
+      $("#Niveles").val(parsed[0].RackLocID);
+      CargarTabla(document.getElementById("Niveles"))
+    }, 500);
+
+  }else{
+    alert('El número de serie no arrojo ninguna posición valida, verificalo e intentalo de nuevo');
+  }
+}
 async function GuardarMover(){
   var motivo=document.getElementById("MotivoM").value;
   if(motivo===""){

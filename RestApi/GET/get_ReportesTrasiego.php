@@ -4,7 +4,7 @@ if(strpos($permisos,',6,') !== false){
   if(ISSET($_GET['FSI82493']) && ISSET($_GET['tanque']) && ISSET($_GET['fecha'])){// Reporte Hoja de Análisis de Trasiego
     $tanque=$_GET['tanque'];
     $fecha=$_GET['fecha'];
-    $datos = "exec sp_RepFSI82493 '$fecha',$tanque";
+    $datos = "exec [db_owner].[sp_RepFSI82493v2] '$fecha',$tanque";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['FSI61194']) && ISSET($_GET['tanque']) && ISSET($_GET['fecha'])){// Reporte Remisión Alcoholes de Entrega Blending
     $tanque=$_GET['tanque'];
@@ -22,7 +22,7 @@ if(strpos($permisos,',6,') !== false){
     $datos = "exec sp_RepOPDetalle_v2 '$ope','$fecha'";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['tanques'])){
-    $tanques = "SELECT IDTanque,Descripcion from CM_Tanque";
+    $tanques = "SELECT IDTanque,Descripcion from CM_Tanque order by case IsNumeric(Codigo) when 1 then Replicate('0', 100 - Len(Codigo)) + Codigo else Codigo end";
     imprimir($tanques,$conn);
   }else if(ISSET($_GET['tanque'])){
     $tanque=$_GET['tanque'];

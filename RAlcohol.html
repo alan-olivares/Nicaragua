@@ -663,6 +663,7 @@
                var params='codigo='+id+'&codigoA='+codigo+'&codigoAN='+valores[0]+'&desc='+valores[1]+'&grado='+valores[2]+'&obs='+valores[3]+'&operacionA=editados';
                var resultado=await conexion("POST", url,params);
                actualizarCambios();
+               console.log(resultado);
                setTimeout(async function() {
                  mensajeSimple(resultado);
                }, 500);

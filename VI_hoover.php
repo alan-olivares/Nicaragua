@@ -176,7 +176,7 @@
                </nav>
             </div>
             <div class="row wrapper border-bottom white-bg page-heading " >
-               <div class="col-md-12 text-center  d-flex justify-content-center " >
+               <div class="col-md-10 text-center  d-flex justify-content-center " >
                   <div class="form-inline text-center d-flex justify-content-center"  >
                     <h5>
                        <label>  Planta:  </label>
@@ -204,6 +204,9 @@
                         </select>
                      </h5>
                   </div>
+               </div>
+               <div class="col-md-2 text-center  d-flex justify-content-center " >
+                 <button class="button5 btn btn-primary b-r-xl" onclick='$("#buscaConse").val("");dialogBuscar.dialog( "open" );'>Buscar tanque</button>
                </div>
                <div class="col-md-12 d-flex justify-content-center text-center ">
                   <button class="button6 btn btn-primary animated b-r-xl" onclick="Agregar();" id="Agregar">Agregar</button>
@@ -340,6 +343,18 @@
             <div class="col-md-12 text-center  d-flex justify-content-center" >
                <button class="button2 btn btn-primary cerrar b-r-xl">Cancelar</button>
                <button class="button2 btn btn-primary b-r-xl" onclick="GuardarMover();">Guardar</button>
+            </div>
+         </div>
+      </div>
+      <div id="buscarDialog" title="Buscar barril" class="animated">
+         <div>
+            <div class="col-md-12 text-center  d-flex justify-content-center" >
+               <h5><label>  Ingresa el N° de serie:  </label>
+                  <input type="number" class="form-control b-r-xl" style="width:250px;" onkeydown="search(this)" required="true" id="buscaConse" >
+               </h5>
+            </div>
+            <div class="col-md-12 text-center  d-flex justify-content-center" >
+               <button class="button2 btn btn-primary b-r-xl" onclick="BuscaConse();">Buscar</button>
             </div>
          </div>
       </div>

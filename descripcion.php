@@ -56,13 +56,13 @@
                             {
                             ?>
                          <tr>
-                            <th style="text-align: center;" ><?php echo utf8_encode($row[0])?></th>
-                            <th style="text-align: center;" ><?php echo utf8_encode($row[1])?></th>
-                            <th style="text-align: center;" ><?php echo utf8_encode($row[2])?></th>
-                            <th style="text-align: center;" ><?php echo utf8_encode($row[3])?></th>
-                            <th style="text-align: center;"><?php echo utf8_encode($row[4])?></th>
-                            <th style="text-align: center;"><?php echo utf8_encode($row[5])?></th>
-                            <th style="text-align: center;"><?php echo utf8_encode($row[6])?></th>
+                            <th style="text-align: center;" ><?php echo $row[0]?></th>
+                            <th style="text-align: center;" ><?php echo $row[1]?></th>
+                            <th style="text-align: center;" ><?php echo $row[2]?></th>
+                            <th style="text-align: center;" ><?php echo $row[3]?></th>
+                            <th style="text-align: center;"><?php echo $row[4]?></th>
+                            <th style="text-align: center;"><?php echo $row[5]?></th>
+                            <th style="text-align: center;"><?php echo $row[6]?></th>
                          </tr>
                          <?php
                             }
@@ -352,6 +352,6 @@
    function getValor($query,$conn){
      $stmt = sqlsrv_query( $conn , $query);
      $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC);
-     return utf8_encode($row[0]);
+     return $row[0];
    }
    ?>

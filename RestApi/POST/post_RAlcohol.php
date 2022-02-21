@@ -3,7 +3,7 @@ include '../general_connection.php';
 if(strpos($permisos,',8,') !== false){
   if(ISSET($_POST['operacion'])){//Crear orden
     $codigo=$_POST['codigo'];
-    $desc=utf8_decode($_POST['desc']);
+    $desc=$_POST['desc'];
     $capa=$_POST['capa'];
     $tipo=$_POST['tipo'];
     $bomba=$_POST['bomba'];
@@ -34,7 +34,7 @@ if(strpos($permisos,',8,') !== false){
     }
   }else if(ISSET($_POST['operacionA'])){
     $codigo=$_POST['codigo'];
-    $desc=utf8_decode($_POST['desc']);
+    $desc=$_POST['desc'];
     $grado=$_POST['grado'];
     $obs=$_POST['obs'];
     $operacion=$_POST['operacionA'];
@@ -80,7 +80,7 @@ if(strpos($permisos,',8,') !== false){
       else select IdItem from CM_Item where Año='$anno';";
       $idItem=ObtenerDatoSimple($tsql,$conn);
       $tsql = "INSERT into WM_Recepcion (EnvioNo,Remitente,Para,Destino,Fecha,AñoAlcohol,Hora,Estatus) OUTPUT Inserted.IdRecepcion
-      values('$envio','Almacén Producto Terminado','$para','Tanque $tanque',GETDATE(),'$anno', FORMAT(GETDATE(), 'hh:mm:ss tt'),'0');";
+      values('$envio','Almacén Producto Terminado','$para','Tanque $tanque',GETDATE(),'$anno', SUBSTRING(CONVERT(VARCHAR,getdate(),	22) , 10, 20),'0');";
       $idRecepcion=ObtenerDatoSimple($tsql,$conn);
       $tsql = "INSERT into WM_RecDetail (IdRecepcion,IdTanque,Litros,Consumo,Merma,MermaReal,Medida,IdItem,IdAlcohol,IdLote,Estatus) OUTPUT Inserted.IdRecDetail
       values('$idRecepcion',(select IDTanque from CM_Tanque where Codigo='$tanque'),'$litros','0','0','0','$medida','$idItem' ,'$IdAlcohol','$idLote',0);";
@@ -121,16 +121,17 @@ function ejecutar2($tsql,$conn,$operacion){
   if($stmt){
     echo 'Datos '.$operacion." con exito";
   }else{
-    echo '..Error.. Hubo un problema al registrar las ordenes';
+    echo '..Error.. Hubo un problema al '.$operacion.' los datos';
   }
 }
 function ejecutar($tsql,$tsql2,$conn,$operacion){
   $stmt = sqlsrv_query( $conn , $tsql);
   $stmt2 = sqlsrv_query( $conn , $tsql2);
+
   if($stmt && $stmt2){
     echo 'Datos '.$operacion." con exito";
   }else{
-    echo '..Error.. Hubo un problema al registrar las ordenes';
+    echo '..Error.. Hubo un problema al '.$operacion.' los datos';
   }
 }
 ?>

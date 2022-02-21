@@ -3,8 +3,12 @@ include '../general_connection.php';
 if(strpos($permisos,',5,') !== false){
   $configuracion ="SELECT Val1 from CM_Config where IdConfig=5";
   $stmtConfiguracion = sqlsrv_query( $conn , $configuracion);
-  $row = sqlsrv_fetch_array( $stmtConfiguracion, SQLSRV_FETCH_NUMERIC);
-  echo $row[0];
+  if($stmtConfiguracion){
+    $row = sqlsrv_fetch_array( $stmtConfiguracion, SQLSRV_FETCH_NUMERIC);
+    echo $row[0];
+  }else{
+    echo '..Error.. Hubo un error al la IP de la impresora, intenta de nuevo más tarde';
+  }
 }else{
   echo '..Error.. No tienes acceso a esta area';
 }

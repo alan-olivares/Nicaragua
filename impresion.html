@@ -10,6 +10,7 @@
       <link rel="icon" href="img\TBRE.ico">
       <link href="css/animate.css" rel="stylesheet">
       <link href="css/style.css" rel="stylesheet">
+      <link rel="stylesheet" href="css/jquery-ui.css">
       <link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
       <script src="impresora/BrowserPrint-3.0.216.min.js"></script>
       <script src="impresora/BrowserPrint-Zebra-1.0.216.min.js"></script>
@@ -182,7 +183,7 @@
                   <div class="col-md-12 text-center  d-flex justify-content-center" >
                     <div class="col-md-3 text-center" >
                        <h5><label>  Tipo:   </label>
-                          <select class="form-control b-r-xl" id="tipo" onchange="cambioTipo(this);">
+                          <select class="form-control b-r-xl botones" id="tipo" onchange="cambioTipo(this);" disabled>
                             <option value="01">Barril</option>
                             <option value="02">Tanque Hoover</option>
                           </select>
@@ -190,23 +191,23 @@
                     </div>
                      <div class="col-md-3 text-center" >
                         <h5><label>  N° de copias:   </label>
-                           <input type="number" class="form-control b-r-xl" required="true" name="copias" id="copias">
+                           <input type="number" class="form-control b-r-xl botones" required="true" name="copias" id="copias" disabled>
                         </h5>
                      </div>
                      <div class="col-md-3 text-center" >
                         <h5><label>  Folio Inicial:   </label>
-                           <input type="number" class="form-control b-r-xl" onchange="autoComplete(this);" required="true" name="Inicial" id="Inicial">
+                           <input type="number" class="form-control b-r-xl botones" onchange="autoComplete(this);" required="true" name="Inicial" id="Inicial" disabled>
                         </h5>
                      </div>
                      <div class="col-md-3 text-center" >
                         <h5><label>  Folio Final:   </label>
-                           <input type="number" class="form-control b-r-xl" required="true" name="Final" id="Final">
+                           <input type="number" class="form-control b-r-xl botones" required="true" name="Final" id="Final" disabled>
                         </h5>
                      </div>
                   </div>
                   <div class="col-md-12 text-center  d-flex justify-content-center" >
-                     <button class="button5 btn btn-primary b-r-xl" onclick="Generar('CLN','CLNCuerpo',true);">Imprimir registro</button>
-                     <button class="button5 btn btn-primary b-r-xl" onclick="Generar('Folio','FolioCuerpo',false);">Imprimir folios</button>
+                     <button class="button5 btn btn-primary b-r-xl botones" onclick="Generar('CLN','CLNCuerpo',true);" disabled>Imprimir registro</button>
+                     <button class="button5 btn btn-primary b-r-xl botones" onclick="Generar('Folio','FolioCuerpo',false);" disabled>Imprimir folios</button>
                   </div>
                </div>
             </div>
@@ -219,7 +220,10 @@
       </div>
       <!-- Mainly scripts -->
       <script src="js/jquery-3.1.1.min.js"></script>
-      <script src="js/bootstrap-waitingfor.js"></script>
+      <script src="js/jquery-ui.js"></script>
+      <script src="js/jquery.dataTables.min.js"></script>
+      <script src="js/plugins/dataTables/datatables.min.js"></script>
+      <script src="js/plugins/dataTables/dataTables.bootstrap4.min.js"></script>
       <script src="js/popper.min.js"></script>
       <script src="js/bootstrap.js"></script>
       <script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
@@ -313,15 +317,13 @@
          			{
          				selected_device = device;
                  revisarConfig(device);
-
          			},function(error){
-                 if(error==='' && localStorage['aplicacion']!=='no'){
-                   var message_alert = $('<p>Se recomienda usar la aplicacion Zebra Printer para tener una mejor experiencia de impresión ¿Quieres descargarla ahora?</p>').dialog({
+                 if(error===''){
+                   var message_alert = $('<p>Se debe instalar la aplicación Zebra Printer para hacer uso de la impresora ¿Quieres descargarla ahora? Nota: Si ya la instalaste, verifica que se encuentre ejecutando</p>').dialog({
                      open: function() {
-                         $(this).closest(".ui-dialog")
-                         .find(".ui-dialog-titlebar-close")
-                         .removeClass("ui-dialog-titlebar-close")
-                         .html("<span class='ui-button-icon-primary ui-icon ui-icon-closethick'></span>");
+                       $(this).closest(".ui-dialog")
+                       .find(".ui-dialog-titlebar-close")
+                       .removeClass("ui-dialog-titlebar-close").addClass("b-r-xl btn btn-danger");
                      },
                      buttons: {
                          "Cancelar": function() {message_alert.dialog('close');},
@@ -339,15 +341,12 @@
                            }
                            link.click();
                            message_alert.dialog('close');
-                         },
-                         "No preguntar de nuevo":  function() {
-                             localStorage['aplicacion']='no';
-                             message_alert.dialog('close');
                          }
                      },
                      minWidth: 600,
 
                    });
+                   message_alert.dialog("open");
                  }
          			})
          }
@@ -430,15 +429,23 @@
          }
          var impresoraIP;
          async function revisarConfig(impresora){
-           if(impresora.name===undefined){
-             mensajeError("Debes de configurar la aplicación de Zebra Printer con una impresora por default");
-             return;
+           try {
+             if(impresora.name===undefined){
+               mensajeError("Debes de configurar la aplicación de Zebra Browser Printer con una impresora por default");
+               return;
+             }
+             var impresoraIP = await conexion("GET",'RestApi/GET/'+getApi,"");
+             if(!impresoraIP.includes(impresora.uid.substring(0,impresora.uid.indexOf(':')))){
+               mensajeError("Tu configuración de la aplicación Zebra Printer es incorrecta, llama al administrador y mencionale que asigne esta dirección a tu aplicación de Zebra Browser Print: "+impresoraIP.substring(0,impresoraIP.indexOf('/')));
+               return;
+             }
+             $('.botones').attr('disabled',false);
+           } catch (e) {
+             mensajeError(e);
+           } finally {
+
            }
-           var impresoraIP = await conexion("GET",'RestApi/GET/'+getApi,"");
-           if(!impresoraIP.includes(impresora.uid.substring(0,impresora.uid.indexOf(':')))){
-             mensajeError("Tu configuración de la aplicación Zebra Printer es incorrecta, llama al administrador y mencionale que asigne esta dirección: "+impresoraIP.substring(0,impresoraIP.indexOf('/')));
-             return;
-           }
+
          }
 
          $(document).ready(function(){

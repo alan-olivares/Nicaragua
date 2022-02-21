@@ -290,6 +290,6 @@ sqlsrv_close( $conn);
 function getValor($query,$conn){
   $stmt = sqlsrv_query( $conn , $query);
   $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC);
-  return utf8_encode($row[0]);
+  return $row[0];
 }
 ?>

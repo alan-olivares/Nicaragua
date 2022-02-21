@@ -44,6 +44,24 @@ function () {
   return str;
 };
 
+function findString(text) {
+  if(event.key === 'Enter') {
+      if(!window.find(text)){
+        alert(text+' no se encuentra dentro de la página');
+      }
+  }
+}
+
+function quitarSeleccion(buton){
+  $(".selected").removeClass("selected");
+  $(".seleccionado").removeClass("seleccionado");
+  $(buton).attr("hidden",true);
+}
+function lengthSeleccion(){
+  var elements = document.getElementsByClassName("selected");
+  return elements.length;
+}
+
 function entradasDark(valores){
   valores.forEach((item, i) => {
     $(item).css({"color":"#a2a1a1"});
@@ -263,7 +281,7 @@ function conexion(method, url,params) {
         xhttp.onload = function () {
             if (this.readyState == 4 && this.status == 200) {
               if(xhttp.response.includes("..Error..")){
-                reject(xhttp.response.substring(11, xhttp.response.length));
+                reject(xhttp.response.replace("..Error..",""));
               }else if(xhttp.response.includes("..Desautorizado..")){
                 limpiar();
               }else{
@@ -337,13 +355,7 @@ function GenerarEtiqueta(consecutivo,tipo){
 }
 function EtiquetaAConsecutivo(etiqueta){
   etiqueta=etiqueta.substring(4,10);
-  for (var i = 0; i < String(etiqueta).length; i++) {
-    if(String(etiqueta).charAt(0)==="0"){
-      etiqueta=etiqueta.substring(1,String(etiqueta).length);
-    }else{
-      return etiqueta;
-    }
-  }
+  return String(parseInt(etiqueta));
 }
 
 //Buscar las etiquetas de un select para emparejar values con etiquetas

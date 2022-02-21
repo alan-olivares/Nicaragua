@@ -110,7 +110,7 @@
                             <td style="text-align: center;"><?php echo $row[0]?></td>
                             <td style="text-align: center;"><?php echo $row[1]?></td>
                             <td style="text-align: center;"><?php echo $row[2]?></td>
-                            <td style="text-align: center;"><?php echo utf8_encode($row[3])?></td>
+                            <td style="text-align: center;"><?php echo $row[3]?></td>
                             <td style="text-align: right;"><?php echo number_format((float)str_replace(",","",$row[4]), 3, '.', ',')?></td>
                          </tr>
                          <?php
@@ -152,7 +152,7 @@
                             <td style="text-align: right;"><?php echo number_format((float)str_replace(",","",$row[1]), 3, '.', ',')?></td>
                             <td style="text-align: right;"><?php echo number_format((float)str_replace(",","",$row[2]), 3, '.', ',')?></td>
                             <td style="text-align: center;"><?php echo $row[3]?></td>
-                            <td style="text-align: center;"><?php echo utf8_encode($row[4])?></td>
+                            <td style="text-align: center;"><?php echo $row[4]?></td>
                          </tr>
                          <?php
                             }
@@ -282,6 +282,6 @@
      if(!$stmt)
       return '';
      $row = sqlsrv_fetch_array( $stmt, SQLSRV_FETCH_NUMERIC);
-     return utf8_encode($row[0]);
+     return $row[0];
    }
    ?>

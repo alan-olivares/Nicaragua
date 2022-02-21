@@ -66,7 +66,7 @@ if(strpos($permisos,',2,') !== false){
     }else{
       echo '..Error.. Este barril ya cuenta con solicitudes pendientes de procesar, espera a que sean procesadas';
     }
-  }else{
+  }else{//Agregando o moviendo barriles
       //Preparar IdPallet
       $IdPallet=ObtenerCantidad("SELECT top 1 IdPallet from WM_Pallet where RackLocID=".$_POST['IdPallet']."  order by IdPallet desc",$conn);
       if($IdPallet==-1){
@@ -102,7 +102,7 @@ if(strpos($permisos,',2,') !== false){
           $IdPalletActual=ObtenerCantidad("SELECT top 1 IdPallet from WM_Barrica where Consecutivo='$consecutivo'",$conn);
           if(ObtenerCantidad($queryCons,$conn)!=0){//Si tiene solicitud pendiente
             $errores=$errores.$consecutivo." (solicitud pendiente), ";
-            //Si está haciendo un cambio en un tanque lleno hacia embarrilado o si esta haciendolo de un tanque vacio hacia una posicion no de embarrilado
+            //Si está haciendo un cambio en un barril lleno hacia embarrilado o si esta haciendolo de un barril vacio hacia una posicion no de embarrilado
           }else if(($estado!=0 && strpos($bodega,'EMBARRILADO') === false) || ($estado==0 && strpos($bodega,'EMBARRILADO') !== false)){
             terminarScript($conn,"..Error.. La ubicación a la que quieres mover este barril es erronea. Si el barril está vacío solo podrá estar en EMBARRILADO o si está lleno podrá estár solo fuera de EMBARRILADO");//Terminamos el script
           }else if($IdPallet==$IdPalletActual){

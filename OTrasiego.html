@@ -187,7 +187,8 @@
                   <div role="tabpanel" id="generar" class="tab-pane active">
                      <div class="panel panel-default" style="margin-top:0px;">
                         <div class="row text-center  white-bg  d-flex justify-content-center" >
-                           <button class="button5 btn btn-primary b-r-xl" style="margin-bottom:20px;" onclick='CargarDialogo();'>Agregar ordenes</button>
+                           <button class="button5 btn btn-primary b-r-xl" style="margin-bottom:20px;" onclick='CargarDialogo();' id="agregarOrd" disabled>Agregar ordenes</button>
+                           <button class="button5 btn btn-warning b-r-xl" style="margin-bottom:20px;" onclick='descativarBotones(this);' id="quitarSel" hidden>Quitar seleccionado(s)</button>
                         </div>
                         <div class="col-md-12 d-flex justify-content-center table-responsive text-center " id="table-wrapper">
                            <div class="table-responsive col-md-12 centro" id="scrollingtable">
@@ -384,6 +385,10 @@
          function terminar(id){
            $(id+" div").css("visibility","hidden");
          }
+         function descativarBotones(boton){
+           quitarSeleccion(boton);
+           $('#agregarOrd').attr('disabled',true);
+         }
 
          async function CargarTabla(){
            try {
@@ -478,21 +483,17 @@
              var cargarTabla =JSON.parse(result);
              var todo="";
              for (var i = 0; i < cargarTabla.length; i++) {
-               var datos="Asignacion2('"+cargarTabla[i].IdOrden+"','"+cargarTabla[i].Estatus+"',this)";
-               var boton=(cargarTabla[i].Estatus==='Por Asignar')?'<button class="btn btn-primary b-r-xl" onclick="'+datos+'" style="margin-right:5px;margin-bottom:5px;">Asignar</button>':(cargarTabla[i].Estatus==='Asignada')?'<button class="btn btn-primary b-r-xl" onclick="'+datos+'" style="margin-right:5px;margin-bottom:5px;">Actualizar</button>':'<button class="btn btn-primary b-r-xl" style="margin-right:5px;margin-bottom:5px;" disabled>'+cargarTabla[i].Estatus+'</button>';
-               var opc=(cargarTabla[i].Estatus!=='Por Asignar' && cargarTabla[i].Estatus!=='Asignada')?'disabled':'';
-               var botonCancelar=(cargarTabla[i].Estatus==='Por Asignar' || cargarTabla[i].Estatus==='Asignada')?'<button class="btn btn-danger b-r-xl fa fa-trash" onclick="cancelarOrden(\''+cargarTabla[i].IdOrden+'\')"></button>':'';
+               var datos="('"+cargarTabla[i].IdOrden+"','"+cargarTabla[i].Estatus+"',this)";
+               var boton=(cargarTabla[i].Estatus==='Por Asignar')?'<button class="btn btn-primary b-r-xl" onclick="Asignacion2'+datos+'" style="margin-right:5px;margin-bottom:5px;">Asignar</button>':'<button class="btn btn-primary b-r-xl" onclick="terminarOrden'+datos+'" style="margin-right:5px;margin-bottom:5px;" '+(cargarTabla[i].Estatus==='Terminada' || cargarTabla[i].Estatus==='Cancelada'?'disabled':'')+'>Terminar</button>';
+               //:'<button class="btn btn-primary b-r-xl" style="margin-right:5px;margin-bottom:5px;" disabled>'+cargarTabla[i].Estatus+'</button>';
+               var opc=(cargarTabla[i].Estatus!=='Por Asignar')?'disabled':'';
+               var botonCancelar=(cargarTabla[i].Estatus==='Por Asignar')?'<button class="btn btn-danger b-r-xl fa fa-trash" onclick="cancelarOrden(\''+cargarTabla[i].IdOrden+'\')"></button>':'';
                todo+="<tr><td class='IdOrden'>"+cargarTabla[i].IdOrden+"</td><td>"+cargarTabla[i].Bodega+"</td><td>"+cargarTabla[i].CantBarriles+"</td><td>"+cargarTabla[i].Paletas+"</td><td>"+cargarTabla[i].Alcohol+"</td><td>"+cargarTabla[i].Tanque+"</td>"+
                escoger(operadorJ,cargarTabla[i].Op,'operador',opc)+escoger(montacaJ,cargarTabla[i].OpeMonta,'montaca',opc)+escoger(supervisorJ,cargarTabla[i].Supervidor,'supervisor',opc)+"<td class='Estatus'>"+cargarTabla[i].Estatus+"</td><td>"+boton+botonCancelar+"</td></tr>";
              }
              $("#"+tabla+" > tbody").append(todo);
              revisarTema();
              parar();
-             /*$(".asignar").click(function() {
-               var $row = $(this).closest("tr");
-               alert($row.find(".IdOrden").text())
-               //Asignacion($row.find(".IdOrden").text(),$row.find(".operador").val(),$row.find(".montaca").val(),$row.find(".supervisor").val(),$row.find(".Estatus"),$row.find(".asignar"));
-             });*/
            } catch(error) {
              await mensajeError(error);
            }
@@ -531,6 +532,26 @@
              mensajeError('Todos los campos deben estar llenados');
            }
          }*/
+         async function terminarOrden(orden,estatus,boton){
+           try {
+             if(await mensajeOpcional('¿Estás seguro de terminar la órden '+orden+'?')){
+               var url='RestApi/POST/'+postApi;
+               var params='terminarOrdenId='+orden;
+               var result=await conexion("POST", url,params);
+               ActualizarOrdenes($('#FOrdenes').val(),true);
+               todasOrdenes();
+               setTimeout(async function() {
+                 mensajeSimple(result);
+                 ActualizarOrdenes($('#FOrdenes').val(),true);
+                 todasOrdenes();
+               }, 500);
+             }
+           } catch (e) {
+             setTimeout(async function() {
+               mensajeError(e);
+             }, 500);
+           }
+         }
          async function Asignacion2(orden,estatus,boton){
            var $row = $(boton).closest("tr");
            var operador=$row.find(".operador").val();
@@ -607,8 +628,15 @@
              var data = table.row( this ).data();
              $(this).toggleClass('selected');
              $(this).children('td').toggleClass('seleccionado');
+             var total=lengthSeleccion();
+             $('#quitarSel').attr('hidden',total==0);
+             $('#agregarOrd').attr('disabled',total==0);
+             if(total>0){
+               $('#quitarSel').text('Quitar '+total+' seleccionado(s)');
+             }
            });
          }
+
 
 
          $(document).ready(function(){

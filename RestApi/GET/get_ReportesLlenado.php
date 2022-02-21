@@ -53,7 +53,7 @@ if(strpos($permisos,',6,') !== false){
     imprimir($datos,$conn);
   }else if(ISSET($_GET['RepOpRevisadoTotal']) && ISSET($_GET['fecha'])){
     $fecha=$_GET['fecha'];
-    $datos = "SELECT C.Codigo as Uso, 'Total barriles: '+ count(B.Consecutivo)  as Barriles, 'Total Lts: '+sum(B.Capacidad) as Litros
+    $datos = "SELECT C.Codigo as Uso, 'Total barriles: '+convert(varchar,count(B.Consecutivo))  as Barriles, 'Total Lts: '+convert(varchar,sum(B.Capacidad)) as Litros 
     from WM_Barrica B inner Join WM_LoteBarrica LB on LB.IdLoteBarica = B.IdLoteBarrica
     inner Join CM_CodEdad CE on CE.IdCodEdad = B.IdCodificacion inner Join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
     Where B.FechaRevisado = CONVERT(date, '$fecha') group by C.Codigo";

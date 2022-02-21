@@ -27,6 +27,7 @@ $( function() {
   dialogEditar = $( "#editarDialog" ).dialog(options);
   dialogMover = $( "#moverDialog" ).dialog(options);
   dialogAgregar = $( "#agregarDialog" ).dialog(options);
+  dialogBuscar = $( "#buscarDialog" ).dialog(options);
 $( ".cerrar" ).button().on( "click", function() {
   dialogEditar.dialog( "close" );
   dialogMover.dialog( "close" );
@@ -35,6 +36,43 @@ $( ".cerrar" ).button().on( "click", function() {
 
 
 } );
+
+function search(ele) {
+    if(event.key === 'Enter') {
+        BuscaConse();
+    }
+}
+async function BuscaConse(){
+  if($('#buscaConse').val()===''){
+    alert('El consecutivo o etiqueta no puede estar vacío');
+    return;
+  }
+  var valor=$('#buscaConse').val();
+  valor=(valor.length!=10?valor:EtiquetaAConsecutivo(valor))
+  const url='RestApi/GET/'+getApi+'?consecutivoBus='+valor;
+  var result = await conexion("GET",url,"");
+  var parsed =JSON.parse(result);
+  if(parsed.length>0){
+    dialogBuscar.dialog( "close" );
+    $("#planta").val(parsed[0].PlantaID);
+    await getInfo(document.getElementById("planta"),'bodegas','Nombre','AlmacenId','bodega');
+    $("#bodega").val(parsed[0].AlmacenID);
+    await getInfo(document.getElementById("bodega"),'bodega','Costados','ID','Costado');
+    $("#Costado").val(parsed[0].AreaId);
+    await getInfo(document.getElementById("Costado"),'area','Filas','ID','Filas');
+    $("#Filas").val(parsed[0].SeccionID);
+    await getInfo(document.getElementById("Filas"),'fila','Torres','ID','Torres');
+    $("#Torres").val(parsed[0].PosicionID);
+    await getInfo(document.getElementById("Torres"),'torre','Niveles','RackLocID','Niveles');
+    setTimeout(function() {
+      $("#Niveles").val(parsed[0].RackLocID);
+      CargarTabla(parsed[0].IdPallet,valor)
+    }, 500);
+
+  }else{
+    alert('El consecutivo '+valor+' no arrojo ninguna posición valida, verificalo e intentalo de nuevo');
+  }
+}
 
 async function GuardarMover(){
   var motivo=document.getElementById("MotivoM").value;
@@ -400,11 +438,11 @@ function limpiarCampos(select) {
 }
 
 //Obtiene los barriles que pertenecen a esta area
-async function CargarTabla(sel){
-  if(sel.value!=""){
+async function CargarTabla(valor,consecutivo){
+  if(valor!=""){
     try {
       empezar();
-      const url='RestApi/GET/'+getApi+'?Rack='+sel.value;
+      const url='RestApi/GET/'+getApi+'?Rack='+valor+'&isSerching='+(consecutivo!==''?1:0);
       var result = await conexion("GET",url,"");
       var parsed =JSON.parse(result);
       $("#Agregar").hide();
@@ -415,12 +453,12 @@ async function CargarTabla(sel){
       }
       if(parsed.length>10000){
         if(await mensajeOpcional('Se encontraron '+parsed.length+' barriles en esta ubicación, lo que provocará que tome hasta varios minutos en cargar ¿Deseas continuar?')){
-          setTimeout(function() {recargarTabla(parsed,parsed.length);}, 500);
+          setTimeout(function() {recargarTabla(parsed,parsed.length,consecutivo);}, 500);
         }else{
           parar();
         }
       }else{
-        recargarTabla(parsed,parsed.length);
+        recargarTabla(parsed,parsed.length,consecutivo);
       }
       //parar();
     } catch(error) {
@@ -431,8 +469,19 @@ async function CargarTabla(sel){
   }
 }
 var tabla=null;
-function recargarTabla(parsed,tamano){
+function recargarTabla(parsed,tamano,consecutivo){
   crearTablaJson(parsed,'#barriles');
+  var pos=1;
+  if(consecutivo!==''){
+    $('#barriles > tbody  > tr').each(function(index, tr) {
+      if(consecutivo===$(tr).children('td:first').text()){
+        $(tr).toggleClass('selected');
+        $(tr).children('td').toggleClass('seleccionado');
+        pos=index;
+        return;
+      }
+    });
+  }
   tabla=$('#barriles').DataTable({
     responsive: true,
     "bPaginate": false,
@@ -454,6 +503,11 @@ function recargarTabla(parsed,tamano){
       },
     }
   });
+  if(tamano>100 && consecutivo!==''){
+    var page=parseInt(pos/100);
+    tabla.page(page).draw(false);
+  }
+
   MostrarBotones();
   parar();
 }

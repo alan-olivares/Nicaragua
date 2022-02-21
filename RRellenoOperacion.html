@@ -179,8 +179,11 @@
                   <h2 class="col-lg-7 font-bold flex-row-reverse row" style="margin-top:40px;">Trazabilidad de Barriles y Rones Envejecidos</h2>
                 </div>
                 <div class=" col-md-12 row">
-                  <h2 class="col-lg-8" style="margin-top:10px;" id="tituloIso"></h2>
-                  <div class="col-lg-4 flex-row-reverse row" >
+                  <h2 class="col-lg-6" style="margin-top:10px;" id="tituloIso"></h2>
+                  <div class="col-lg-3 flex-row-reverse d-flex" >
+                    <input type="text" class="form-control b-r-xl" onkeydown='findString(this.value)' placeholder="Busca algún dato aquí" style="margin-left:40px;margin-bottom: 21px;" >
+                  </div>
+                  <div class="col-lg-3 flex-row-reverse row" >
                     <h2 style="margin-top:10px;" id="iso"></h2>
                   </div>
                 </div>
@@ -293,40 +296,36 @@
              var parsed =JSON.parse(result);
              var content="";
              if(parsed.length>0){
-               var totalOrden=0;
-               var totalLitros=0;
-               var totalBarriles=0;
+               var totalOrden=0,totalLitros=0,totalBarriles=0,totalMerma=0,donadores=0,totalFinal=0;
                var Estatus=parsed[0]['Estatus']
                var IdOrden=parsed[0]['IdOrden']
                content=nuevaOrden(parsed[0]);
                for (var i = 0; i < parsed.length; i++) {
-                 if(IdOrden!==parsed[i]['IdOrden']){
-                   content+=cerrarOrden(totalLitros);
-                   content=content.replaceAll('**--**',totalOrden);
-                   content=content.replaceAll('**---**',totalBarriles);
-                   totalOrden=0;
-                   totalBarriles=0;
-                   totalLitros=0;
+                 if(IdOrden!==parsed[i]['IdOrden']){//Nueva orden
+                   content+=cerrarOrden(totalLitros,Estatus,totalMerma);
+                   content=reemplazarTodo(totalBarriles,totalOrden,donadores,totalFinal,content);
+                   totalOrden=totalBarriles=totalLitros=totalMerma=donadores=totalFinal=0;
                    content+=nuevaOrden(parsed[i]);
                    Estatus=parsed[i]['Estatus'];
-                   IdOrden=parsed[i]['IdOrden']
-                   //content+=obtenerHeader(uso);
+                   IdOrden=parsed[i]['IdOrden'];
                  }
-                 if(Estatus!==parsed[i]['Estatus']){
+                 if(Estatus!==parsed[i]['Estatus']){//Nuevo estatus
                    content=content.replaceAll('**---**',totalBarriles);
-                   totalBarriles=0;
+                   content+=nuevoTipo(totalLitros,parsed[i],Estatus,totalMerma);
+                   totalBarriles=totalLitros=totalMerma=0;
                    Estatus=parsed[i]['Estatus'];
-                   content+=nuevoTipo(totalLitros,parsed[i]);
-                   totalLitros=0;
                  }
                  content+=obtenerTr(parsed[i]);
                  totalBarriles++;
                  totalOrden++;
-                 totalLitros+=parseFloat(parsed[i]['Capacidad']!==null?parsed[i]['Capacidad']:0);
+                 var capa=parseFloat(parsed[i]['Capacidad']!==null?parsed[i]['Capacidad']:0);
+                 totalFinal+=capa;
+                 totalLitros+=capa;
+                 donadores+=(parsed[i]['Estatus']==='Donador')?capa:0;
+                 totalMerma+=parseFloat(parsed[i]['Merma']!==null?parsed[i]['Merma']:0);
                }
-               content+=cerrarOrden(totalLitros);
-               content=content.replaceAll('**---**',totalBarriles);
-               content=content.replaceAll('**--**',totalOrden);
+               content+=cerrarOrden(totalLitros,Estatus,totalMerma);
+               content=reemplazarTodo(totalBarriles,totalOrden,donadores,totalFinal,content);
                $('#divPrincipal').append(content);
              }else{
                $('#divPrincipal').empty();
@@ -338,28 +337,35 @@
              parar();
            }
          }
+         function reemplazarTodo(totalBarriles,totalOrden,donadores,totalFinal,content){
+           content=content.replaceAll('**----**',fomatoNumero((donadores/totalFinal)*100));
+           content=content.replaceAll('**---**',totalBarriles);
+           content=content.replaceAll('**--**',totalOrden);
+           return content;
+         }
 
-         function nuevoTipo(total,json){
-           return '</tbody><tfoot><tr><th></th><th></th><th>Total LTS</th><th style="text-align: right;">'+fomatoNumero(total)+'</th></tr></tfoot></table></div></div>'+
+         function nuevoTipo(total,json,Estatus,merma){
+           return '</tbody><tfoot><tr><th></th><th></th><th>Total LTS</th><th style="text-align: right;">'+fomatoNumero(total)+'</th>'+(Estatus==='Relleno'?'<th style="text-align: right;">'+fomatoNumero(merma)+'</th>':'')+'</tr></tfoot></table></div></div>'+
            '<div class="col-md-2" style="background-color: lightblue;"><h3 class="col-md-12">'+json.Estatus+'</h3></div>'+
            '<div class="col-md-12 d-flex justify-content-center row" style="margin-bottom:20px;">'+
            '<div class="col-md-10 d-flex justify-content-center text-center">'+
            '<h5 class="col-md-4"><strong>Total Reg: </strong><strong>**---**</strong></h5>'+
            '<h5 class="col-md-4"><strong>Año llenada: </strong><strong>'+json.Fecha_Ll+'</strong></h5>'+
            '<h5 class="col-md-4"><strong>Alcohol: </strong><strong>'+json.Alcohol+'</strong></h5></div><div class="col-md-12 table-responsive"><table class="col-md-12 table-bordered cell-border">'+
-           '<thead><tr><th>Etiqueta</th><th>Uso</th><th>Ubicación</th><th>Litros</th></tr></thead><tbody>';
+           '<thead><tr><th>Etiqueta</th><th>Uso</th><th>Ubicación</th><th>Litros</th>'+(json.Estatus==='Relleno'?'<th>Merma</th>':'')+'</tr></thead><tbody>';
          }
          function obtenerTr(json){
-           return '<tr><td>'+json.Etiqueta+'</td><td>'+json.Uso+'</td><td>'+json.Ubicacion+'</td><td style="text-align: right;">'+fomatoNumero(json.Capacidad)+'</td></tr>';
+           return '<tr><td>'+json.Etiqueta+'</td><td>'+json.Uso+'</td><td>'+json.Ubicacion+'</td><td style="text-align: right;">'+fomatoNumero(json.Capacidad)+'</td>'+(json.Estatus==='Relleno'?'<td style="text-align: right;">'+fomatoNumero(json.Merma)+'</td>':'')+'</tr>';
          }
-         function cerrarOrden(total){
-           return '</tbody><tfoot><tr><th></th><th></th><th>Total LTS</th><th style="text-align: right;">'+fomatoNumero(total)+'</th></tr></tfoot></table></div></div></div>';
+         function cerrarOrden(total,Estatus,merma){
+           return '</tbody><tfoot><tr><th></th><th></th><th>Total LTS</th><th style="text-align: right;">'+fomatoNumero(total)+'</th>'+(Estatus==='Relleno'?'<th style="text-align: right;">'+fomatoNumero(merma)+'</th>':'')+'</tr></tfoot></table></div></div></div>';
          }
          function nuevaOrden(json){
            return '<div class="col-md-10 row "><div class="col-md-12 d-flex justify-content-center">'+
-           '<h3 class="col-md-4 subrrayado"><strong>Orden: </strong><strong>'+json.IdOrden+'</strong></h3>'+
-           '<h3 class="col-md-4 subrrayado"><strong>Tanque Reg lts: </strong><strong>'+fomatoNumero(json.CantTanq)+'</strong></h3>'+
-           '<h3 class="col-md-4 subrrayado"><strong>Barriles Reg: </strong><strong>**--**</strong></h3></div>'+
+           '<h3 class="col-md-3 subrrayado"><strong>Orden: </strong><strong>'+json.IdOrden+'</strong></h3>'+
+           '<h3 class="col-md-3 subrrayado"><strong>Tanque Reg lts: </strong><strong>'+fomatoNumero(json.CantTanq)+'</strong></h3>'+
+           '<h3 class="col-md-3 subrrayado"><strong>Barriles Reg: </strong><strong>**--**</strong></h3>'+
+           (json.TipoOp==='Reporte Diario de Operación de Relleno'?'<h3 class="col-md-3 subrrayado"><strong>Merma: </strong><strong>**----**%</strong></h3>':'')+'</div>'+
            '<div class="col-md-2" style="background-color: lightblue;"><h3 class="col-md-12">'+json.Estatus+'</h3></div>'+
            '<div class="col-md-12 d-flex justify-content-center row" style="margin-bottom:20px;">'+
            '<div class="col-md-10 d-flex justify-content-center text-center">'+

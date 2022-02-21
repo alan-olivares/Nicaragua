@@ -30,6 +30,15 @@ if(strpos($permisos,',2,') !== false){
     $tabla = "SELECT T.NoSerie,T.Capacidad,T.Litros,CONVERT(varchar(10),T.FechaLLenado, 120) as 'Fecha de llenado', Es.Descripcion as Estado
     from WM_Tanques T inner Join WM_Pallet P on P.Idpallet = T.IdPallet left Join CM_Estado ES on Es.IdEstado = T.IdEstado Where P.RackLocId ='$Rack'";
     imprimir($tabla,$conn);
+  }else if(ISSET($_GET['serieBus'])){//Busca la posición de un tanque
+    $tanque=$_GET["serieBus"];
+    $tabla = "SELECT  Pl.PlantaID,Am.AlmacenID,Ar.AreaId,Se.SeccionID,Po.PosicionID,R.RackLocID,P.IdPallet
+    from WM_Tanques T inner Join WM_Pallet P on P.Idpallet = T.IdPallet
+    inner join WM_RackLoc R on P.RackLocID=R.RackLocID inner Join AA_Nivel N on R.NivelID=N.NivelID
+    inner Join AA_Posicion Po on N.PosicionId=Po.PosicionID inner Join AA_Seccion Se on Po.SeccionID=Se.SeccionID
+    inner Join AA_Area Ar on Se.AreaId = Ar.AreaId inner Join AA_Almacen Am on Ar.AlmacenId=Am.AlmacenID
+    inner join AA_Plantas Pl on Pl.PlantaID=Am.PlantaID Where T.NoSerie ='$tanque'";
+    imprimir($tabla,$conn);
   }else if(ISSET($_GET['id'])){
     $NoSerie=$_GET["id"];
     $barril = "SELECT T.NoSerie,T.Capacidad,T.Litros,CONVERT(varchar(10),T.FechaLLenado, 120) as llenado, Es.Descripcion as Estado,

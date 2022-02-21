@@ -27,13 +27,23 @@ if(strpos($permisos,',2,') !== false){
   }else if(ISSET($_GET['Rack'])){
     //Nos regresa la tabla en forma de json
     $Rack=$_GET["Rack"];
-    $tabla = "exec sp_BarrPallet_v2 '$Rack'";
+    $isSerching=$_GET["isSerching"];
+    $tabla = "exec sp_BarrPallet_v2 '$Rack',$isSerching";
     imprimir($tabla,$conn);
   }else if(ISSET($_GET['consecutivo'])){
     $Consecutivo=$_GET["consecutivo"];
     $barril = "exec sp_BarrilUbicacion_v2 '$Consecutivo'";
     imprimir($barril,$conn);
 
+  }else if(ISSET($_GET['consecutivoBus'])){
+    $Consecutivo=$_GET["consecutivoBus"];
+    $barril = "SELECT  Pl.PlantaID,Am.AlmacenID,Ar.AreaId,Se.SeccionID,Po.PosicionID,R.RackLocID,P.IdPallet
+    from WM_Barrica B inner Join WM_Pallet P on P.Idpallet = B.IdPallet
+    inner join WM_RackLoc R on P.RackLocID=R.RackLocID inner Join AA_Nivel N on R.NivelID=N.NivelID
+    inner Join AA_Posicion Po on N.PosicionId=Po.PosicionID inner Join AA_Seccion Se on Po.SeccionID=Se.SeccionID
+    inner Join AA_Area Ar on Se.AreaId = Ar.AreaId inner Join AA_Almacen Am on Ar.AlmacenId=Am.AlmacenID
+    inner join AA_Plantas Pl on Pl.PlantaID=Am.PlantaID Where B.Consecutivo ='$Consecutivo'";
+    imprimir($barril,$conn);
   }else if(ISSET($_GET['tapa'])){
     $tapa=$_GET["tapa"];
     $year=$_GET["year"];

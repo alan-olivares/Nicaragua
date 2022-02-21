@@ -179,8 +179,11 @@
                   <h2 class="col-lg-7 font-bold flex-row-reverse row" style="margin-top:40px;">Trazabilidad de Barriles y Rones Envejecidos</h2>
                 </div>
                 <div class=" col-md-12 row">
-                  <h2 class="col-lg-8" style="margin-top:10px;">Barriles vaciados por trasiego</h2>
-                  <div class="col-lg-4 flex-row-reverse row" >
+                  <h2 class="col-lg-6" style="margin-top:10px;">Barriles vaciados por trasiego</h2>
+                  <div class="col-lg-3 flex-row-reverse d-flex" >
+                    <input type="text" class="form-control b-r-xl" onkeydown='findString(this.value)' placeholder="Busca algún dato aquí" style="margin-left:40px;margin-bottom: 21px;" >
+                  </div>
+                  <div class="col-lg-3 flex-row-reverse row" >
                     <h2 style="margin-top:10px;">FSI - 82.4.9.8</h2>
                   </div>
                 </div>
@@ -281,11 +284,7 @@
              var parsed =JSON.parse(result);
              var content="";
              if(parsed.length>0){
-               var totalCapa=0;
-               var capa=0;
-               var Barriles=0;
-               var BarrilesAnnio=0;
-               var capaAnnio=0;
+               var totalCapa=0,capa=0,Barriles=0,BarrilesAnnio=0,capaAnnio=0;
                var uso=parsed[0]['Uso'];
                var anio=parsed[0]['Año'];
                var cantidad=parseInt(parsed[0]['Cantidad']);

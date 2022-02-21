@@ -200,10 +200,13 @@
                   </h5>
                 </div>
               </div>
-              <div class="col-md-12 table-responsive" style="margin-top:15px;">
-                <table class="table-bordered cell-border col-md-9" id="tablaPrincipal" >
-                  <tbody></tbody>
-                </table>
+              <div class="col-md-12 " style="margin-top:15px;">
+                <div class="table-responsive col-md-12 justify-content-center row" id="principal">
+                  <table class="table-bordered cell-border col-md-12">
+                    <tbody></tbody>
+                  </table>
+                </div>
+
                 <div class="sk-spinner sk-spinner-three-bounce col-md-12">
                    <div class="sk-bounce1"></div>
                    <div class="sk-bounce2"></div>
@@ -329,25 +332,35 @@
       <script src="js/plugins/ladda/ladda.jquery.min.js"></script>
       <script>
          const getApi="get_ReportesTrasiego.php";
-
+         var tanque='',fecha='';
          async function ObtenerDatos(){
            if($('#fecha').val()==='' || $('#tanque').val()===''){
              return;
            }
            try {
              empezar();
-             $('#tablaPrincipal > tbody').empty();
-             //$('#tanqueDes').text($('#tanque option:selected').text());
-             var url='RestApi/GET/'+getApi+'?FSI82493=true&fecha='+$('#fecha').val()+'&tanque='+$('#tanque').val();
+             tanque=$('#tanque').val();
+             fecha=$('#fecha').val();
+             var url='RestApi/GET/'+getApi+'?FSI82493=true&fecha='+fecha+'&tanque='+tanque;
              var result = await conexion("GET",url,"");
              var parsed =JSON.parse(result);
-             for (var i = 0; i < parsed.length; i++) {
-               $('#tanqueDes').text(' '+parsed[i].Tanque);
-               delete parsed[i].Fecha;
-               delete parsed[i].Renglon;
-               delete parsed[i].Tanque;
+             $('#principal').empty();
+             $('#tanqueDes').text($('#tanque option:selected').text());
+             if(parsed.length>0){
+               var content='<h3>'+parsed[0].Anio+'</h3><table class="table-bordered cell-border col-md-12"><tbody>',annio=parsed[0].Anio;
+               for (var i = 0; i < parsed.length; i++) {
+                 if(annio!==parsed[i].Anio){
+                   annio=parsed[i].Anio;
+                   content+='</tbody></table><h3 style="margin-top:50px;">'+annio+'</h3><table class="table-bordered cell-border col-md-12"><tbody>';
+                 }
+                 content+='<tr><td>'+parsed[i].Camp1+'</td><td>'+(parsed[i].Camp2===null?'':parsed[i].Camp2)+'</td><td>'+(parsed[i].Camp3===null?'':parsed[i].Camp3)+'</td><td>'+(parsed[i].Camp4===null?'':parsed[i].Camp4)+
+                 '</td><td>'+(parsed[i].Camp5===null?'':parsed[i].Camp5)+'</td><td>'+(parsed[i].Camp6===null?'':parsed[i].Camp6)+'</td><td>'+(parsed[i].Camp7===null?'':parsed[i].Camp7)+'</td><td>'+(parsed[i].Camp8===null?'':parsed[i].Camp8)+
+                 '</td><td>'+(parsed[i].Camp9===null?'':parsed[i].Camp9)+'</td><td>'+(parsed[i].Camp10===null?'':parsed[i].Camp10)+'</td><td>'+(parsed[i].Camp11===null?'':parsed[i].Camp11)+'</td></tr>';
+               }
+               content+='</tbody></table>';
+               $('#principal').append(content);
              }
-             crearTablaJson(parsed,"#tablaPrincipal");
+
            } catch(error) {
              await mensajeError(error);
            }finally {
@@ -355,11 +368,11 @@
            }
          }
          async function generar(tipo,boton){
-           if($('#tablaPrincipal tbody tr').length > 0){
+           if(tanque!==''){
              var l = $('#'+boton).ladda();
              try {
                l.ladda('start');
-               var url=getNode+"?reporte=RTrasiegoHojaAnalisis&fecha="+$('#fecha').val()+'&tipo='+tipo+'&tanque='+$('#tanque').val();
+               var url=getNode+"?reporte=RTrasiegoHojaAnalisis&fecha="+fecha+'&tipo='+tipo+'&tanque='+tanque;
                var valor=await conexion("GET",url,"");
                let link = document.createElement("a");
                link.download = "Reporte Hoja de Análisis de Trasiego "+PickerToNormal($('#fecha').val())+"."+tipo;

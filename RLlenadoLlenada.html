@@ -181,7 +181,10 @@
                 </div>
                 <div class=" col-md-12 row">
                   <h2 class="col-lg-6" style="margin-top:10px;">Reporte Diario de Operación de Llenado</h2>
-                  <div class="col-lg-6 flex-row-reverse row" >
+                  <div class="col-lg-3 flex-row-reverse d-flex" >
+                    <input type="text" class="form-control b-r-xl" onkeydown='findString(this.value)' placeholder="Busca algún dato aquí" style="margin-left:40px;margin-top: 21px;" >
+                  </div>
+                  <div class="col-lg-3 flex-row-reverse d-flex" >
                     <h2 style="margin-top:10px;">FSI 82.4.6.1</h2>
                   </div>
                 </div>
@@ -329,7 +332,7 @@
            return '<div class="col-md-12 table-responsive" style="margin-top:20px; margin-bottom:20px;"><table class="col-md-12 table-bordered cell-border"><tbody>'+
            '<tr><td>Fecha</td><td>Fecha Recepción</td><td>Alcohol</td><td>Litros Recepción</td><td>Litros Consumo</td><td>Litros Llenada</td><td>Tanque</td></tr><tr>'+
            '<td>'+PickerToNormal($('#fecha').val())+'</td><td>'+json.FechaLote+'</td><td>'+json.Alcohol+'</td><td>'+fomatoNumero(json.RecepLitros)+'</td>'+
-           '<td>'+json.Consumo+'</td><td>***+++***</td><td>'+json.Tanque+'</td></tr></tbody></table></div>';
+           '<td>'+fomatoNumero(json.Consumo)+'</td><td>***+++***</td><td>'+json.Tanque+'</td></tr></tbody></table></div>';
          }
          async function generar(tipo,boton){
            if(usos.length > 0){

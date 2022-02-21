@@ -3,7 +3,7 @@ include '../general_connection.php';
 if(strpos($permisos,',8,') !== false){
   if(ISSET($_GET['tanques'])){//Tanques en existencia
     $barriles = "SELECT T.Codigo,T.Descripcion,T.Capacidad,T.Tipo,TD.A,TD.B,TD.C,TD.D from CM_Tanque T
-    left join CM_TanqDetalle TD on T.IDTanque=TD.IdTanque ".($_GET['tanques']!=="true"?"where T.Tipo=".$_GET['tanques']:"");
+    left join CM_TanqDetalle TD on T.IDTanque=TD.IdTanque ".($_GET['tanques']!=="true"?"where T.Tipo=".$_GET['tanques']:"")." order by case IsNumeric(T.Codigo) when 1 then Replicate('0', 100 - Len(T.Codigo)) + T.Codigo else T.Codigo end";
     imprimir($barriles,$conn);
   }else if(ISSET($_GET['planteles'])){//Planteles existentes
     $fecha = "SELECT Ar.IdArea, A.Nombre

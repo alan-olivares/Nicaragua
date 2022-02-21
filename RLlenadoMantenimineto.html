@@ -181,9 +181,9 @@
                   <h2 class="col-lg-7 font-bold flex-row-reverse row" style="margin-top:40px;">Trazabilidad de Barriles y Rones Envejecidos</h2>
                 </div>
                 <div class=" col-md-12 row">
-                  <h2 class="col-lg-6" style="margin-top:10px;">Reporte Diario de Reparación de barriles</h2>
-                  <div class="col-lg-6 flex-row-reverse row" >
-                    <h2 style="margin-top:10px;"></h2>
+                  <h2 class="col-lg-6" style="margin-top:10px;">Reporte de reparación de barriles</h2>
+                  <div class="col-lg-3 flex-row-reverse row" >
+                    <input type="text" class="form-control b-r-xl" onkeydown='findString(this.value)' placeholder="Busca algún dato aquí" style="margin-left:40px;margin-top: 21px;" >
                   </div>
                 </div>
               </div>
@@ -199,6 +199,7 @@
                     </h5>
                   </div>
                   <button class="ladda-button btn btn-primary b-r-xl" onclick="ObtenerDatos();" style="margin-top: 21px;" id="cargando" data-style="zoom-in"><span class="glyphicon glyphicon-search"></span></button>
+
                 </div>
                 <div class="col-md-12">
                   <h5><label>  Usar fecha final:   </label>
@@ -206,7 +207,7 @@
                   </h5>
                 </div>
               </div>
-              <div class="col-md-12 justify-content-center text-center" style="margin-top:20px;">
+              <div class="col-md-12 justify-content-center text-center" style="margin-top:20px;" id="datosGeneral">
                 <div class="table-responsive col-md-8 centro">
                   <h4>Total general </h4>
                   <table class="table-bordered cell-border col-md-12" id="tablaGen">
@@ -284,31 +285,46 @@
       <script>
          const getApi="get_ReportesLlenado.php";
          var fecha1="",fecha2="";
+
          async function ObtenerDatos(){
            if($('#fecha').val()===''){
              return;
            }
            fecha1=$('#fecha').val();
            fecha2=$('#usaFecha').is(':checked')?$('#fecha2').val():fecha1;
+           $('#datosGeneral').attr("hidden",!$('#usaFecha').is(':checked'));
            $('#contenido').empty();
            try {
              var l = $('#cargando').ladda();
              l.ladda('start');
-             $('#tabla1 tbody').empty();
-             $('#tabla2 tbody').empty();
+             $('#tablaGen').empty();
              var url='RestApi/GET/'+getApi+'?OPDetalleMantGen=true&fecha='+fecha1+'&fecha2='+fecha2;
              var result = await conexion("GET",url,"");
              var parsed =JSON.parse(result);
-             crearTablaJson(parsed,'#tablaGen')
+             if(parsed.length>0){
+               var content='<thead><tr><th>Reparación</th><th>Uso</th><th>Total</th></tr></thead><tbody>',tipo=parsed[0].Reparación,total=0,totalGnr=0;
+               for(var x=0;x<parsed.length;x++){
+                 if(tipo!==parsed[x].Reparación){
+                   content+='<tr style="background: #d2d2d2"><td colspan="2" align="right">Total '+tipo+':</td><td>'+total+'</td></tr>';
+                   tipo=parsed[x].Reparación;
+                   total=0;
+                 }
+                 total+=parseInt(parsed[x].Total);
+                 totalGnr+=parseInt(parsed[x].Total);
+                 content+='<tr><td>'+parsed[x].Reparación+'</td><td>'+parsed[x].Uso+'</td><td>'+parsed[x].Total+'</td></tr>';
+               }
+               content+='<tr style="background: #d2d2d2"><td colspan="2" align="right">Total '+tipo+':</td><td>'+total+'</td></tr>';
+               content+='<tr style="background: #d2d2d2"><td colspan="2" align="right">Total general:</td><td>'+totalGnr+'</td></tr></tbody>';
+               $('#tablaGen').append(content);
+             }
+
+             //crearTablaJson(parsed,'#tablaGen')
              url='RestApi/GET/'+getApi+'?OPDetalleMant=true&fecha='+fecha1+'&fecha2='+fecha2;
              result = await conexion("GET",url,"");
              parsed =JSON.parse(result);
              if(parsed.length>0){
                await tablaXDia(parsed);
              }
-             //tablaDetalles(parsed);
-             //crearTablaJson(parsed,'#tabla2');
-             //inzializar();
            } catch(error) {
              await mensajeError(error);
            }finally {
@@ -317,50 +333,32 @@
          }
 
         async function tablaXDia(parsed){
-           /*var content='<h4>Totales en fecha: </h4>
-           <div class="col-md-12 justify-content-center text-center" style="margin-top:20px;">
-             <div class="table-responsive col-md-8 centro">
-               <table class="table-bordered cell-border col-md-12" id="tabla1">
-                 <thead>
-
-                 </thead>
-                 <tbody>
-                 </tbody>
-               </table>
-             </div>
-           </div>
-           <div class="col-md-12  justify-content-center text-center" style="margin-top:15px;">
-             <div class="table-responsive col-md-8 centro">
-               <table class="table-bordered cell-border col-md-12" id="tabla2" >
-                 <thead>
-                   <tr>
-                     <th>Etiqueta</th>
-                     <th>Uso</th>
-                     <th>Operador</th>
-                     <th colspan="6">Reparación</th>
-                   </tr>
-                 </thead>
-                 <tbody></tbody>
-               </table>
-             </div>
-           </div>';*/
            var fecha=parsed[0].fecha;
            var content=inicioTabla(fecha);
+           var tipo=parsed[0].Reparación,total=0,totalGnr=0;
            for(var x=0;x<parsed.length;x++){
              if(fecha!==parsed[x].fecha){
+               content+='<tr style="background: #d2d2d2"><td colspan="2" align="right">Total '+tipo+':</td><td>'+total+'</td></tr>';
+               content+='<tr style="background: #d2d2d2"><td colspan="2" align="right">Total '+fecha+':</td><td>'+totalGnr+'</td></tr>';
+               tipo=parsed[x].Reparación;
+               total=totalGnr=0;
                content+=await interTabla(fecha);
-               //content+=tablaDetalles(parsed);
                fecha=parsed[x].fecha;
                content+=inicioTabla(fecha);
              }
-             content+='<tr><td>'+parsed[x].Reparación+'</td><td>'+parsed[x].Uso+'</td><td>'+parsed[x].Total+'</td></tr>'
+             if(tipo!==parsed[x].Reparación){
+               content+='<tr style="background: #d2d2d2"><td colspan="2" align="right">Total '+tipo+':</td><td>'+total+'</td></tr>';
+               tipo=parsed[x].Reparación;
+               total=0;
+             }
+             total+=parseInt(parsed[x].Total);
+             totalGnr+=parseInt(parsed[x].Total);
+             content+='<tr><td>'+parsed[x].Reparación+'</td><td>'+parsed[x].Uso+'</td><td>'+parsed[x].Total+'</td></tr>';
            }
+           content+='<tr style="background: #d2d2d2"><td colspan="2" align="right">Total '+tipo+':</td><td>'+total+'</td></tr>';
+           content+='<tr style="background: #d2d2d2"><td colspan="2" align="right">Total '+fecha+':</td><td>'+totalGnr+'</td></tr>';
            content+=await interTabla(fecha);
-           //content+='</tbody></table></div></div>';
            $('#contenido').append(content);
-           $('.colapsar').each(function(i, obj) {
-             colapsar(obj);
-           });
          }
 
          async function interTabla(fecha){
@@ -381,7 +379,6 @@
          }
 
          function tablaDetalles(parsed){
-           //$('#tabla2 tbody').empty();
            var content="",etiqueta="";
            for(var x=0;x<parsed.length;x++){
              if(etiqueta!==parsed[x].Etiqueta){
@@ -394,23 +391,17 @@
              }
            }
            return content;
-           /*$('#tabla2 tbody').append(content);
-           return content;
-           $('.colapsar').each(function(i, obj) {
-             //colapsar(obj);
-           });
-           */
          }
 
          async function generar(tipo,boton){
-           if($('#tabla1 tbody tr').length > 0){
+           if(fecha1!==''){
              var l = $('#'+boton).ladda();
              try {
                l.ladda('start');
-               var url=getNode+"?reporte=RLlenadoMantenimineto&fecha="+$('#fecha').val()+'&tipo='+boton;
+               var url=getNode+"?reporte=RLlenadoMantenimineto&fecha="+fecha1+'&fecha2='+fecha2+'&tipo='+boton;
                var valor=await conexion("GET",url,"");
                let link = document.createElement("a");
-               link.download = "Reporte Diario de Reparación de barriles "+PickerToNormal($('#fecha').val())+"."+tipo;
+               link.download = "Reporte de reparación de barriles "+PickerToNormal($('#fecha').val())+"."+tipo;
                link.href = valor;
                link.click();
              } catch (e) {
@@ -419,7 +410,7 @@
                l.ladda('stop');
              }
            }else{
-             mensajeError("No hay datos que exportar");
+             mensajeError("Haz una busqueda antes de exportar");
            }
          }
 

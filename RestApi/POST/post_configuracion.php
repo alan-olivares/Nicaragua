@@ -43,6 +43,36 @@ if(strpos($permisos,',4,') !== false){
     }else{
       echo '..Error.. hubo un problema al actualizar esté motivo';
     }
+  }else if(ISSET($_POST["updateProvee"])){
+    $IdProveedor=$_POST["IdProveedor"];
+    $Codigo=$_POST["codigo"];
+    $descripcion=$_POST["descripcion"];
+    $query="UPDATE CM_Proveedor set Descripcion='$descripcion',Codigo='$Codigo' where IdProveedor=$IdProveedor";
+    $resultCons =sqlsrv_query( $conn , $query);
+    if($resultCons){
+      echo 'Proveedor actualizado con exito';
+    }else{
+      echo '..Error.. hubo un problema al actualizar esté motivo';
+    }
+  }else if(ISSET($_POST["borrarProvee"])){
+    $IdProveedor=$_POST["IdProveedor"];
+    $query="DELETE from CM_Proveedor where IdProveedor=$IdProveedor";
+    $resultCons =sqlsrv_query( $conn , $query);
+    if($resultCons){
+      echo 'Proveedor borrado con exito';
+    }else{
+      echo '..Error.. hubo un problema al actualizar esté motivo';
+    }
+  }else if(ISSET($_POST["agregarProvee"])){
+    $Codigo=$_POST["codigo"];
+    $descripcion=$_POST["descripcion"];
+    $query="INSERT into CM_Proveedor (Codigo,Descripcion) values('$Codigo','$descripcion')";
+    $resultCons =sqlsrv_query( $conn , $query);
+    if($resultCons){
+      echo 'Proveedor agregado con exito';
+    }else{
+      echo '..Error.. hubo un problema al actualizar esté motivo';
+    }
   }
 
 }else{
