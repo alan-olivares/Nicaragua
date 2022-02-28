@@ -296,15 +296,15 @@
              var parsed =JSON.parse(result);
              var content="";
              if(parsed.length>0){
-               var totalOrden=0,totalLitros=0,totalBarriles=0,totalMerma=0,donadores=0,totalFinal=0;
+               var totalOrden=0,totalLitros=0,totalBarriles=0,totalMerma=0,donadores=0,totalFinal=0,totalLtsOrden=0;
                var Estatus=parsed[0]['Estatus']
                var IdOrden=parsed[0]['IdOrden']
                content=nuevaOrden(parsed[0]);
                for (var i = 0; i < parsed.length; i++) {
                  if(IdOrden!==parsed[i]['IdOrden']){//Nueva orden
                    content+=cerrarOrden(totalLitros,Estatus,totalMerma);
-                   content=reemplazarTodo(totalBarriles,totalOrden,donadores,totalFinal,content);
-                   totalOrden=totalBarriles=totalLitros=totalMerma=donadores=totalFinal=0;
+                   content=reemplazarTodo(totalBarriles,totalOrden,donadores,totalFinal,totalLtsOrden,content);
+                   totalOrden=totalBarriles=totalLitros=totalMerma=donadores=totalFinal=totalLtsOrden=0;
                    content+=nuevaOrden(parsed[i]);
                    Estatus=parsed[i]['Estatus'];
                    IdOrden=parsed[i]['IdOrden'];
@@ -321,11 +321,12 @@
                  var capa=parseFloat(parsed[i]['Capacidad']!==null?parsed[i]['Capacidad']:0);
                  totalFinal+=capa;
                  totalLitros+=capa;
+                 totalLtsOrden+=capa;
                  donadores+=(parsed[i]['Estatus']==='Donador')?capa:0;
                  totalMerma+=parseFloat(parsed[i]['Merma']!==null?parsed[i]['Merma']:0);
                }
                content+=cerrarOrden(totalLitros,Estatus,totalMerma);
-               content=reemplazarTodo(totalBarriles,totalOrden,donadores,totalFinal,content);
+               content=reemplazarTodo(totalBarriles,totalOrden,donadores,totalFinal,totalLtsOrden,content);
                $('#divPrincipal').append(content);
              }else{
                $('#divPrincipal').empty();
@@ -337,10 +338,11 @@
              parar();
            }
          }
-         function reemplazarTodo(totalBarriles,totalOrden,donadores,totalFinal,content){
+         function reemplazarTodo(totalBarriles,totalOrden,donadores,totalFinal,totalLtsOrden,content){
            content=content.replaceAll('**----**',fomatoNumero((donadores/totalFinal)*100));
            content=content.replaceAll('**---**',totalBarriles);
            content=content.replaceAll('**--**',totalOrden);
+           content=content.replaceAll('**-**',fomatoNumero(totalLtsOrden));
            return content;
          }
 
@@ -363,7 +365,7 @@
          function nuevaOrden(json){
            return '<div class="col-md-10 row "><div class="col-md-12 d-flex justify-content-center">'+
            '<h3 class="col-md-3 subrrayado"><strong>Orden: </strong><strong>'+json.IdOrden+'</strong></h3>'+
-           '<h3 class="col-md-3 subrrayado"><strong>Tanque Reg lts: </strong><strong>'+fomatoNumero(json.CantTanq)+'</strong></h3>'+
+           '<h3 class="col-md-3 subrrayado"><strong>Total lts: </strong><strong>**-**</strong></h3>'+
            '<h3 class="col-md-3 subrrayado"><strong>Barriles Reg: </strong><strong>**--**</strong></h3>'+
            (json.TipoOp==='Reporte Diario de Operación de Relleno'?'<h3 class="col-md-3 subrrayado"><strong>Merma: </strong><strong>**----**%</strong></h3>':'')+'</div>'+
            '<div class="col-md-2" style="background-color: lightblue;"><h3 class="col-md-12">'+json.Estatus+'</h3></div>'+

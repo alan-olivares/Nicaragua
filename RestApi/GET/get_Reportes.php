@@ -109,13 +109,13 @@ if(strpos($permisos,',10,') !== false){
     $datos = "exec sp_ListaEdad_v2";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['almacenesTod'])){
-    $datos = "SELECT STRING_AGG(Nombre, ', ') AS Nombres FROM AA_Almacen ".($_GET['almacenesTod']!=="true"?"where AlmacenId in(".$_GET['almacenesTod'].")":"");
+    $datos = "DECLARE @csv VARCHAR(1000) SELECT @csv = COALESCE(@csv + ',', '') + Nombre FROM AA_Almacen A ".($_GET['almacenesTod']!=="true"?"where A.AlmacenId in(".$_GET['almacenesTod'].")":"")."  SELECT @csv as Nombres";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['alcoholTod'])){
-    $datos = "SELECT STRING_AGG(Descripcion, ', ') AS Nombres FROM CM_Alcohol Where IdAlcohol <> 4 ".($_GET['alcoholTod']!=="true"?"and IdAlcohol in(".$_GET['alcoholTod'].")":"");
+    $datos = "DECLARE @csv VARCHAR(1000) SELECT @csv = COALESCE(@csv + ',', '') + Descripcion FROM CM_Alcohol A Where A.IdAlcohol <> 4 ".($_GET['alcoholTod']!=="true"?"and A.IdAlcohol in(".$_GET['alcoholTod'].")":"")." SELECT @csv as Nombres";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['usoTod'])){
-    $datos = "SELECT STRING_AGG(Codigo, ', ') AS Nombres FROM CM_Codificacion ".($_GET['usoTod']!=="true"?"where IdCodificacion in(".$_GET['usoTod'].")":"");
+    $datos = "DECLARE @csv VARCHAR(1000) SELECT @csv = COALESCE(@csv + ',', '') + Codigo FROM CM_Codificacion A ".($_GET['usoTod']!=="true"?"where A.IdCodificacion in(".$_GET['usoTod'].")":"")." SELECT @csv as Nombres";
     imprimir($datos,$conn);
   }
 

@@ -9,7 +9,11 @@ if(strpos($permisos,',6,') !== false){
   }else if(ISSET($_GET['FSI61194']) && ISSET($_GET['tanque']) && ISSET($_GET['fecha'])){// Reporte Remisión Alcoholes de Entrega Blending
     $tanque=$_GET['tanque'];
     $fecha=$_GET['fecha'];
-    $datos = "exec sp_RepFSI61194_v2 '$fecha',$tanque";
+    $datos = "if exists(select * from WM_EnviosBlending where idTanque='$tanque' and CONVERT(varchar(10), Fecha,120)='$fecha')
+    select E.EnvioNo,E.idTanque,E.tq,E.fcv,D.idItem,D.Litros,I.Codigo,I.Año,T.Codigo as Tanque from WM_EnviosBlending E
+    inner join WM_EnviosBlendingDetalle D on E.IdEnvio=D.IdEnvio inner join CM_Item I on D.idItem=I.IdItem
+    inner join CM_Tanque T on E.idTanque=T.IDTanque where E.idTanque='$tanque' and CONVERT(varchar(10), Fecha,120)='$fecha'
+    else select ISNULL((select top 1 EnvioNo from WM_EnviosBlending order by EnvioNo desc),54)+1 as Envio ";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['FSI82498']) && ISSET($_GET['tanque']) && ISSET($_GET['fecha'])){//
     $tanque=$_GET['tanque'];
@@ -28,6 +32,14 @@ if(strpos($permisos,',6,') !== false){
     $tanque=$_GET['tanque'];
     $usuarios = "SELECT IDTanque,Codigo,Descripcion,Capacidad,Tipo from CM_Tanque where IDTanque=$tanque";
     imprimir($usuarios,$conn);
+  }else if(ISSET($_GET['alcohol']) ){// Reporte Remisión Alcoholes de Entrega Blending
+    $alcohol=$_GET['alcohol'];
+    $datos = "SELECT IdItem,Codigo,Año from CM_Item ".($alcohol!=='true'?' where IdItem='.$alcohol:'')." order by Año";
+    imprimir($datos,$conn);
+  }else if(ISSET($_GET['envios'])){//Historico de envios de remision
+    $datos = "SELECT E.EnvioNo,T.Codigo as Tanque,convert(varchar(10),E.fecha,120) as Fecha,E.tq,E.fcv from WM_EnviosBlending E
+    inner join CM_Tanque T on E.idTanque=T.IDTanque order by E.EnvioNo";
+    imprimir($datos,$conn);
   }
 }else{
   echo '..Error.. No tienes acceso a esta area';

@@ -76,7 +76,7 @@ if(strpos($permisos,',8,') !== false){
       $tsql = "exec sp_LoteCrea_v2 '$fecha','$IdAlcohol'";
       $idLote=ObtenerDatoSimple($tsql,$conn);
       $tsql = "if not exists (select * from CM_Item where Año='$anno')
-      insert into CM_Item (Codigo,Año,Estatus) OUTPUT Inserted.IdItem values ((select top 1 Codigo from CM_Item order by Codigo desc)+1,'$anno','0')
+      insert into CM_Item (Codigo,Año,Estatus) OUTPUT Inserted.IdItem values ((select top 1 Codigo from CM_Item where Codigo <>8130010050 order by Codigo desc)+1,'$anno','0')
       else select IdItem from CM_Item where Año='$anno';";
       $idItem=ObtenerDatoSimple($tsql,$conn);
       $tsql = "INSERT into WM_Recepcion (EnvioNo,Remitente,Para,Destino,Fecha,AñoAlcohol,Hora,Estatus) OUTPUT Inserted.IdRecepcion

@@ -132,15 +132,10 @@ async function llenarRTrasiegoVaciados(archivo,fecha,tanque,res,tipo,id){
         var result = await conexion(url);
         var parsed =JSON.parse(result);
         if(parsed.length>0){
-          var totalCapa=0;
-          var capa=0;
-          var Barriles=0;
-          var BarrilesAnnio=0;
-          var capaAnnio=0;
+          var totalCapa=0,capa=0,Barriles=0,BarrilesAnnio=0,capaAnnio=0,pos=11;
           var uso=parsed[0]['Uso'];
           var anio=parsed[0]['Año'];
           var cantidad=parseInt(parsed[0]['Cantidad']);
-          var pos=11;
           nuevoUsoVaciados(workbook.sheet(hoja),10);
           for (var i = 0; i < parsed.length; i++) {
             if(anio!==parsed[i]['Año']){
@@ -154,10 +149,7 @@ async function llenarRTrasiegoVaciados(archivo,fecha,tanque,res,tipo,id){
               pos++;
               uso=parsed[i]['Uso'];
               anio=parsed[i]['Año']
-              capa=0;
-              Barriles=0;
-              capaAnnio=0;
-              BarrilesAnnio=0;
+              capa=Barriles=capaAnnio=BarrilesAnnio=0;
             }
             if(uso!==parsed[i]['Uso']){
               workbook.sheet(hoja).cell("D"+pos).value([['','',Barriles+' Barriles','Total tipo barril']]).style({border:true,"borderColor": "F5F5F6","bold": true});
@@ -166,8 +158,7 @@ async function llenarRTrasiegoVaciados(archivo,fecha,tanque,res,tipo,id){
               nuevoUsoVaciados(workbook.sheet(hoja),pos);
               uso=parsed[i]['Uso'];
               pos++;
-              capa=0;
-              Barriles=0;
+              capa=Barriles=0;
             }
             totalCapa+=parseInt(parsed[i]['Capacidad']);
             capa+=parseInt(parsed[i]['Capacidad']);
@@ -189,6 +180,7 @@ async function llenarRTrasiegoVaciados(archivo,fecha,tanque,res,tipo,id){
           workbook.sheet(hoja).cell("G"+(pos+1)).value(cantidad).style({border:true,"borderColor": "000000","bold": true,"numberFormat": "#,##0.00"});
           workbook.sheet(hoja).cell("E"+(pos+2)).value([['','Total merma:']]).style({border:true,"borderColor": "000000","bold": true});
           workbook.sheet(hoja).cell("G"+(pos+2)).value(totalCapa-cantidad).style({border:true,"borderColor": "000000","bold": true,"numberFormat": "#,##0.00"});
+          borrarFilas((pos+3),156,workbook.sheet(hoja));
           url=servidor+'RestApi/GET/get_ReportesTrasiego.php?tanque='+tanque;
           result = await conexion(url);
           parsed =JSON.parse(result);
@@ -217,28 +209,24 @@ function llenarRTrasiegoRemision(archivo,fecha,tanque,res,tipo,id){
     .then(async workbook => {
       try {
         const hoja="Principal";
-        workbook.sheet(hoja).cell("E14").value(PickerToNormal(fecha));
-        workbook.sheet(hoja).cell("I14").value(fecha.substring(0, 4));
+        workbook.sheet(hoja).cell("B12").value(PickerToNormal(fecha));
         var url=servidor+'RestApi/GET/get_ReportesTrasiego.php?FSI61194=true&fecha='+fecha+'&tanque='+tanque;
         var result = await conexion(url);
         var parsed =JSON.parse(result);
-        if(parsed.length>0){
-          var totalCapa=0;
-          workbook.sheet(hoja).cell("K14").value(parsed[0]["Hora"]);
+        if(parsed.length>0 && parsed[0].idTanque!==undefined){
+          workbook.sheet(hoja).cell("H8").value(parsed[0].EnvioNo);
+          workbook.sheet(hoja).cell("C130").value('Tq: '+parsed[0].tq);
+          workbook.sheet(hoja).cell("C131").value('FCV: '+parsed[0].fcv);
           for (var i = 0; i < parsed.length; i++) {
-            delete parsed[i]["Hora"];
-            workbook.sheet(hoja).cell("D"+(i+19)).value([Object.values(parsed[i])]).style({border:true,"borderColor": "F5F5F6"});
-            totalCapa+=parseInt(parsed[i]['Cantidad']);
+            workbook.sheet(hoja).cell("E"+(i+18)).value([[parsed[i].Tanque,0,parsed[i].Codigo,parsed[i].Año]]);
+            workbook.sheet(hoja).cell("F"+(i+18)).value(parseFloat((parsed[i].Litros!=='' ||parsed[i].Litros!==null)?parsed[i].Litros:0));
           }
-          workbook.sheet(hoja).cell("H"+(parsed.length+19)).value('Total').style({border:true,"borderColor": "F5F5F6"});
-          workbook.sheet(hoja).cell("I"+(parsed.length+19)).value(totalCapa).style({border:true,"borderColor": "F5F5F6"});
-          url=servidor+'RestApi/GET/get_ReportesTrasiego.php?tanque='+tanque;
-          result = await conexion(url);
-          parsed =JSON.parse(result);
-          workbook.sheet(hoja).cell("E8").value(parsed[0].Descripcion);
-          borrarFilas((parsed.length+21),548,workbook.sheet(hoja));
+          borrarFilas((parsed.length+18),119,workbook.sheet(hoja));
+          await exportar(archivo,id,tipo,workbook,res);
+        }else{
+          res.send('..Error.. No se encontró ningun envío con este tanque y fecha');
         }
-        await exportar(archivo,id,tipo,workbook,res);
+
       } catch (e) {
         console.log(e);
         res.send('..Error.. Hubo un problema al procesar la solicitud, intenta de nuevo más tarde');
@@ -301,7 +289,7 @@ async function llenarRRellenoOperacion(archivo,fecha,operacion,res,tipo,id){
         var result = await conexion(url);
         var parsed =JSON.parse(result);
         if(parsed.length>0){
-          var totalOrden=0,totalLitros=0,totalBarriles=0,pos=8,totalPosOrden=8,totalPosEstatus=11,totalMerma=0,donadores=0,totalFinal=0;
+          var totalOrden=0,totalLitros=0,totalBarriles=0,pos=8,totalPosOrden=8,totalPosEstatus=11,totalMerma=0,donadores=0,totalFinal=0,totalLtsOrden=0;
           var Estatus=parsed[0]['Estatus']
           var IdOrden=parsed[0]['IdOrden']
           nuevaOrdenOperacion(workbook.sheet(hoja),pos,parsed[0])
@@ -311,9 +299,10 @@ async function llenarRRellenoOperacion(archivo,fecha,operacion,res,tipo,id){
               workbook.sheet(hoja).cell('I'+pos).value(totalLitros).style({"bold": true,"numberFormat": "#,##0.00"});
               workbook.sheet(hoja).cell('H'+pos).value('Total LTS').style({"bold": true});
               workbook.sheet(hoja).cell('I'+totalPosOrden).value(totalOrden).style({"bold": true,"numberFormat": "#,##0","horizontalAlignment":"center"});
+              workbook.sheet(hoja).cell('G'+totalPosOrden).value(totalLtsOrden).style({"bold": true,"numberFormat": "#,##0.00","horizontalAlignment":"center"});
               workbook.sheet(hoja).cell('J'+totalPosOrden).value(operacion==='3'?'Merma: '+formatoNumero((donadores/totalFinal)*100)+'%':'').style({"bold": true});
               workbook.sheet(hoja).cell('F'+totalPosEstatus).value(totalBarriles).style({"bold": true,"numberFormat": "#,##0"});
-              totalOrden=totalBarriles=totalLitros=totalMerma=donadores=totalFinal=0;
+              totalOrden=totalBarriles=totalLitros=totalMerma=donadores=totalFinal=totalLtsOrden=0;
               pos+=3;
               totalPosOrden=pos;
               totalPosEstatus=pos+3;
@@ -344,6 +333,7 @@ async function llenarRRellenoOperacion(archivo,fecha,operacion,res,tipo,id){
             var capa=parseFloat(parsed[i]['Capacidad']!==null?parsed[i]['Capacidad']:0);
             totalFinal+=capa;
             totalLitros+=capa;
+            totalLtsOrden+=capa;
             donadores+=(parsed[i]['Estatus']==='Donador')?capa:0;
             totalMerma+=parseFloat(parsed[i]['Merma']!==null?parsed[i]['Merma']:0);
           }
@@ -353,6 +343,7 @@ async function llenarRRellenoOperacion(archivo,fecha,operacion,res,tipo,id){
           workbook.sheet(hoja).cell('I'+pos).value(totalLitros).style({"bold": true,"numberFormat": "#,##0.00"});
           workbook.sheet(hoja).cell('J'+totalPosOrden).value(operacion==='3'?'Merma: '+formatoNumero((donadores/totalFinal)*100)+'%':'').style({"bold": true});
           workbook.sheet(hoja).cell('H'+pos).value('Total LTS').style({"bold": true});
+          workbook.sheet(hoja).cell('G'+totalPosOrden).value(totalLtsOrden).style({"bold": true,"numberFormat": "#,##0.00","horizontalAlignment":"center"});
           workbook.sheet(hoja).cell('I'+totalPosOrden).value(totalOrden).style({"bold": true,"numberFormat": "#,##0","horizontalAlignment":"center"});
           workbook.sheet(hoja).cell('F'+totalPosEstatus).value(totalBarriles).style({"bold": true,"numberFormat": "#,##0"});
         }
@@ -367,8 +358,8 @@ async function llenarRRellenoOperacion(archivo,fecha,operacion,res,tipo,id){
 }
 
 function nuevaOrdenOperacion(hoja,inicio,json){
-  hoja.cell('D'+inicio).value([['Orden:',json.IdOrden,'Tanque Reg lts:','','Barriles Reg:']]).style({"horizontalAlignment":"center"});
-  hoja.cell('G'+inicio).value(json.CantTanq).style({"numberFormat": "#,##0.00"});
+  hoja.cell('D'+inicio).value([['Orden:',json.IdOrden,'Total lts:','','Barriles Reg:']]).style({"horizontalAlignment":"center"});
+  //hoja.cell('G'+inicio).value(totalLtsOrden).style({"numberFormat": "#,##0.00"});
   hoja.range("D"+inicio+":J"+inicio).style({ bottomBorder:true,"bold": true});
   nuevaEstadoOperacion(hoja,inicio+2,json);
 }
@@ -850,7 +841,7 @@ async function ponerEncabezadoInventario(bodega,alcohol,llenada,uso,hoja){
     var parsed =JSON.parse(result);
     hoja.cell('K6').value(parsed[0].Nombres);
   }
-  if(llenada==='0'){
+  if(llenada===''){
     hoja.cell('O6').value('Todos').style({bottomBorder:true,"borderColor": "000000", "horizontalAlignment":"center"});
   }else{
     hoja.cell('O6').value(llenada).style({bottomBorder:true,"borderColor": "000000", "horizontalAlignment":"center"});
@@ -949,7 +940,7 @@ function llenarBarrilesLlenados(archivo,res,fecha,fecha2,tipo,id){
         for (var i = 0; i < parsed.length; i++) {
           workbook.sheet(hoja).cell("E"+(i+9)).value([[parsed[i].Fecha,parsed[i].FechaLote,parsed[i].Alcohol,parsed[i].Tanque,parsed[i].Uso]]).style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
           workbook.sheet(hoja).cell("J"+(i+9)).value(parseInt(parsed[i].T_Barril)).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0"});
-          workbook.sheet(hoja).cell("K"+(i+9)).value(parseInt(parsed[i].T_Barril)).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0.00"});
+          workbook.sheet(hoja).cell("K"+(i+9)).value(parsed[i].T_Lts).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0.00","horizontalAlignment":"right"});
         }
         var inicio=parsed.length+12;
         url=servidor+'RestApi/GET/get_Reportes.php?llenadosT2=true&fecha1='+fecha+'&fecha2='+fecha2;
@@ -1037,7 +1028,7 @@ function llenarBarrilesTrasiego(archivo,res,fecha,fecha2,tipo,id){
         for (var i = 0; i < parsed.length; i++) {
           workbook.sheet(hoja).range("J"+(i+9)+":K"+(i+9)).merged(true);
           workbook.sheet(hoja).cell("E"+(i+9)).value([[parsed[i].NoOrden,parsed[i].Fecha,parsed[i].Alcohol,parsed[i].Tanque]]).style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
-          workbook.sheet(hoja).cell("I"+(i+9)).value([[parseFloat(parsed[i].CantTanq),parseInt(parsed[i].TotalBarriles),0,parseFloat(parsed[i].TotalLts)]]).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0.00"});
+          workbook.sheet(hoja).cell("I"+(i+9)).value([[parseFloat(parsed[i].CantTanq),parseInt(parsed[i].TotalBarriles),0,parsed[i].TotalLts]]).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0.00","horizontalAlignment":"right"});
         }
         var inicio=parsed.length+12;
         url=servidor+'RestApi/GET/get_Reportes.php?trasiegoT2=true&fecha1='+fecha+'&fecha2='+fecha2;

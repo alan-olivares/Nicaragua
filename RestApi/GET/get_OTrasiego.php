@@ -2,7 +2,7 @@
 include '../general_connection.php';
 if(strpos($permisos,',6,') !== false){
   if(ISSET($_GET['lotes'])){
-    $lotes = "SELECT  Distinct A.AlmacenID,A.Nombre as Bod ,year(L.Recepcion) as Fecha_Li , Al.IdAlcohol ,Al.Descripcion as Alcohol,
+    $lotes = "SELECT Distinct A.AlmacenID,A.Consecutivo,A.Nombre as Bod ,year(L.Recepcion) as Fecha_Li , Al.IdAlcohol ,Al.Descripcion as Alcohol,
               C.IdCodificacion, C.Codigo as Barril,count(B.Consecutivo) as Cantidad, sum(B.Capacidad) as Lts
               from AA_Almacen A inner Join AA_Area AA on AA.AlmacenId = A.AlmacenID inner Join AA_Seccion S on S.AreaId = AA.AreaId
               inner join AA_Posicion P on P.SeccionID = S.SeccionID inner Join AA_Nivel N on N.PosicionId = P.PosicionID
@@ -11,8 +11,8 @@ if(strpos($permisos,',6,') !== false){
               inner join PR_Lote L on L.IdLote = LB.IdLote inner Join CM_Alcohol Al on Al.IdAlcohol = l.IdAlcohol
               inner join CM_CodEdad CE on CE.IdCodEdad= B.IdCodificacion inner join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
               inner Join CM_Edad E on E.IdEdad = CE.IdEdad
-              Group by A.AlmacenID,A.Nombre,year(L.Recepcion),Al.IdAlcohol,Al.Descripcion,C.IdCodificacion,C.Codigo
-              order by A.AlmacenID,year(L.Recepcion),al.IdAlcohol,c.IdCodificacion";
+              Group by A.AlmacenID,A.Nombre,year(L.Recepcion),Al.IdAlcohol,Al.Descripcion,C.IdCodificacion,C.Codigo,A.Consecutivo
+              order by A.Consecutivo,year(L.Recepcion),al.IdAlcohol,c.IdCodificacion";
     imprimir($lotes,$conn);
   }else if(ISSET($_GET['fechasLotes'])){//Obtenemos informacion de las ordenes por la fecha
     $fecha = "SELECT DISTINCT(convert(varchar, Fecha, 23)) as Fecha from PR_Orden where IdTipoOp in (5,6) order by Fecha";

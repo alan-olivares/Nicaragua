@@ -343,7 +343,7 @@
             if(parsed.length>0){
               mostrarDatos();
               for (var i = 0; i < parsed.length; i++) {
-                content+="<tr><td>"+parsed[i].Fecha_Li+"</td><td>"+parsed[i].Alcohol+"</td><td>"+parsed[i].Barril+"</td><td style='text-align: right;'>"+parsed[i]['Total Barriles']+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i]['Total Litros'])+"</td></tr>";
+                content+="<tr><td>"+parsed[i].Fecha_Li+"</td><td>"+parsed[i].Alcohol+"</td><td>"+parsed[i].Barril+"</td><td style='text-align: right;'>"+parsed[i]['Total Barriles']+"</td><td style='text-align: right;'>"+parsed[i]['Total Litros']+"</td></tr>";
               }
               $('#tabla2 tbody').append(content);
               url='RestApi/GET/'+getApi+'?inventario=true&bodega='+$('#bodega').val()+'&alcohol='+$('#alcohol').val()+'&llenada='+$('#llenada').val()+'&uso='+$('#uso').val();
@@ -357,8 +357,6 @@
                 +"</td><td style='text-align: right;'>"+parsed[i].A+"</td><td style='text-align: right;'>"+parsed[i].B+"</td><td style='text-align: right;'>"+parsed[i].C+"</td><td style='text-align: right;'>"+parsed[i].D+"</td><td style='text-align: right;'>"+parsed[i].RC
                 +"</td><td style='text-align: right;'>"+parsed[i].E+"</td><td style='text-align: right;'>"+parsed[i].F+"</td><td style='text-align: right;'>"+parsed[i].TotalBarriles+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i].totallitros)+"</td></tr>";
               }
-              console.log(content);
-              console.log(parsed.length);
               $('#tabla3 tbody').append(content);
               setTimeout(function() {
                 recargarTablas();
