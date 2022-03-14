@@ -5,7 +5,7 @@ if(strpos($permisos,',2,') !== false || strpos($permisos,',1,') !== false){
   if(ISSET($_GET['estado'])){
     $estado=$_GET["estado"];
     if($tipo==='1'){//Barriles
-      $barril = "SELECT ad.IdAjuste,ad.Evento,b.Consecutivo,CONVERT(varchar(16),ad.FechaSolicitud, 120)as FechaSolicitud ,u.Nombre as Solicitante,
+      $barril = "SELECT ad.IdAjuste,ad.Evento,'01' + '01' +(right('000000' + convert(varChar(6),B.Consecutivo ),6)) as Etiqueta,CONVERT(varchar(16),ad.FechaSolicitud, 120)as FechaSolicitud ,u.Nombre as Solicitante,
       CONVERT(varchar(16),ad.FechaAutorizacion, 120) as FechaAutorizacion,
       (select Nombre from CM_Usuario_WEB where IdUsuario=ad.Autorizador) as Autorizador,ES.Descripcion as Estado,R.Descripcion from ADM_Ajustes ad
       left join CM_Usuario_WEB u on ad.Solicitante=u.IdUsuario
@@ -13,7 +13,7 @@ if(strpos($permisos,',2,') !== false || strpos($permisos,',1,') !== false){
       left join ADM_Estados ES on ES.IdEstado=ad.Estado
       left join ADM_Razones R on ad.IdRazon=R.IdRazon where Estado='$estado'";
     }else if($tipo==='2'){//Tanques Hoover
-      $barril = "SELECT ad.IdAjuste,ad.Evento,T.NoSerie,CONVERT(varchar(16),ad.FechaSolicitud, 120)as FechaSolicitud ,u.Nombre as Solicitante,
+      $barril = "SELECT ad.IdAjuste,ad.Evento,'01' + '02' +(right('000000' + convert(varChar(6),T.NoSerie ),6)) as Etiqueta,CONVERT(varchar(16),ad.FechaSolicitud, 120)as FechaSolicitud ,u.Nombre as Solicitante,
       CONVERT(varchar(16),ad.FechaAutorizacion, 120)as FechaAutorizacion,
       (select Nombre from CM_Usuario_WEB where IdUsuario=ad.Autorizador) as Autorizador,ES.Descripcion as Estado,R.Descripcion from ADM_AjustesTanques ad
       left join CM_Usuario_WEB u on ad.Solicitante=u.IdUsuario
@@ -37,7 +37,7 @@ if(strpos($permisos,',2,') !== false || strpos($permisos,',1,') !== false){
     $idAjuste=$_GET["idAjuste"];
     $opc=$_GET["opc"];
     if($tipo==='1'){
-      $barril = "SELECT De.Consecutivo,De.Capacidad,
+      $barril = "SELECT '01' + '01' +(right('000000' + convert(varChar(6),De.Consecutivo ),6)) as Etiqueta,De.Capacidad,
       CASE WHEN Am.Nombre is null THEN 'Barril sin ubicación' ELSE Am.Nombre+', '+ REPLACE(Ar.Nombre, 'COSTADO', 'Cos: ')+', '+REPLACE(Se.Nombre, 'FILA', 'F: ')+','+ REPLACE(Po.Nombre, 'TORRE', 'T: ') +','+ REPLACE(N.Nombre, 'NIVEL', 'N: ') END AS Ubicación,
       C.Codigo as Uso,E.Codigo as Edad,es.Descripcion as Estado,convert(varchar, De.FechaRevisado, 23) as 'F.Revisado',
       convert(varchar, De.FechaRelleno, 23) as 'F.Relleno',Datepart(YYYY,L.Recepcion) as Recepción, Al.Descripcion as Alcohol, De.NoTapa as Tapa from ADM_logBAjuste De
@@ -53,7 +53,7 @@ if(strpos($permisos,',2,') !== false || strpos($permisos,',1,') !== false){
                   left Join AA_Seccion Se on Po.SeccionID=Se.SeccionID left Join AA_Area Ar on Se.AreaId = Ar.AreaId
                   left Join AA_Almacen Am on Ar.AlmacenId=Am.AlmacenID where IdAjuste=$idAjuste and op=$opc";
     }else if($tipo==='2'){
-      $barril = "SELECT NoSerie,Litros,
+      $barril = "SELECT '01' + '02' +(right('000000' + convert(varChar(6),NoSerie ),6)) as Etiqueta,Litros,
       CASE WHEN Am.Nombre is null THEN 'Tanque sin ubicación' ELSE Am.Nombre+', '+ REPLACE(Ar.Nombre, 'COSTADO', 'Cos: ')+', '+REPLACE(Se.Nombre, 'FILA', 'F: ')+','+ REPLACE(Po.Nombre, 'TORRE', 'T: ') +','+ REPLACE(N.Nombre, 'NIVEL', 'N: ') END AS Ubicación,
       convert(varchar(10), FechaLLenado, 120) as 'F. Llenado',E.Descripcion as Estado
       from ADM_logTAjuste l left join CM_Estado E on l.IdEstado=E.IdEstado left Join WM_Pallet P on P.Idpallet = l.IdPallet

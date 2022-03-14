@@ -2,7 +2,9 @@ ObtenerNotificaciones();
 revisarTema();
 const getNode='http://'+$(location).attr('hostname')+":1337/";
 revisarPermisosInterface();
-$(".scrollingtable2").css("height",screen.height-260);
+$(".scrollingtable2").css("height",window.innerHeight-260);
+$(".scrollingtable").css("height",window.innerHeight-330);
+
 async function ObtenerNotificaciones(){
   var numero=await conexion("GET", 'RestApi/GET/get_notificaciones.php','');
   document.getElementById("letrero1").innerHTML=numero;
@@ -10,16 +12,30 @@ async function ObtenerNotificaciones(){
   document.getElementById("letrero3").innerHTML=numero;
   document.getElementById("letrero4").innerHTML="Tienes "+numero+" solicitudes pendientes";
 }
+async function setDates(fechas,format){
+  try {
+    var fecha=await conexion("GET", 'RestApi/GET/get_time.php?format='+format,'');
+    fechas.forEach((item, i) => {
+      $(item).val(fecha);
+    });
+    return fecha;
+  } catch (e) {
+    return dateFormatoCompleto(new Date,'-')
+  }
+
+}
 function revisarTema(){
+  $('.navbar-static-top').css({"background":"#f3f3f4"});
   if(localStorage['tema']==='2'){
     $('.gray-bg').removeClass('gray-bg').addClass('gray-bg-dark');
     $('.navbar-static-top').removeClass('navbar-static-top').addClass('navbar-static-top-dark');
     $("#page-wrapper").css({"background-color":"#333333"});
-    entradasDark(['select','input','.footer','.panel-body','.white-bg','.ui-dialog-content','.ibox-content','.panel-default']);
+    entradasDark(['select','input','.footer','.panel-body','.white-bg','.ui-dialog-content','.ibox-content','.panel-default','.search-field']);
     $('.ui-dialog-titlebar').css({"color":"#a2a1a1"});
     $('.ui-dialog-titlebar').css({"background-color":"#2f2f2f"});
     $('.panel-title').css({"color":"#a2a1a1"});
     $('.panel-heading').css({"background-color":"#2f2f2f"});
+    //$('.navbar-fixed-top').css({"background-color":"#a2a1a1"});
     $('.barriles_length').css({"color":"#a2a1a1"});
     $('.table-bordered').removeClass('table-bordered').addClass('table-bordered-dark');
 
@@ -99,7 +115,8 @@ async function ActualizarFechasLotes(url){
     var result = await conexion("GET",url,"");
     var parsed =JSON.parse(result);
     var array1= [];
-    array1.push(dateFormatoCompleto(new Date,'-'));
+    var currentDay= await setDates([],'Y-m-d');
+    array1.push(currentDay);
     for (var i = 0; i < parsed.length; i++) {
       array1.push(parsed[i].Fecha);
     }
@@ -123,7 +140,7 @@ async function ActualizarFechasLotes(url){
   }catch(error){
     mensajeError(error);
   }
-  $("#data_1 .input-group.date").datepicker().datepicker("setDate", new Date());
+  $("#data_1 .input-group.date").datepicker().datepicker("setDate", currentDay);
 
 
 }
@@ -134,25 +151,7 @@ function empezar(){
 function parar(){
   $(".sk-spinner-three-bounce div").css("visibility","hidden");
 }
-async function mensajeOpcional2(texto){
-  try{
-      return await swal({
-            title: "Aviso",
-            text: texto,
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Si",
-            cancelButtonText: "No",
-            closeOnConfirm: true
-        });
-      // SUCCESS
-    }catch(e){
-        // Fail!
-        console.error(e);
-        return false;
-    }
-}
+
 function dateFormato(date,sep) {
   var dia=date.getDate();
   var mes=date.getMonth();
@@ -193,6 +192,22 @@ function mensajeSimple(texto){
         confirmButtonColor: "#1c84c6",
         confirmButtonText: "OK",
         cancelButtonText: "No",
+        closeOnConfirm: true
+      },
+      function (isConfirm) {
+            resolve(isConfirm);
+          });
+  });
+}
+function mensajeWarning(texto){
+  return new Promise(function(resolve, reject) {
+      swal({
+        title: "¡Advertencia!",
+        text: texto,
+        type: "warning",
+        showCancelButton: false,
+        confirmButtonColor: "#1c84c6",
+        confirmButtonText: "OK",
         closeOnConfirm: true
       },
       function (isConfirm) {

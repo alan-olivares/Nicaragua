@@ -314,7 +314,7 @@
                  var consecutivos=[];
                  $( ".selected" ).each(function() {
                    var orden=$( this ).children('td:first').text();
-                   var consecutivo=$( this ).children('td:nth-child(2)').text();
+                   var consecutivo=EtiquetaAConsecutivo($( this ).children('td:nth-child(2)').text());
                    var litros=$( this ).children('td:nth-child(5)').find("input").val();
                    consecutivos.push({Orden: orden, Consecutivo: consecutivo, Litros: litros});//Se obtienen los valores de la primera posicion creando un arreglo de consecutivos
                  });
@@ -327,7 +327,7 @@
                  ObtenerNotificaciones();
                  CargarTabla();
                }catch(error){
-                 alert(error)
+                 mensajeError(error)
                }finally{
                  parar();
                }

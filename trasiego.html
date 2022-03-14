@@ -206,6 +206,17 @@
                        </tr>
                      </thead>
                      <tbody></tbody>
+                     <tfoot>
+                       <tr>
+                         <td></td>
+                         <td></td>
+                         <td></td>
+                         <td>Totales:</td>
+                         <th style="text-align: right;"></th>
+                         <th style="text-align: right;"></th>
+                         <th style="text-align: right;"></th>
+                       </tr>
+                     </tfoot>
                    </table>
                  </div>
                  <div class="col-md-12 d-flex justify-content-center table-responsive text-center">
@@ -392,7 +403,31 @@
           function recargarTablas(tamano1,tamano2){
             var check1=(tamano1>100);
             var check2=(tamano2>100);
-            tabla1=$('#tabla1').DataTable({
+            tabla1=$('#tabla1').DataTable({"footerCallback": function ( row, data, start, end, display ) {
+              var api = this.api(), data;
+
+              // Remove the formatting to get integer data for summation
+              var intVal = function ( i ) {
+                  return typeof i === 'string' ?
+                      i.replace(/[\$,]/g, '')*1 :
+                      typeof i === 'number' ?
+                          i : 0;
+              };
+              a = api.column( 4, { page: 'current'} ).data().reduce( function (a, b) {
+                  return intVal(a) + intVal(b);
+              }, 0 );
+              b= api.column( 5, { page: 'current'} ).data().reduce( function (a, b) {
+                  return intVal(a) + intVal(b);
+              }, 0 );
+              c= api.column( 6, { page: 'current'} ).data().reduce( function (a, b) {
+                  return intVal(a) + intVal(b);
+              }, 0 );
+
+              // Update footer
+              $( api.column(4).footer() ).html(a.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+              $( api.column(5).footer() ).html(b.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+              $( api.column(6).footer() ).html(fomatoNumero(c));
+          },
                 responsive: true,
                 "bPaginate": check1,
                 "paging":   check1,
@@ -459,8 +494,7 @@
          $(document).ready(function(){
            permisos(["10"]);
            limpiarDatos();
-           document.getElementById("date1").valueAsDate= new Date();
-           document.getElementById("date2").valueAsDate= new Date();
+           setDates(['#date1','#date2'],'Y-m-d');
          });
 
 

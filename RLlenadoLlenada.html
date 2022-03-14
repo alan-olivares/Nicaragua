@@ -383,12 +383,15 @@
            }
          }
 
+         async function iniciaProces(){
+           await setDates(['#fecha'],'Y-m-d');
+           ObtenerDatos();
+         }
 
          $(document).ready(function(){
            //ObtenerDatos();
            permisos(["6"]);
-           document.getElementById('fecha').valueAsDate=new Date();
-           ObtenerDatos();
+           iniciaProces();
          });
       </script>
    </body>

@@ -15,7 +15,7 @@
    </head>
    <body >
       <script src="js/revisar_sesion.js"></script>
-      <div id="wrapper">
+      <div id="wrapper" >
          <nav class="navbar-default navbar-static-side" role="navigation">
             <div class="sidebar-collapse">
                <ul class="nav metismenu" id="side-menu">
@@ -126,7 +126,12 @@
                      <a href="disenoAlmacen.html"><i class="fa fa-building"></i> <span class="nav-label">Diseñar almacenes</span></a>
                   </li>
                   <li class="nueve">
-                     <a href="AjustesInventario.html"><i class="fa fa-edit"></i> <span class="nav-label">Ajustes de inventario</span></a>
+                    <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">Ajustes de inventario</span><span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse">
+                       <li><a href="AjustesInventario.html">Inventario</a></li>
+                       <li><a href="AjustesLlenado.html">Llenado</a></li>
+                       <li><a href="AjustesRelleno.html">Relleno</a></li>
+                    </ul>
                   </li>
                   <li class="tres-cuatro">
                      <a href="#"><i class="fa fa-gear"></i> <span class="nav-label">Administración</span><span class="fa arrow"></span></a>
@@ -139,8 +144,8 @@
             </div>
          </nav>
          <div id="page-wrapper" class="gray-bg">
-            <div class="row border-bottom">
-               <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="row border-bottom" >
+               <nav class="navbar navbar-static-top" role="navigation">
                   <div class="navbar-header">
                      <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
                   </div>
@@ -168,8 +173,8 @@
                   </ul>
                </nav>
             </div>
-            <div class="row wrapper border-bottom white-bg page-heading" >
-               <div class="col-md-8 text-center  d-flex justify-content-center" >
+            <div class="row wrapper border-bottom white-bg page-heading">
+               <div class="col-md-12 text-center  d-flex justify-content-center" >
                   <div class="form-inline text-center d-flex justify-content-center">
                     <h5><label class="">Fecha Inicial:</label>
                        <input type="date" class="form-control b-r-xl" value="" id="date1" name="date1" onkeydown="return false">
@@ -200,6 +205,17 @@
                        </tr>
                      </thead>
                      <tbody></tbody>
+                     <tfoot>
+                       <tr>
+                         <td></td>
+                         <td></td>
+                         <td></td>
+                         <td></td>
+                         <th>Totales:</th>
+                         <th style="text-align: right;"></th>
+                         <th style="text-align: right;"></th>
+                       </tr>
+                     </tfoot>
                    </table>
                  </div>
                  <div class="col-md-12 d-flex justify-content-center table-responsive text-center">
@@ -337,6 +353,8 @@
         function limpiarDatos(){
           $('#tabla1 tbody').empty();
           $('#tabla2 tbody').empty();
+          //$('#tabla1 tfoot').empty();
+          //$('#tabla2 tfoot').empty();
           $('#tabla1').hide();
           $('#tabla2').hide();
         }
@@ -374,7 +392,27 @@
           function recargarTablas(tamano1,tamano2){
             var check1=(tamano1>100);
             var check2=(tamano2>100);
-            tabla1=$('#tabla1').DataTable({
+            tabla1=$('#tabla1').DataTable({"footerCallback": function ( row, data, start, end, display ) {
+              var api = this.api(), data;
+
+              // Remove the formatting to get integer data for summation
+              var intVal = function ( i ) {
+                  return typeof i === 'string' ?
+                      i.replace(/[\$,]/g, '')*1 :
+                      typeof i === 'number' ?
+                          i : 0;
+              };
+              a = api.column( 5, { page: 'current'} ).data().reduce( function (a, b) {
+                  return intVal(a) + intVal(b);
+              }, 0 );
+              b= api.column( 6, { page: 'current'} ).data().reduce( function (a, b) {
+                  return intVal(a) + intVal(b);
+              }, 0 );
+
+              // Update footer
+              $( api.column(5).footer() ).html(a.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+              $( api.column(6).footer() ).html(fomatoNumero(b));
+          },
                 responsive: true,
                 "bPaginate": check1,
                 "paging":   check1,
@@ -442,8 +480,7 @@
          $(document).ready(function(){
            permisos(["10"]);
            limpiarDatos();
-           document.getElementById("date1").valueAsDate= new Date();
-           document.getElementById("date2").valueAsDate= new Date();
+           setDates(['#date1','#date2'],'Y-m-d');
          });
 
 

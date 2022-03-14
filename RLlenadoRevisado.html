@@ -224,8 +224,8 @@
                 </div>
               </div>
               <div class="col-md-12 justify-content-center text-center" style="margin-top:20px;">
-                <div class="table-responsive col-md-6 centro">
-                  <table class="tabla col-md-12" id="totales">
+                <div class="table-responsive col-md-8 centro">
+                  <table class="table-bordered cell-border col-md-12" id="totales">
                     <thead>
                     </thead>
                     <tbody>
@@ -402,12 +402,15 @@
              mensajeError("No hay datos que exportar");
            }
          }
+         async function iniciaProces(){
+           await setDates(['#fecha'],'Y-m-d');
+           ObtenerDatos();
+         }
 
          $(document).ready(function(){
            //ObtenerDatos();
            permisos(["6"]);
-           document.getElementById('fecha').valueAsDate=new Date();
-           ObtenerDatos();
+           iniciaProces();
          });
 
       </script>

@@ -26,6 +26,9 @@ if(strpos($permisos,',4,') !== false){
     }
   }else if(ISSET($_POST["borrarMotivo"])){
     $razon=$_POST["razon"];
+    if(ObtenerCantidad("SELECT (select count(*) from ADM_AjustesTanques where IdRazon=$razon)+(select count(*) from ADM_Ajustes where IdRazon=$razon)",$conn)>0){
+      terminarScript($conn,'..Error.. Este motivo ya fue aseignado al menos a una solicitud y no puede ser eliminado');
+    }
     $query="DELETE from ADM_Razones where IdRazon=$razon";
     $resultCons =sqlsrv_query( $conn , $query);
     if($resultCons){
@@ -56,6 +59,9 @@ if(strpos($permisos,',4,') !== false){
     }
   }else if(ISSET($_POST["borrarProvee"])){
     $IdProveedor=$_POST["IdProveedor"];
+    if(ObtenerCantidad("SELECT count(*) from WM_BarrProv where IdProveedor=$IdProveedor",$conn)>0){
+      terminarScript($conn,'..Error.. Este proveedor ya fue aseignado al menos a un barril y no puede ser eliminado');
+    }
     $query="DELETE from CM_Proveedor where IdProveedor=$IdProveedor";
     $resultCons =sqlsrv_query( $conn , $query);
     if($resultCons){

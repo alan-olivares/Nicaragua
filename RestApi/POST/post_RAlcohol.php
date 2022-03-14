@@ -28,6 +28,9 @@ if(strpos($permisos,',8,') !== false){
       }
 
     }else if($operacion==='eliminados'){
+      if(ObtenerCantidad("SELECT count(*) from PR_Orden P inner join PR_Op o on P.IdOrden=o.IdOrden inner join CM_Tanque T on o.IdTanque=T.IDTanque where T.Codigo='$codigo' and p.IdTipoOp=5",$conn)>0){
+        terminarScript($conn,'..Error.. Este tanque ya fue aseignado al menos a una orden de trabajo y no puede ser eliminado');
+      }
       $tsql = "DELETE from CM_Tanque where Codigo='$codigo'";
       $tsql2="DELETE from CM_TanqDetalle where IdTanque=(select IDTanque from CM_Tanque where Codigo='$codigo')";
       ejecutar($tsql,$tsql2,$conn,$operacion);
@@ -59,6 +62,9 @@ if(strpos($permisos,',8,') !== false){
       }
 
     }else if($operacion==='eliminados'){
+      if(ObtenerCantidad("SELECT count(*) from PR_Lote where IdAlcohol='$codigo'",$conn)>0){
+        terminarScript($conn,'..Error.. Este alcohol ya fue aseignado al menos a un lote y no puede ser eliminado');
+      }
       $tsql = "DELETE from CM_Alcohol where IdAlcohol='$codigo'";
       ejecutar2($tsql,$conn,$operacion);
     }

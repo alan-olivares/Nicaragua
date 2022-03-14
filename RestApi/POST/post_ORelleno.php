@@ -18,7 +18,7 @@ if(strpos($permisos,',6,') !== false){
       if($enviar===""){
         echo count($data).' órdenes registradas con exito';
       }else{
-        echo '..Error.. '.$contarErr.' órdenes tuvieron errores: '.$enviar.' No hay barriles suficientes para esta órden, alguna otra órden necesitará barriles con estas caracteristicas, intenta con un número de barriles disponibles o cancela las órdenes pendientes';
+        echo '..Error.. '.$contarErr.' órdenes tuvieron errores: '.$enviar.' No hay barriles suficientes para esta órden, alguna otra órden necesitará barriles con estas caracteristicas, intenta con un número de barriles disponibles o termina las órdenes pendientes';
       }
 
     }else{
@@ -62,7 +62,7 @@ if(strpos($permisos,',6,') !== false){
     }else{
       echo '..Error.. Esta orden ya se encuentra en proceso y no puede ser cancelada';
     }
-  }else if(ISSET($_POST['terminarOrdenId'])){//Cancelar orden
+  }else if(ISSET($_POST['terminarOrdenId'])){//Terminar orden
     $orden=$_POST['terminarOrdenId'];
     $check="SELECT Estatus from PR_Orden where IdOrden=$orden";
     $stmtCheck = sqlsrv_query( $conn , $check);

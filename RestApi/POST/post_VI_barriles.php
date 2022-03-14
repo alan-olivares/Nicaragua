@@ -16,7 +16,6 @@ if(strpos($permisos,',2,') !== false){
       sqlsrv_fetch($result);
       $IdAjuste= (int)sqlsrv_get_field($result, 0);
       if($result){//Si se guardo en ADM_Ajustes
-        $IdPallet=ObtenerCantidad("SELECT top 1 IdPallet from WM_Pallet where RackLocID=".$_POST['IdPallet']."  order by IdPallet desc",$conn);
         //Insertamos los valores actuales en ADM_logBAjuste
         $queryADM_logBAjuste1="INSERT into ADM_logBAjuste (IdAjuste,Op,IdPallet,IdLoteBarica,IdCodificacion,Consecutivo,IdEstado,Capacidad,FechaRevisado,FechaRelleno,NoTapa)
         (select '$IdAjuste',1, W.IdPallet,W.IdLoteBarrica,E.IdCodEdad,'$consecutivo',W.IdEstado,W.Capacidad,W.FechaRevisado,W.FechaRelleno,W.NoTapa
@@ -26,7 +25,7 @@ if(strpos($permisos,',2,') !== false){
           $queryADM_logBAjuste2="INSERT into ADM_logBAjuste (IdAjuste,Op,IdPallet,IdLoteBarica,IdCodificacion,Consecutivo,IdEstado,Capacidad,FechaRevisado,FechaRelleno,NoTapa)
           SELECT top 1 '$IdAjuste',2,IdPallet,IdLoteBarrica,IdCodificacion,'$consecutivo',1,Capacidad,Revisado,Relleno,NoTapa from adm_logbarrildet
            where Consecutivo='$consecutivo' and op=1 and idestado=1 order by logid desc";
-        }else if($_POST['restablecer']=='vacio'){//Esta pasando de vacío a lleno, por lo tanto generemos los datos de un barril vacío
+        }else if($_POST['restablecer']=='vacio'){//Esta pasando de lleno a vacio, por lo tanto generemos los datos de un barril vacío
           $queryADM_logBAjuste2="INSERT into ADM_logBAjuste (IdAjuste,Op,IdPallet,IdLoteBarica,IdCodificacion,Consecutivo,IdEstado,Capacidad,FechaRevisado,FechaRelleno,NoTapa)
           (select '$IdAjuste',2, '15894',0,E.IdCodEdad,'$consecutivo',2,0,null,null,null
           from WM_Barrica W left join CM_CodEdad E on W.IdCodificacion=E.IdCodEdad where Consecutivo='$consecutivo')";
@@ -104,7 +103,8 @@ if(strpos($permisos,',2,') !== false){
             $errores=$errores.$consecutivo." (solicitud pendiente), ";
             //Si está haciendo un cambio en un barril lleno hacia embarrilado o si esta haciendolo de un barril vacio hacia una posicion no de embarrilado
           }else if(($estado!=0 && strpos($bodega,'EMBARRILADO') === false) || ($estado==0 && strpos($bodega,'EMBARRILADO') !== false)){
-            terminarScript($conn,"..Error.. La ubicación a la que quieres mover este barril es erronea. Si el barril está vacío solo podrá estar en EMBARRILADO o si está lleno podrá estár solo fuera de EMBARRILADO");//Terminamos el script
+            $errores=$errores.$consecutivo." (ubicación invalida para barril ".($estado==0?"lleno":"vacío")."), ";
+            //terminarScript($conn,"..Error.. La ubicación a la que quieres mover este barril es erronea. Si el barril está vacío solo podrá estar en EMBARRILADO o si está lleno podrá estár solo fuera de EMBARRILADO");//Terminamos el script
           }else if($IdPallet==$IdPalletActual){
             $errores=$errores.$consecutivo." (ya pertenece a este pallet), ";
           }else{
@@ -143,7 +143,7 @@ if(strpos($permisos,',2,') !== false){
         if($errores===""){
           echo 'La tarea se realizo correctamente con ID de solicitud(es) '.substr($correctos, 0, -2);
         }else{
-          echo 'La tarea tuvo algunos errores donde los consecutivos '.substr($errores, 0, -2)." tuvieron problemas al realizarse";
+          echo '..Error.. La tarea tuvo algunos errores donde los consecutivos '.substr($errores, 0, -2)." tuvieron problemas al realizarse";
         }
       }
     }

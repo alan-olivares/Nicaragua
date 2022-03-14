@@ -327,19 +327,20 @@
              await mensajeError('Cambiar algún valor de litros')
              return;
            }
-           if($('#motivo').val()===''){
+           if($('#motivo').val()==='' || $('#motivo').val()==null){
              await mensajeError('El motivo no debe estar vacío');
              return;
            }
            if(elements.length>0){
              var cantidad=$('#litros').val()/lengthSelec();
-             var caso=($('#barriles thead tr').children('th:first').text()==='NoSerie'?'tanques hoover':'barriles');
+             var caso=($('#barriles thead tr').children('th:nth-child(2)').text()==='Capacidad'?'tanques hoover':'barriles');
+
              if(await mensajeOpcional('Se añadirá '+fomatoNumero(cantidad)+' litros a cada uno de estos '+lengthSelec()+' '+caso+' ¿Deseas continuar?')){
                empezar();
                try {
                  var consecutivos=[];
                  $( ".selected" ).each(function() {
-                   consecutivos.push($( this ).children('td:first').text());//Se obtienen los valores de la primera posicion creando un arreglo de consecutivos
+                   consecutivos.push(EtiquetaAConsecutivo($( this ).children('td:first').text()) );//Se obtienen los valores de la primera posicion creando un arreglo de consecutivos
                  });
                  var url='RestApi/POST/'+postApi;
                  var params='caso='+caso+'&motivo='+$('#motivo').val()+'&ids='+consecutivos+"&litros="+cantidad;

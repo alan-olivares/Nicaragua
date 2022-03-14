@@ -309,13 +309,13 @@
              var parsed =JSON.parse(result);
              var content="";
              if(valor==='1'){
-               content="<tr><th>ID Solicitud</th><th>Evento</th><th>Consecutivo</th><th>Fecha de solicitud</th><th>Solicitante</th><th>Fecha de rechazo</th><th>Rechazado por</th><th>Estado</th><th>Detalles</th></tr>";
+               content="<tr><th>ID Solicitud</th><th>Evento</th><th>Etiqueta</th><th>Fecha de solicitud</th><th>Solicitante</th><th>Fecha de rechazo</th><th>Rechazado por</th><th>Estado</th><th>Detalles</th></tr>";
                var transform = {"tag":"table", "children":[
                  {"tag":"tbody","children":[
                    {"tag":"tr","children":[
                      {"tag":"td","html":"${IdAjuste}"},
                      {"tag":"td","html":"${Evento}"},
-                     {"tag":"td","html":"${Consecutivo}"},
+                     {"tag":"td","html":"${Etiqueta}"},
                      {"tag":"td","html":"${FechaSolicitud}"},
                      {"tag":"td","html":"${Solicitante}"},
                      {"tag":"td","html":"${FechaAutorizacion}"},
@@ -326,13 +326,13 @@
                  ]}
                ]};
              }else if(valor==='2'){
-               content="<tr><th>ID Solicitud</th><th>Evento</th><th>NoSerie</th><th>Fecha de solicitud</th><th>Solicitante</th><th>Fecha de rechazo</th><th>Rechazado por</th><th>Estado</th><th>Detalles</th></tr>";
+               content="<tr><th>ID Solicitud</th><th>Evento</th><th>Etiqueta</th><th>Fecha de solicitud</th><th>Solicitante</th><th>Fecha de rechazo</th><th>Rechazado por</th><th>Estado</th><th>Detalles</th></tr>";
                var transform = {"tag":"table", "children":[
                  {"tag":"tbody","children":[
                    {"tag":"tr","children":[
                      {"tag":"td","html":"${IdAjuste}"},
                      {"tag":"td","html":"${Evento}"},
-                     {"tag":"td","html":"${NoSerie}"},
+                     {"tag":"td","html":"${Etiqueta}"},
                      {"tag":"td","html":"${FechaSolicitud}"},
                      {"tag":"td","html":"${Solicitante}"},
                      {"tag":"td","html":"${FechaAutorizacion}"},

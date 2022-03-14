@@ -318,10 +318,10 @@
              var content="";
              for (var i = 0; i < parsed.length; i++) {
                if((i%2)==0){
-                 content+= ' <div class="col-md-12 text-center  d-flex justify-content-center"> <div class="col-md-6 text-center"> <h5><label>  '+String(parsed[i].Descripcion)+':   </label> <input type="text" class="form-control campos b-r-xl" value="'+String(parsed[i].Val1)+'" name="'+String(parsed[i].IdConfig)+'" id="'+String(parsed[i].IdConfig)+'" disabled> </h5> </div>';
+                 content+= ' <div class="col-md-12 text-center  d-flex justify-content-center"> <div class="col-md-6 text-center"> <h5><label>  '+String(parsed[i].Descripcion)+':   </label> <input type="'+parsed[i].Val2+'" class="form-control campos b-r-xl" value="'+String(parsed[i].Val1)+'" name="'+String(parsed[i].IdConfig)+'" id="'+String(parsed[i].IdConfig)+'" disabled> </h5> </div>';
                }
                if((i%2)==1){
-                 content+='<div class="col-md-6 text-center" > <h5><label>  '+parsed[i].Descripcion+':   </label> <input type="text" class="form-control campos b-r-xl" value="'+String(parsed[i].Val1)+'" name="'+String(parsed[i].IdConfig)+'" id="'+String(parsed[i].IdConfig)+'" disabled> </h5> </div> </div>';
+                 content+='<div class="col-md-6 text-center" > <h5><label>  '+parsed[i].Descripcion+':   </label> <input type="'+parsed[i].Val2+'" class="form-control campos b-r-xl" value="'+String(parsed[i].Val1)+'" name="'+String(parsed[i].IdConfig)+'" id="'+String(parsed[i].IdConfig)+'" disabled> </h5> </div> </div>';
                }
                if(i==(parsed.length-1) && (i%2)==0){
                  content+='</div>';

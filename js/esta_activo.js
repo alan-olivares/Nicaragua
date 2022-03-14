@@ -7,6 +7,6 @@ if(localStorage['sesion_timer'] || ''!=''){
   //alert(fecha);
   if(fechaActual.getTime()<fecha.getTime()){
     localStorage['sesion_timer']=new Date();
-    window.location.replace("index.php");
+    window.location.replace(localStorage['paginaI']);
   }
 }

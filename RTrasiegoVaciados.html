@@ -309,9 +309,9 @@
                    capa=0;
                    Barriles=0;
                  }
-                 totalCapa+=parseInt(parsed[i]['Capacidad']);
-                 capa+=parseInt(parsed[i]['Capacidad']);
-                 capaAnnio+=parseInt(parsed[i]['Capacidad']);
+                 totalCapa+=parseFloat(parsed[i]['Capacidad']);
+                 capa+=parseFloat(parsed[i]['Capacidad']);
+                 capaAnnio+=parseFloat(parsed[i]['Capacidad']);
                  content+=obtenerTr(parsed[i]);
                  Barriles++;
                  BarrilesAnnio++;
@@ -397,7 +397,7 @@
            permisos(["6"]);
            //ObtenerDatos();
            $('#tablaPrincipal').hide();
-           document.getElementById('fecha').valueAsDate=new Date();
+           setDates(['#fecha'],'Y-m-d');
            cargaTanques();
          });
       </script>

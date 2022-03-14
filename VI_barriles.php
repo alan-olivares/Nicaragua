@@ -208,10 +208,13 @@
                <div class="col-md-2 text-center  d-flex justify-content-center " >
                  <button class="button5 btn btn-primary b-r-xl" onclick='$("#buscaConse").val("");dialogBuscar.dialog( "open" );'>Buscar barril</button>
                </div>
-               <div class="col-md-12 d-flex justify-content-center text-center ">
-                  <button class="button6 btn btn-primary animated b-r-xl" onclick="Agregar();" id="Agregar">Agregar</button>
-                  <button class="button6 btn btn-primary animated b-r-xl" onclick="Mover();" id="Mover">Mover</button>
-                  <button class="button6 btn btn-primary animated b-r-xl" onclick="Editar();" id="Editar">Editar</button>
+               <div class="col-md-12 text-center ">
+                 <h3 style="color:red;" id="checkUbi" hidden>Sin ubicación</h3>
+                 <div class="col-md-12 d-flex justify-content-center text-center ">
+                   <button class="button6 btn btn-primary animated b-r-xl" onclick="Agregar();" id="Agregar">Agregar</button>
+                   <button class="button6 btn btn-primary animated b-r-xl" onclick="Mover();" id="Mover">Mover</button>
+                   <button class="button6 btn btn-primary animated b-r-xl" onclick="Editar();" id="Editar">Editar</button>
+                 </div>
                </div>
                <div class="col-md-12 d-flex justify-content-center text-center" id="table-wrapper">
                   <div class="table-responsive col-md-12 centro scrollingtable animated" id="scrollingtable">
@@ -235,7 +238,8 @@
                      </table>
                   </div>
                </div>
-               <div class="sk-spinner sk-spinner-three-bounce">
+               <h3 id="totalB"></h3>
+               <div class="sk-spinner sk-spinner-three-bounce" style="margin-bottom:40px;">
                   <div class="sk-bounce1"></div>
                   <div class="sk-bounce2"></div>
                   <div class="sk-bounce3"></div>
@@ -345,6 +349,10 @@
       <div id="moverDialog" title="Mover barriles" class="animated">
          <div>
             <div class="col-md-12 text-center  d-flex justify-content-center" >
+              <h5><label>  Planta:  </label>
+                 <select class="form-control b-r-xl" id="plantaM" onchange="getInfo(this,'bodegas','Nombre','AlmacenId','bodegaM');">
+                 </select>
+              </h5>
                <h5><label>  Bodega:  </label>
                   <select class="form-control b-r-xl" id="bodegaM" onchange="getInfo(this,'bodega','Costados','ID','CostadoM');">
                   </select>
@@ -364,12 +372,15 @@
                   </select>
                </h5>
                <h5><label>  Niveles:   </label>
-                  <select class="form-control b-r-xl" name="NivelesM" id="NivelesM" onchange="">
+                  <select class="form-control b-r-xl" name="NivelesM" id="NivelesM" onchange="getSpots(this)">
                   </select>
                </h5>
             </div>
-            <div class="col-md-12 text-center  d-flex justify-content-center" >
-               <div class="col-md-10 text-center">
+            <div class="col-md-12 text-center" >
+              <div class="col-md-12 text-center">
+                 <h5 id="avisoM" hidden>Aviso</h5>
+              </div>
+               <div class="col-md-12 text-center">
                   <h5>
                      <label>  Motivo:   </label>
                      <select class="form-control b-r-xl" required="true" id="MotivoM" >
@@ -391,7 +402,7 @@
             </div>
             <div class="col-md-12 text-center  d-flex justify-content-center" >
                <button class="button2 btn btn-primary cerrar b-r-xl">Cancelar</button>
-               <button class="button2 btn btn-primary b-r-xl" onclick="GuardarMover();">Guardar</button>
+               <button class="button2 btn btn-primary b-r-xl" id="guardarMover" onclick="GuardarMover();" disabled>Guardar</button>
             </div>
          </div>
       </div>
@@ -403,7 +414,8 @@
                </h5>
             </div>
             <div class="col-md-12 text-center  d-flex justify-content-center" >
-               <button class="button2 btn btn-primary b-r-xl" onclick="BuscaConse();">Buscar</button>
+               <button class="button2 btn btn-primary b-r-xl" onclick="BuscaConse(1);">Buscar</button>
+               <button class="button2 btn btn-primary b-r-xl" onclick="BuscaConse(2);">B. externa</button>
             </div>
          </div>
       </div>
@@ -557,5 +569,6 @@
       <!-- Page-Level Scripts -->
       <script src="js/funciones_generales.js"></script>
       <script src="js/funciones_VI_barriles.js"></script>
+      <script src="js/abrir_ventana.js"></script>
    </body>
 </html>

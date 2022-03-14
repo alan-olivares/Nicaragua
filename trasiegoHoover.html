@@ -398,8 +398,7 @@
          $(document).ready(function(){
            permisos(["10"]);
            limpiarDatos();
-           document.getElementById("date1").valueAsDate= new Date();
-           document.getElementById("date2").valueAsDate= new Date();
+           setDates(['#date1','#date2'],'Y-m-d');
 
          });
 

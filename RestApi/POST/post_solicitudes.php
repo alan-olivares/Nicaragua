@@ -16,7 +16,7 @@ if($tipo==='1'){//Solicitudes de barriles
         }
       }else if($estado=='2'){
         //Actualiza WM_Barrica
-        $queryCons="UPDATE B set B.IdPallet=adm.IdPallet ,B.IdLoteBarrica=adm.IdLoteBarica,B.IdCodificacion=adm.IdCodificacion,
+        $queryCons="UPDATE B set B.IdPallet=adm.IdPallet ,B.IdLoteBarrica=adm.IdLoteBarica,B.IdCodificacion=(case when adm.IdCodificacion is not null then adm.IdCodificacion else 0 end),
         B.IdEstado=adm.IdEstado,B.Capacidad=adm.Capacidad,B.FechaRevisado=adm.FechaRevisado, B.FechaRelleno=adm.FechaRelleno,B.NoTapa=adm.NoTapa
         FROM WM_Barrica B INNER JOIN ADM_logBAjuste adm ON adm.Consecutivo = B.Consecutivo where adm.Op=2 and adm.IdAjuste='$IdSolicitud'";
         $resultCons = sqlsrv_query( $conn , $queryCons);

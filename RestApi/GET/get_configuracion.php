@@ -2,7 +2,7 @@
 include '../general_connection.php';
 if(strpos($permisos,',4,') !== false){
   if(ISSET($_GET['configuracion'])){
-    $configuracion ="SELECT IdConfig,Descripcion,Val1 from CM_Config";
+    $configuracion ="SELECT IdConfig,Descripcion,Val1,Val2 from CM_Config";
     imprimir($configuracion,$conn);
   }else if(ISSET($_GET['motivo'])){
     $configuracion ="SELECT IdRazon,Descripcion from ADM_Razones where IdCaso=".$_GET['motivo'];

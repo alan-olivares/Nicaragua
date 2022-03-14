@@ -67,6 +67,9 @@ if(strpos($permisos,',9,') !== false){
         $consecutivo=$campo['Consecutivo'];
         $orden=$campo['Orden'];
         $litros=$campo['Litros'];
+        $capacidad=$campo['Capacidad'];
+        $tipo=$campo['Tipo'];
+        $tipo=$tipo==='Relleno'?'2':($tipo==='Donador'?'4':($tipo==='Resto'?'5':'-1'));
         $queryCons="SELECT COUNT(*) from ADM_Ajustes where IdBarrica=(select IdBarrica from WM_Barrica where Consecutivo='$consecutivo') AND Estado=1";
         $queryCons2="SELECT COUNT(*) from PR_RegBarril P inner join PR_Orden O on P.IdOrden=O.IdOrden  where P.IdOrden='$orden' and P.Consecutivo='$consecutivo' and O.Fecha between DATEADD(day,-1, GETDATE()) and GETDATE()";
         if(ObtenerCantidad($queryCons,$conn)!=0){//Tiene solicitudes pendientes
@@ -76,8 +79,8 @@ if(strpos($permisos,',9,') !== false){
         }else{
           $Cod=ObtenerCantidad("SELECT top 1 IdCodEdad from PR_RegBarril  where Consecutivo='$consecutivo' and IdOrden='$orden' order by IdRegBarril desc",$conn);
           $edad=ObtenerCantidad("SELECT top 1 IdEdad from CM_CodEdad  where IdCodEdad='$Cod'",$conn);
-          if(saveDataPrRegBarril($consecutivo,$orden,$litros,$uso,$edad,$conn)){
-            saveData($consecutivo,$usuario,$motivo,$litros,'Ajuste relleno',"(select top 1 IdCodEdad from CM_CodEdad where IdCodificicacion='$uso' and IdEdad='$edad')",$conn);
+          if(saveDataPrRegBarril($consecutivo,$orden,$litros,$uso,$edad,$tipo,$conn)){
+            saveData($consecutivo,$usuario,$motivo,$capacidad,'Ajuste relleno',"(select isnull((select top 1 IdCodEdad from CM_CodEdad where IdCodificicacion='$uso' and IdEdad='$edad'),0))",$conn);
           }else{
             $errores=$errores.$consecutivo." (No perimitió actualizar el registro), ";
           }
@@ -103,8 +106,8 @@ if(strpos($permisos,',9,') !== false){
         }else{
           $Cod=ObtenerCantidad("SELECT top 1 IdCodificacion from WM_Barrica  where Consecutivo='$consecutivo'",$conn);
           $edad=ObtenerCantidad("SELECT top 1 IdEdad from CM_CodEdad  where IdCodEdad='$Cod'",$conn);
-          if(saveDataPrRegBarril($consecutivo,$orden,$litros,$uso,$edad,$conn)){//Si se pudo actualizar el registro
-            saveData($consecutivo,$usuario,$motivo,$litros,'Ajuste llenado',"(select top 1 IdCodEdad from CM_CodEdad where IdCodificicacion='$uso' and IdEdad='$edad')",$conn);
+          if(saveDataPrRegBarril($consecutivo,$orden,$litros,$uso,$edad,'1',$conn)){//Si se pudo actualizar el registro
+            saveData($consecutivo,$usuario,$motivo,$litros,'Ajuste llenado',"(select isnull((select top 1 IdCodEdad from CM_CodEdad where IdCodificicacion='$uso' and IdEdad='$edad'),0))",$conn);
           }else{
             $errores=$errores.$consecutivo." (No perimitió actualizar el registro), ";
           }
@@ -118,7 +121,7 @@ if(strpos($permisos,',9,') !== false){
   if($errores===""){
     echo 'La tarea se realizo correctamente con ID de solicitud(es) '.substr($correctos, 0, -2);
   }else{
-    echo 'La tarea tuvo algunos errores donde los '.$caso." ".substr($errores, 0, -2)." tuvieron problemas al realizarse";
+    echo '..Error.. La tarea tuvo algunos errores donde los '.$caso." ".substr($errores, 0, -2)." tuvieron problemas al realizarse";
   }
 }else{
   echo '..Error.. No tienes permiso para solicitar cambios';
@@ -155,8 +158,8 @@ function saveData($consecutivo,$usuario,$motivo,$litros,$caso,$IdCodificacion,$c
     $errores=$errores.$consecutivo." (desconocido 1), ";
   }
 }
-function saveDataPrRegBarril($consecutivo,$Orden,$litros,$uso,$edad,$conn){
-  $query="UPDATE PR_RegBarril set IdCodEdad=(select top 1 IdCodEdad from CM_CodEdad where IdCodificicacion='$uso' and IdEdad='$edad'),Capacidad='$litros' where IdOrden='$Orden' and Consecutivo='$consecutivo'";
+function saveDataPrRegBarril($consecutivo,$Orden,$litros,$uso,$edad,$tipo,$conn){
+  $query="UPDATE PR_RegBarril set IdCodEdad=(select isnull((select top 1 IdCodEdad from CM_CodEdad where IdCodificicacion='$uso' and IdEdad='$edad'),0)),Capacidad='$litros' where IdOrden='$Orden' and Consecutivo='$consecutivo' and TipoReg='$tipo'";
   $result = sqlsrv_query( $conn , $query);
   return $result;
 }

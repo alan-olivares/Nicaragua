@@ -3,7 +3,8 @@ include '../general_connection.php';
 if(strpos($permisos,',6,') !== false){
   if(ISSET($_GET['tipo'])){
     if($_GET['tipo']==='1'){
-      $barriles = "SELECT  B.Consecutivo,Al.Descripcion as Alcohol,Datepart(YYYY,L.Recepcion) as Año, C.Codigo as Uso,CONVERT(varchar(10),B.FechaRelleno, 120) as Relleno, B.Capacidad,
+      $barriles = "SELECT '01' + '01' +(right('000000' + convert(varChar(6),B.Consecutivo ),6)) as Etiqueta,Al.Descripcion as Alcohol,
+      Datepart(YYYY,L.Recepcion) as Año, C.Codigo as Uso,CONVERT(varchar(10),B.FechaRelleno, 120) as Relleno, B.Capacidad,
       CASE WHEN Am.Nombre is null THEN 'Barril sin ubicación' ELSE Am.Nombre+', '+ REPLACE(Ar.Nombre, 'COSTADO', 'Cos: ')+', '+REPLACE(Se.Nombre, 'FILA', 'F: ')+','+ REPLACE(Po.Nombre, 'TORRE', 'T: ') +','+ REPLACE(N.Nombre, 'NIVEL', 'N: ') END AS Ubicacion
       from WM_Barrica B inner Join WM_Pallet P on P.Idpallet = B.IdPallet
       left Join CM_CodEdad CE on CE.IdCodEdad = B.IdCodificacion left Join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
@@ -28,7 +29,7 @@ if(strpos($permisos,',6,') !== false){
 
       imprimir($barriles,$conn);
     }else if($_GET['tipo']==='2'){
-      $barriles = "SELECT  T.NoSerie,T.Capacidad,T.Litros,CONVERT(varchar(10),T.FechaLLenado,120) as 'Fecha Llenado',
+      $barriles = "SELECT '01' + '01' +(right('000000' + convert(varChar(6),T.NoSerie ),6)) as Etiqueta,T.Capacidad,T.Litros,CONVERT(varchar(10),T.FechaLLenado,120) as 'Fecha Llenado',
       CASE WHEN Am.Nombre is null THEN 'Tanque sin ubicación' ELSE Am.Nombre+', '+ REPLACE(Ar.Nombre, 'COSTADO', 'Cos: ')+', '+REPLACE(Se.Nombre, 'FILA', 'F: ')+','+ REPLACE(Po.Nombre, 'TORRE', 'T: ') +','+ REPLACE(N.Nombre, 'NIVEL', 'N: ') END AS Ubicación
        from WM_Tanques T left Join WM_Pallet P on P.Idpallet = T.IdPallet left join WM_RackLoc R on P.RackLocID=R.RackLocID
       left Join AA_Nivel N on R.NivelID=N.NivelID left Join AA_Posicion Po on N.PosicionId=Po.PosicionID
@@ -42,14 +43,14 @@ if(strpos($permisos,',6,') !== false){
   }else if(ISSET($_GET['relleno'])){//Tabla principal de ajustesRelleno
     $fecha=$_GET['fecha'];
     validaFecha($fecha,$conn);
-    $consulta = "SELECT	O.IdOrden as Orden,RB.Consecutivo,Al.Descripcion as Alcohol,C.Codigo as Uso,RB.Capacidad,
-    Case when Od.Estatus = 1 then 'Donador' When Od.Estatus = 2 then 'Relleno' when Od.Estatus = 3 then 'Resto' end Estatus
-    from PR_Orden O inner Join PR_OP OP on OP.IdOrden = O.IdOrden inner Join PR_OperaDetail OD on Od.IdOperacion = Op.IdOperacion
-    inner Join CM_Alcohol Al on Al.IdAlcohol = OP.IdAlcohol left Join PR_RegTanque RT on RT.IdOrden = O.IdOrden
-    left Join CM_Tanque T on T.IDTanque = RT.IdTanque inner Join PR_RegBarril RB on RB.IdOrden = O.IdOrden and RB.IdBarrica = OD.IdBarrica
-    left Join WM_LoteBarrica LB ON RB.IdloteBarrica=LB.IdLoteBarica left Join  PR_Lote L ON L.IdLote=LB.IdLote
-    inner Join CM_CodEdad CE on CE.IdCodEdad = RB.IdCodEdad inner Join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
-    Where O.IdTipoOp = 3 and L.Recepcion is not null and  Od.Estatus >0 and convert(varchar(10),O.Fecha,120)='$fecha' ";
+    $consulta = "SELECT Distinct O.IdOrden as Orden, '01' + '01' +(right('000000' + convert(varChar(6),R.Consecutivo ),6)) as Etiqueta,Al.Descripcion as Alcohol,C.Codigo as Uso,B.Capacidad,R.Capacidad as Litros,
+    Case When R.TipoReg = 2 then 'Relleno' When R.TipoReg = 4 then 'Donador' when R.TipoReg = 5 then 'Resto' end Estatus
+    from PR_RegBarril R inner join PR_Orden O on R.IdOrden=O.IdOrden inner join WM_Barrica B on R.IdBarrica=B.IdBarrica
+    inner Join WM_Pallet P on P.Idpallet = B.IdPallet left Join CM_CodEdad CE on CE.IdCodEdad = B.IdCodificacion
+    left Join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion left Join CM_Edad E on E.IdEdad = CE.IdEdad
+    left Join WM_LoteBarrica LB on Lb.IdLoteBarica = B.IdLoteBarrica left Join PR_Lote L on L.IdLote = LB.IdLote
+    left Join CM_Alcohol Al on Al.IdAlcohol = L.IdAlcohol left Join CM_Estado ES on Es.IdEstado = B.IdEstado
+    where convert(varchar(10),O.Fecha,120)='$fecha' and O.IdTipoOp = 3 ";
     if($_GET['alcohol']!==''){
       $consulta=$consulta." and Al.IdAlcohol=".$_GET['alcohol'];
     }
@@ -60,12 +61,12 @@ if(strpos($permisos,',6,') !== false){
   }else if(ISSET($_GET['llenado'])){//Tabla principal de ajustesRelleno
     $fecha=$_GET['fecha'];
     validaFecha($fecha,$conn);
-    $consulta = "SELECT LB.IdLote as Lote,B.Consecutivo,	Al.Descripcion as Alcohol,	C.Codigo as Uso,	B.Capacidad ,	T.Codigo as Tanque
-    from PR_RegBarril B inner Join WM_LoteBarrica LB on LB.IdLoteBarica = B.IdLoteBarrica
-    inner join WM_Reg_Rep_llen Reg on Reg.IdBarrica=B.IdBarrica left Join PR_Lote L on L.Idlote = LB.IdLote
-    inner Join CM_CodEdad CE on CE.IdCodEdad = B.IdCodEdad inner Join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
-    inner Join WM_RecDetail RC on RC.IdLote = L.Idlote inner Join CM_Tanque T on T.Idtanque = RC.IdTanque
-    inner Join CM_Alcohol Al on Al.IdAlcohol = L.IdAlcohol Where B.TipoReg=1 and convert(varchar(10),Reg.Fecha,120)='$fecha' ";
+    $consulta = "SELECT Distinct LB.IdLote as Lote,'01' + '01' +(right('000000' + convert(varChar(6),B.Consecutivo ),6)) as Etiqueta,
+    Al.Descripcion as Alcohol,	C.Codigo as Uso,	B.Capacidad ,	T.Codigo as Tanque from PR_Regbarril B inner Join WM_LoteBarrica LB on LB.IdLoteBarica = B.IdLoteBarrica
+		left Join PR_Lote L on L.Idlote = LB.IdLote inner Join WM_RecDetail RC on RC.IdLote = L.Idlote
+    inner Join CM_Tanque T on T.Idtanque = RC.IdTanque inner Join CM_Alcohol Al on Al.IdAlcohol = L.IdAlcohol
+    inner Join CM_CodEdad CE on CE.IdCodEdad = B.IdCodedad inner Join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
+    Where B.TipoReg=1 AND convert(varchar(10),LB.Fecha,120)='$fecha' ";
     if($_GET['alcohol']!==''){
       $consulta=$consulta." and Al.IdAlcohol=".$_GET['alcohol'];
     }

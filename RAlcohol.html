@@ -827,16 +827,15 @@
              mensajeError(e);
            }
          }
-
          $(document).ready(function(){
            permisos(["8"]);
            $('#tablaPrincipal').hide();
            $('#agregarEn').hide();
            obtenerDestinos();
-           var fecha=new Date();
-           document.getElementById('fecha').valueAsDate=fecha;
-           document.getElementById('hora').value=(fecha.getHours()<10?"0"+fecha.getHours():fecha.getHours())+":"+(fecha.getMinutes()<10?"0"+fecha.getMinutes():fecha.getMinutes());
-           document.getElementById('anno').value=fecha.getFullYear();
+           setDates(['#fecha'],'Y-m-d');
+           //document.getElementById('hora').value=(fecha.getHours()<10?"0"+fecha.getHours():fecha.getHours())+":"+(fecha.getMinutes()<10?"0"+fecha.getMinutes():fecha.getMinutes());
+           setDates(['#anno'],'Y');
+           setDates(['#hora'],'H:i');
            toastr.options = {
              "closeButton": true,
              "progressBar": true,

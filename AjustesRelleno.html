@@ -302,7 +302,7 @@
 
          async function solicitarCambios(estado){
            var elements = document.getElementsByClassName("selected");
-           if($('#motivo').val()===''){
+           if($('#motivo').val()==='' || $('#motivo').val()==null){
              await mensajeError('El motivo no debe estar vacío');
              return;
            }
@@ -313,9 +313,11 @@
                  var consecutivos=[];
                  $( ".selected" ).each(function() {
                    var orden=$( this ).children('td:first').text();
-                   var consecutivo=$( this ).children('td:nth-child(2)').text();
-                   var litros=$( this ).children('td:nth-child(5)').find("input").val();
-                   consecutivos.push({Orden: orden, Consecutivo: consecutivo, Litros: litros});//Se obtienen los valores de la primera posicion creando un arreglo de consecutivos
+                   var consecutivo=EtiquetaAConsecutivo($( this ).children('td:nth-child(2)').text());
+                   var tipo=$( this ).children('td:nth-child(7)').text();
+                   var capacidad=$( this ).children('td:nth-child(5)').find("input").val();
+                   var litros=$( this ).children('td:nth-child(6)').find("input").val();
+                   consecutivos.push({Orden: orden, Consecutivo: consecutivo, Capacidad: capacidad, Litros: litros,Tipo: tipo});//Se obtienen los valores de la primera posicion creando un arreglo de consecutivos
                  });
                  var url='RestApi/POST/'+postApi;
                  var params='motivo='+$('#motivo').val()+'&jsonRelleno='+JSON.stringify(consecutivos)+"&uso="+$('#uso2').val();
@@ -326,7 +328,9 @@
                  ObtenerNotificaciones();
                  CargarTabla();
                }catch(error){
-                 alert(error)
+                 setTimeout(function() {
+                   mensajeError(error)
+                 }, 500);
                }finally{
                  parar();
                }
@@ -403,17 +407,19 @@
              mensajeError(e);
            }
          }
-
-         function toggleInput(row){
+         function checkToggleInput(row,td){
            if(row.hasClass( "selected" )){
-             td = row.find("td:nth-child(5)");
              td.wrapInner('<input class="form-control" type="number" value = ' + td.text() + '></input>');
            }else{
-             td = row.find("td:nth-child(5)");
              input=td.find("input");
              td.text(input.val());
              input.remove();
            }
+         }
+
+         function toggleInput(row){
+           checkToggleInput(row,row.find("td:nth-child(5)"));
+           checkToggleInput(row,row.find("td:nth-child(6)"));
          }
 
          $(document).ready(function(){
@@ -429,7 +435,7 @@
 
            $('#barriles tbody').on( 'click', 'tr', function (e) {
              var row = $(this).closest('tr');
-             if ($(e.target).closest('td').is(':nth-child(5)') && row.find("td:nth-child(5)").find("input").val()) {
+             if (($(e.target).closest('td').is(':nth-child(5)') && row.find("td:nth-child(5)").find("input").val()) || ($(e.target).closest('td').is(':nth-child(6)') && row.find("td:nth-child(6)").find("input").val())) {
                return;
              }
              row.toggleClass('selected');

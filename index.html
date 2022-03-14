@@ -413,11 +413,15 @@
           date.setDate(date.getDate() + days);
           return date;
         }
+        async function iniciaProcces(){
+          await setDates(['#date1'],'Y-m-d');
+          crearThread();
+        }
 
          $(document).ready(function() {
            permisos(["11"]);
-           document.getElementById("date1").valueAsDate= new Date();
-           crearThread();
+           //document.getElementById("date1").valueAsDate= new Date();
+           iniciaProcces();
            setTimeout(function() {
                toastr.options = {
                    closeButton: true,

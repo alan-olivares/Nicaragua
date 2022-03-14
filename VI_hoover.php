@@ -200,7 +200,7 @@
                         </select>
                      </h5>
                      <h5><label>  Niveles:   </label>
-                        <select class="form-control b-r-xl" name="Niveles" id="Niveles" onchange="CargarTabla(this);">
+                        <select class="form-control b-r-xl" name="Niveles" id="Niveles" onchange="CargarTabla(this.value,0);">
                         </select>
                      </h5>
                   </div>
@@ -208,10 +208,13 @@
                <div class="col-md-2 text-center  d-flex justify-content-center " >
                  <button class="button5 btn btn-primary b-r-xl" onclick='$("#buscaConse").val("");dialogBuscar.dialog( "open" );'>Buscar tanque</button>
                </div>
-               <div class="col-md-12 d-flex justify-content-center text-center ">
-                  <button class="button6 btn btn-primary animated b-r-xl" onclick="Agregar();" id="Agregar">Agregar</button>
-                  <button class="button6 btn btn-primary animated b-r-xl" onclick="Mover();" id="Mover">Mover</button>
-                  <button class="button6 btn btn-primary animated b-r-xl" onclick="Editar();" id="Editar">Editar</button>
+               <div class="col-md-12 text-center ">
+                 <h3 style="color:red;" id="checkUbi" hidden>Sin ubicación</h3>
+                 <div class="col-md-12 d-flex justify-content-center text-center ">
+                   <button class="button6 btn btn-primary animated b-r-xl" onclick="Agregar();" id="Agregar">Agregar</button>
+                   <button class="button6 btn btn-primary animated b-r-xl" onclick="Mover();" id="Mover">Mover</button>
+                   <button class="button6 btn btn-primary animated b-r-xl" onclick="Editar();" id="Editar">Editar</button>
+                 </div>
                </div>
                <div class="col-md-12 d-flex justify-content-center table-responsive text-center " id="table-wrapper">
                   <div class="table-responsive col-md-12 centro scrollingtable animated" id="scrollingtable">
@@ -296,6 +299,10 @@
       <div id="moverDialog" title="Mover tanque" class="animated">
          <div>
             <div class="col-md-12 text-center  d-flex justify-content-center" >
+              <h5><label>  Planta:  </label>
+                 <select class="form-control b-r-xl" id="plantaM" onchange="getInfo(this,'bodegas','Nombre','AlmacenId','bodegaM');">
+                 </select>
+              </h5>
                <h5><label>  Bodega:  </label>
                   <select class="form-control b-r-xl" id="bodegaM" onchange="getInfo(this,'bodega','Costados','ID','CostadoM');">
                   </select>
@@ -315,12 +322,15 @@
                   </select>
                </h5>
                <h5><label>  Niveles:   </label>
-                  <select class="form-control b-r-xl" name="NivelesM" id="NivelesM" onchange="">
+                  <select class="form-control b-r-xl" name="NivelesM" id="NivelesM"  onchange="getSpots(this)">
                   </select>
                </h5>
             </div>
-            <div class="col-md-12 text-center  d-flex justify-content-center" >
-               <div class="col-md-10 text-center">
+            <div class="col-md-12 text-center" >
+              <div class="col-md-12 text-center">
+                 <h5 id="avisoM" hidden>Aviso</h5>
+              </div>
+               <div class="col-md-12 text-center">
                   <h5>
                      <label>  Motivo:   </label>
                      <select class="form-control b-r-xl" required="true" id="MotivoM" >
@@ -342,7 +352,7 @@
             </div>
             <div class="col-md-12 text-center  d-flex justify-content-center" >
                <button class="button2 btn btn-primary cerrar b-r-xl">Cancelar</button>
-               <button class="button2 btn btn-primary b-r-xl" onclick="GuardarMover();">Guardar</button>
+               <button class="button2 btn btn-primary b-r-xl" id="guardarMover" onclick="GuardarMover();">Guardar</button>
             </div>
          </div>
       </div>

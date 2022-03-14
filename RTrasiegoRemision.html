@@ -562,7 +562,7 @@
          $(document).ready(function(){
            permisos(["6"]);
            toggleCampos(true);
-           document.getElementById('fecha').valueAsDate=new Date();
+           setDates(['#fecha'],'Y-m-d');
            //$('#fechaD').text($('#fecha').val());
            cargaTanques();
          });

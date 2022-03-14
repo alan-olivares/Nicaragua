@@ -160,9 +160,9 @@ async function llenarRTrasiegoVaciados(archivo,fecha,tanque,res,tipo,id){
               pos++;
               capa=Barriles=0;
             }
-            totalCapa+=parseInt(parsed[i]['Capacidad']);
-            capa+=parseInt(parsed[i]['Capacidad']);
-            capaAnnio+=parseInt(parsed[i]['Capacidad']);
+            totalCapa+=parseFloat(parsed[i]['Capacidad']);
+            capa+=parseFloat(parsed[i]['Capacidad']);
+            capaAnnio+=parseFloat(parsed[i]['Capacidad']);
             nuevoRowVaciados(workbook.sheet(hoja),pos,parsed[i])
             Barriles++;
             BarrilesAnnio++;
@@ -219,7 +219,7 @@ function llenarRTrasiegoRemision(archivo,fecha,tanque,res,tipo,id){
           workbook.sheet(hoja).cell("C131").value('FCV: '+parsed[0].fcv);
           for (var i = 0; i < parsed.length; i++) {
             workbook.sheet(hoja).cell("E"+(i+18)).value([[parsed[i].Tanque,0,parsed[i].Codigo,parsed[i].Año]]);
-            workbook.sheet(hoja).cell("F"+(i+18)).value(parseFloat((parsed[i].Litros!=='' ||parsed[i].Litros!==null)?parsed[i].Litros:0));
+            workbook.sheet(hoja).cell("F"+(i+18)).value(parseFloat((parsed[i].Litros!=='' ||parsed[i].Litros!==null)?parsed[i].Litros:0)).style({"numberFormat": "#,##0.00"});
           }
           borrarFilas((parsed.length+18),119,workbook.sheet(hoja));
           await exportar(archivo,id,tipo,workbook,res);
@@ -925,6 +925,12 @@ function llenarTanquesPlantel(archivo,res,tipo,id){
 }
 
 //Termina reporte en tanques_plantel.html
+var intVal = function ( i ) {
+    return typeof i === 'string' ?
+        i.replace(/[\$,]/g, '')*1 :
+        typeof i === 'number' ?
+            i : 0;
+};
 //Empieza reporte en llehandos.html
 function llenarBarrilesLlenados(archivo,res,fecha,fecha2,tipo,id){
   XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
@@ -936,13 +942,19 @@ function llenarBarrilesLlenados(archivo,res,fecha,fecha2,tipo,id){
         var url=servidor+'RestApi/GET/get_Reportes.php?llenados=true&fecha1='+fecha+'&fecha2='+fecha2;
         var result = await conexion(url);
         var parsed =JSON.parse(result);
+        var totalB=0,totalLts=0;
         workbook.sheet(hoja).cell("E8").value([['Fecha','Fecha lote','Alcohol','Tanque','Uso','Barriles','Litros']]).style({"fill": "F5F5F6","horizontalAlignment":"center"});
         for (var i = 0; i < parsed.length; i++) {
           workbook.sheet(hoja).cell("E"+(i+9)).value([[parsed[i].Fecha,parsed[i].FechaLote,parsed[i].Alcohol,parsed[i].Tanque,parsed[i].Uso]]).style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
-          workbook.sheet(hoja).cell("J"+(i+9)).value(parseInt(parsed[i].T_Barril)).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0"});
-          workbook.sheet(hoja).cell("K"+(i+9)).value(parsed[i].T_Lts).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0.00","horizontalAlignment":"right"});
+          workbook.sheet(hoja).cell("J"+(i+9)).value(intVal(parsed[i].T_Barril)).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0"});
+          workbook.sheet(hoja).cell("K"+(i+9)).value(intVal(parsed[i].T_Lts)).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0.00","horizontalAlignment":"right"});
+          totalB+=intVal(parsed[i].T_Barril);
+          totalLts+=intVal(parsed[i].T_Lts);
         }
-        var inicio=parsed.length+12;
+        workbook.sheet(hoja).cell("I"+(parsed.length+9)).value('Totales:').style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
+        workbook.sheet(hoja).cell("J"+(parsed.length+9)).value(totalB).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0","horizontalAlignment":"right"});
+        workbook.sheet(hoja).cell("K"+(parsed.length+9)).value(totalLts).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0.00","horizontalAlignment":"right"});
+        var inicio=parsed.length+13;
         url=servidor+'RestApi/GET/get_Reportes.php?llenadosT2=true&fecha1='+fecha+'&fecha2='+fecha2;
         result = await conexion(url);
         parsed =JSON.parse(result);
@@ -977,13 +989,19 @@ function llenarBarrilesReLlenados(archivo,res,fecha,fecha2,tipo,id){
         var url=servidor+'RestApi/GET/get_Reportes.php?rellenados=true&fecha1='+fecha+'&fecha2='+fecha2;
         var result = await conexion(url);
         var parsed =JSON.parse(result);
+        var totalB=0,totalLts=0;
         workbook.sheet(hoja).cell("G8").value([['N° Orden','Fecha ODT','Alcohol','Año Alcohol','Uso','Tipo','Total','Total litros']]).style({"fill": "F5F5F6","horizontalAlignment":"center"});
         for (var i = 0; i < parsed.length; i++) {
           workbook.sheet(hoja).cell("G"+(i+9)).value([[parsed[i].NoOrden,parsed[i].FechaOdT,parsed[i].Alcohol,parsed[i].Fecha_Ll,parsed[i].Uso,parsed[i].Estatus]]).style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
-          workbook.sheet(hoja).cell("M"+(i+9)).value(parseInt(parsed[i].Total)).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0"});
-          workbook.sheet(hoja).cell("N"+(i+9)).value(parseFloat(parsed[i].totalLts)).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0.00"});
+          workbook.sheet(hoja).cell("M"+(i+9)).value(intVal(parsed[i].Total)).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0"});
+          workbook.sheet(hoja).cell("N"+(i+9)).value(intVal(parsed[i].totalLts)).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0.00"});
+          totalB+=intVal(parsed[i].Total);
+          totalLts+=intVal(parsed[i].totalLts);
         }
-        var inicio=parsed.length+12;
+        workbook.sheet(hoja).cell("L"+(parsed.length+9)).value('Totales:').style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
+        workbook.sheet(hoja).cell("M"+(parsed.length+9)).value(totalB).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0","horizontalAlignment":"right"});
+        workbook.sheet(hoja).cell("N"+(parsed.length+9)).value(totalLts).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0.00","horizontalAlignment":"right"});
+        var inicio=parsed.length+13;
         url=servidor+'RestApi/GET/get_Reportes.php?rellenadosT2=true&fecha1='+fecha+'&fecha2='+fecha2;
         result = await conexion(url);
         parsed =JSON.parse(result);
@@ -992,9 +1010,9 @@ function llenarBarrilesReLlenados(archivo,res,fecha,fecha2,tipo,id){
         workbook.sheet(hoja).cell("E"+(inicio-1)).value([['Fecha','N° Orden','Año','Alcohol','Tipo','Uso','Etiqueta','Litros','Merma','Último relleno','Relleno actual']]).style({border:true,"borderColor": "000000","horizontalAlignment":"center"});
         for (var i = 0; i < parsed.length; i++) {
           workbook.sheet(hoja).cell("E"+(i+inicio)).value([[parsed[i].Fecha,parsed[i].NoOrden,parsed[i]['Año'],parsed[i].Alcohol,parsed[i].Tipo,parsed[i].Uso,parsed[i].Etiqueta,0,0,parsed[i]['Ultimo relleno'],parsed[i]['Relleno Actual']]]).style({"horizontalAlignment":"center"});
-          workbook.sheet(hoja).cell("L"+(i+inicio)).value([[parseFloat(parsed[i].Litros),parseFloat(parsed[i].Merma)]]).style({"numberFormat": "#,##0.00","horizontalAlignment":"right"});
-          totalLitros+=parseFloat(parsed[i].Litros);
-          totalMerma+=parseFloat(parsed[i].Merma);
+          workbook.sheet(hoja).cell("L"+(i+inicio)).value([[intVal(parsed[i].Litros),intVal(parsed[i].Merma)]]).style({"numberFormat": "#,##0.00","horizontalAlignment":"right"});
+          totalLitros+=intVal(parsed[i].Litros);
+          totalMerma+=intVal(parsed[i].Merma);
         }
         workbook.sheet(hoja).cell("I"+(parsed.length+inicio)).value(parsed.length).style({bold: true,border:true,"borderColor": "000000","numberFormat": "#,##0"});
         workbook.sheet(hoja).cell("H"+(parsed.length+inicio)).value('Total B:').style({bold: true,border:true,"borderColor": "000000","horizontalAlignment":"right"});
@@ -1024,13 +1042,23 @@ function llenarBarrilesTrasiego(archivo,res,fecha,fecha2,tipo,id){
         var result = await conexion(url);
         var parsed =JSON.parse(result);
         workbook.sheet(hoja).range("J8:K8").merged(true);
+        var totalB=0,totalLts=0,cantTanq=0;
         workbook.sheet(hoja).cell("E8").value([['N° Orden','Fecha','Alcohol','Tanque','Cantidad Tanque','Total de Barriles','','Total Litros']]).style({"fill": "F5F5F6","horizontalAlignment":"center"});
         for (var i = 0; i < parsed.length; i++) {
           workbook.sheet(hoja).range("J"+(i+9)+":K"+(i+9)).merged(true);
           workbook.sheet(hoja).cell("E"+(i+9)).value([[parsed[i].NoOrden,parsed[i].Fecha,parsed[i].Alcohol,parsed[i].Tanque]]).style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
-          workbook.sheet(hoja).cell("I"+(i+9)).value([[parseFloat(parsed[i].CantTanq),parseInt(parsed[i].TotalBarriles),0,parsed[i].TotalLts]]).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0.00","horizontalAlignment":"right"});
+          workbook.sheet(hoja).cell("I"+(i+9)).value([[intVal(parsed[i].CantTanq),0,0,parsed[i].TotalLts]]).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0.00","horizontalAlignment":"right"});
+          workbook.sheet(hoja).cell("J"+(i+9)).value(intVal(parsed[i].TotalBarriles)).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0","horizontalAlignment":"right"});
+          totalB+=intVal(parsed[i].TotalBarriles);
+          totalLts+=intVal(parsed[i].TotalLts);
+          cantTanq+=intVal(parsed[i].CantTanq);
         }
-        var inicio=parsed.length+12;
+        workbook.sheet(hoja).range("J"+(parsed.length+9)+":K"+(parsed.length+9)).merged(true);
+        workbook.sheet(hoja).cell("H"+(parsed.length+9)).value('Totales:').style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
+        workbook.sheet(hoja).cell("I"+(parsed.length+9)).value(cantTanq).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0.00","horizontalAlignment":"right"});
+        workbook.sheet(hoja).cell("J"+(parsed.length+9)).value(totalB).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0","horizontalAlignment":"right"});
+        workbook.sheet(hoja).cell("L"+(parsed.length+9)).value(totalLts).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0.00","horizontalAlignment":"right"});
+        var inicio=parsed.length+13;
         url=servidor+'RestApi/GET/get_Reportes.php?trasiegoT2=true&fecha1='+fecha+'&fecha2='+fecha2;
         result = await conexion(url);
         parsed =JSON.parse(result);
@@ -1042,10 +1070,10 @@ function llenarBarrilesTrasiego(archivo,res,fecha,fecha2,tipo,id){
           totalLitros+=parseFloat(parsed[i].Capacidad);
         }
         workbook.sheet(hoja).range("E"+(parsed.length+inicio)+":F"+(parsed.length+inicio)).merged(true);
-        workbook.sheet(hoja).cell("G"+(parsed.length+inicio)).value([[parsed.length,0]]).style({bold: true,border:true,"borderColor": "000000","numberFormat": "#,##0"});
+        workbook.sheet(hoja).cell("G"+(parsed.length+inicio)).value([[parsed.length,0]]).style({bold: true,border:true,"borderColor": "000000","numberFormat": "#,##0","horizontalAlignment":"right"});
         workbook.sheet(hoja).cell("E"+(parsed.length+inicio)).value('Total barriles:').style({bold: true,border:true,"borderColor": "000000","horizontalAlignment":"right"});
         workbook.sheet(hoja).cell("H"+(parsed.length+inicio)).value('Total litros:').style({bold: true,border:true,"borderColor": "000000","horizontalAlignment":"right"});
-        workbook.sheet(hoja).cell("I"+(parsed.length+inicio)).value(totalLitros).style({bold: true,border:true,"borderColor": "000000","numberFormat": "#,##0.00"});
+        workbook.sheet(hoja).cell("I"+(parsed.length+inicio)).value(totalLitros).style({bold: true,border:true,"borderColor": "000000","numberFormat": "#,##0.00","horizontalAlignment":"right"});
         await exportar(archivo,id,tipo,workbook,res);
       } catch (e) {
         console.log(e);

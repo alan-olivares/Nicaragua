@@ -426,12 +426,15 @@
            $("#tabla2").css("margin-bottom","50px");
          }
 
+         async function iniciaProces(){
+           await setDates(['#fecha','#fecha2'],'Y-m-d');
+           ObtenerDatos();
+         }
+
          $(document).ready(function(){
            //ObtenerDatos();
            permisos(["6"]);
-           document.getElementById('fecha').valueAsDate=new Date();
-           document.getElementById('fecha2').valueAsDate=new Date();
-           ObtenerDatos();
+           iniciaProces();
          });
 
       </script>

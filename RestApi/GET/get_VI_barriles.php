@@ -34,15 +34,18 @@ if(strpos($permisos,',2,') !== false){
     $Consecutivo=$_GET["consecutivo"];
     $barril = "exec sp_BarrilUbicacion_v2 '$Consecutivo'";
     imprimir($barril,$conn);
-
   }else if(ISSET($_GET['consecutivoBus'])){
     $Consecutivo=$_GET["consecutivoBus"];
-    $barril = "SELECT  Pl.PlantaID,Am.AlmacenID,Ar.AreaId,Se.SeccionID,Po.PosicionID,R.RackLocID,P.IdPallet
+    $barril = "IF EXISTS (SELECT R.RackLocID from WM_Barrica B inner Join WM_Pallet P on P.Idpallet = B.IdPallet
+    inner join WM_RackLoc R on P.RackLocID=R.RackLocID inner Join AA_Nivel N on R.NivelID=N.NivelID Where B.Consecutivo ='$Consecutivo')
+    SELECT Pl.PlantaID,Am.AlmacenID,Ar.AreaId,Se.SeccionID,Po.PosicionID,R.RackLocID,P.IdPallet,
+    convert(varchar(100),Am.Nombre+', '+ REPLACE(Ar.Nombre, 'COSTADO', 'Cos: ')+', '+REPLACE(Se.Nombre, 'FILA', 'F: ')+','+ REPLACE(Po.Nombre, 'TORRE', 'T: ') +','+ REPLACE(N.Nombre, 'NIVEL', 'N: ')) AS Ubicacion
     from WM_Barrica B inner Join WM_Pallet P on P.Idpallet = B.IdPallet
     inner join WM_RackLoc R on P.RackLocID=R.RackLocID inner Join AA_Nivel N on R.NivelID=N.NivelID
     inner Join AA_Posicion Po on N.PosicionId=Po.PosicionID inner Join AA_Seccion Se on Po.SeccionID=Se.SeccionID
     inner Join AA_Area Ar on Se.AreaId = Ar.AreaId inner Join AA_Almacen Am on Ar.AlmacenId=Am.AlmacenID
-    inner join AA_Plantas Pl on Pl.PlantaID=Am.PlantaID Where B.Consecutivo ='$Consecutivo'";
+    inner join AA_Plantas Pl on Pl.PlantaID=Am.PlantaID Where B.Consecutivo ='$Consecutivo'
+    else select IdPallet,'Sin ubicación' as Ubicacion from WM_Barrica where Consecutivo='$Consecutivo'";
     imprimir($barril,$conn);
   }else if(ISSET($_GET['tapa'])){
     $tapa=$_GET["tapa"];
@@ -81,6 +84,10 @@ if(strpos($permisos,',2,') !== false){
     imprimir($fecha,$conn);
   }else if(ISSET($_GET['razones'])){
     $razones = "SELECT IdRazon,Descripcion from ADM_Razones where IdCaso=".$_GET['razones'];
+    imprimir($razones,$conn);
+  }else if(ISSET($_GET['lugaresDisRack'])){//Obtiene los lugares disponibles de un Nivel
+    $rack=$_GET['lugaresDisRack'];
+    $razones = "SELECT 9-((select	count(*) from WM_Barrica B inner Join WM_Pallet P on P.Idpallet = B.IdPallet Where P.RackLocId=$rack)+(select	count(*)*9 from WM_Tanques T inner Join WM_Pallet P on P.Idpallet = T.IdPallet Where P.RackLocId =$rack )) as Dispon";
     imprimir($razones,$conn);
   }
 }else{

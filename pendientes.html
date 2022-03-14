@@ -302,8 +302,8 @@
              crearTablaJson(parsed,'#viejoBarril');
              url='RestApi/GET/'+getApi+'?idAjuste='+idAjuste+"&opc=2&tipo="+$('#tipo').val();
              result = await conexion("GET",url,"");
-             parsed =JSON.parse(result);
-             crearTablaJson(parsed,'#nuevoBarril');
+             var parsedNue =JSON.parse(result);
+             crearTablaJson(parsedNue,'#nuevoBarril');
            } catch(error) {
              await mensajeError(error);
            }
@@ -384,13 +384,13 @@
              $('.todas').attr("disabled", parsed.length==0);
              var content="";
              if(valor==='1'){
-               content="<tr><th>ID Solicitud</th><th>Evento</th><th>Consecutivo</th><th>Fecha de solicitud</th><th>Solicitante</th><th>Estado</th><th>Motivo</th><th>Detalles</th></tr>";
+               content="<tr><th>ID Solicitud</th><th>Evento</th><th>Etiqueta</th><th>Fecha de solicitud</th><th>Solicitante</th><th>Estado</th><th>Motivo</th><th>Detalles</th></tr>";
                var transform = {"tag":"table", "children":[
                  {"tag":"tbody","children":[
                    {"tag":"tr","children":[
                      {"tag":"td","html":"${IdAjuste}"},
                      {"tag":"td","html":"${Evento}"},
-                     {"tag":"td","html":"${Consecutivo}"},
+                     {"tag":"td","html":"${Etiqueta}"},
                      {"tag":"td","html":"${FechaSolicitud}"},
                      {"tag":"td","html":"${Solicitante}"},
                      {"tag":"td","html":"${Estado}"},
@@ -400,13 +400,13 @@
                  ]}
                ]};
              }else if(valor==='2'){
-               content="<tr><th>ID Solicitud</th><th>Evento</th><th>NoSerie</th><th>Fecha de solicitud</th><th>Solicitante</th><th>Estado</th><th>Motivo</th><th>Detalles</th></tr>";
+               content="<tr><th>ID Solicitud</th><th>Evento</th><th>Etiqueta</th><th>Fecha de solicitud</th><th>Solicitante</th><th>Estado</th><th>Motivo</th><th>Detalles</th></tr>";
                var transform = {"tag":"table", "children":[
                  {"tag":"tbody","children":[
                    {"tag":"tr","children":[
                      {"tag":"td","html":"${IdAjuste}"},
                      {"tag":"td","html":"${Evento}"},
-                     {"tag":"td","html":"${NoSerie}"},
+                     {"tag":"td","html":"${Etiqueta}"},
                      {"tag":"td","html":"${FechaSolicitud}"},
                      {"tag":"td","html":"${Solicitante}"},
                      {"tag":"td","html":"${Estado}"},
