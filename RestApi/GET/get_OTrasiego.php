@@ -26,7 +26,7 @@ if(strpos($permisos,',6,') !== false){
     imprimir($ordenes,$conn);
   }else if(ISSET($_GET['operador'])){//Operadores dado a un grupo
     $operador=$_GET['operador'];
-    $usuarios = "SELECT Nombre,IdUsuario as Id from CM_Usuario_WEB where IdGrupo=$operador";
+    $usuarios = "SELECT Nombre,IdUsuario as Id from CM_Usuario_WEB where IdGrupo=$operador and Estatus=1";
     imprimir($usuarios,$conn);
   }else if(ISSET($_GET['tanques'])){//Operadores dado a un grupo
     $usuarios = "SELECT IDTanque,Descripcion from CM_Tanque order by case IsNumeric(Codigo) when 1 then Replicate('0', 100 - Len(Codigo)) + Codigo else Codigo end";

@@ -71,7 +71,7 @@ if(strpos($permisos,',9,') !== false){
         $tipo=$campo['Tipo'];
         $tipo=$tipo==='Relleno'?'2':($tipo==='Donador'?'4':($tipo==='Resto'?'5':'-1'));
         $queryCons="SELECT COUNT(*) from ADM_Ajustes where IdBarrica=(select IdBarrica from WM_Barrica where Consecutivo='$consecutivo') AND Estado=1";
-        $queryCons2="SELECT COUNT(*) from PR_RegBarril P inner join PR_Orden O on P.IdOrden=O.IdOrden  where P.IdOrden='$orden' and P.Consecutivo='$consecutivo' and O.Fecha between DATEADD(day,-1, GETDATE()) and GETDATE()";
+        $queryCons2="SELECT COUNT(*) from PR_RegBarril P inner join PR_Orden O on P.IdOrden=O.IdOrden  where P.IdOrden='$orden' and P.Consecutivo='$consecutivo' and O.Fecha between DATEADD(day,-2, GETDATE()) and GETDATE()";
         if(ObtenerCantidad($queryCons,$conn)!=0){//Tiene solicitudes pendientes
           $errores=$errores.$consecutivo." (solicitud pendiente), ";
         }else if(ObtenerCantidad($queryCons2,$conn)==0){//Hace más de 2 días fue su relleno

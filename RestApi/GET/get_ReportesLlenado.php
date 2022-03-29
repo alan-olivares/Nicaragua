@@ -39,7 +39,7 @@ if(strpos($permisos,',6,') !== false){
     ,Det.CAro,	Det.CTapas,	Det.CDuela,	Case Det.CepDuela When 0 then 'No' When 1 then 'Si' end As CepDuela,	Case Det.RepCanal When 0 then 'No' When 1 then 'Si' end As RepCanal
     ,	Case Det.CanalNvo When 0 then 'No' When 1 then 'Si' end As CanalNvo from PR_Mantenimiento M inner join WM_Barrica B on B.IdBarrica = M.IdBarrica
     inner Join CM_CodEdad CE on CE.IdCodEdad = B.IdCodificacion inner join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
-    inner join CM_Usuario U on U.IdUsuario = M.IdUsuario left join PR_MantAcciones Det on M.IdMantenimiento=Det.IdMantenimiento
+    inner join CM_Usuario_Web U on U.IdUsuario = M.IdUsuario left join PR_MantAcciones Det on M.IdMantenimiento=Det.IdMantenimiento
     Where Convert(Date,M.Fecha)= Convert(Date,'$fecha') order by M.Fecha,M.IdTipoMant,C.Codigo,B.Consecutivo";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['RepOpRevisado']) && ISSET($_GET['fecha'])){
@@ -53,7 +53,7 @@ if(strpos($permisos,',6,') !== false){
     imprimir($datos,$conn);
   }else if(ISSET($_GET['RepOpRevisadoTotal']) && ISSET($_GET['fecha'])){
     $fecha=$_GET['fecha'];
-    $datos = "SELECT C.Codigo as Uso, 'Total barriles: '+convert(varchar,count(B.Consecutivo))  as Barriles, 'Total Lts: '+convert(varchar,sum(B.Capacidad)) as Litros 
+    $datos = "SELECT C.Codigo as Uso, 'Total barriles: '+convert(varchar,count(B.Consecutivo))  as Barriles, 'Total Lts: '+convert(varchar,sum(B.Capacidad)) as Litros
     from WM_Barrica B inner Join WM_LoteBarrica LB on LB.IdLoteBarica = B.IdLoteBarrica
     inner Join CM_CodEdad CE on CE.IdCodEdad = B.IdCodificacion inner Join CM_Codificacion C on C.IdCodificacion = CE.IdCodificicacion
     Where B.FechaRevisado = CONVERT(date, '$fecha') group by C.Codigo";

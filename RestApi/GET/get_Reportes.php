@@ -94,7 +94,7 @@ if(strpos($permisos,',10,') !== false){
     $datos = "exec sp_BarrilPlantelDetalle_v2 '$almacen','$area','$codificacion'";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['almacenes'])){
-    $datos = "SELECT AlmacenId,Nombre from AA_Almacen ".($_GET['almacenes']!=="true"?"where AlmacenId in(".$_GET['almacenes'].")":"")." order by Nombre";
+    $datos = "SELECT AlmacenId,Nombre from AA_Almacen ".($_GET['almacenes']!=="true"?"where AlmacenId in(".$_GET['almacenes'].")":"")." order by Consecutivo";
     imprimir($datos,$conn);
   }else if(ISSET($_GET['alcohol'])){
     $datos = "SELECT IdAlcohol,Descripcion from CM_Alcohol Where IdAlcohol <> 4 ".($_GET['alcohol']!=="true"?"and IdAlcohol in(".$_GET['alcohol'].")":"")." order by Descripcion";

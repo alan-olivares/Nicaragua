@@ -183,7 +183,7 @@
                   <div role="tabpanel" id="divUsuario" class="tab-pane active">
                      <div class="row text-center  white-bg  d-flex justify-content-center" id="table-wrapper">
                         <div class="col-md-4" >
-                           <button class="button5 btn btn-primary b-r-xl" style="margin-bottom:20px;" onclick='agregarUsuario.dialog("open");CargarPerfiles("#perfilU");'>Agregar nuevo usuario</button>
+                           <button class="button5 btn btn-primary b-r-xl" style="margin-bottom:20px;" onclick='agregarUsuario.dialog("open");CargarPerfiles("#perfilU");'>Nuevo usuario</button>
                         </div>
                         <div class="table-responsive col-md-12 centro animated" id="scrollingtable">
                            <table class="table table-bordered table-hover text-nowrap" id="usuariosTabla">
@@ -193,8 +193,8 @@
                                     <th>Nombre</th>
                                     <th>Perfil</th>
                                     <th>Grupo</th>
-                                    <th>Acceso</th>
-                                    <th>Estado</th>
+                                    <th>Acceso WEB</th>
+                                    <th>Acceso HH</th>
                                     <th>Detalles</th>
                                  </tr>
                               </thead>
@@ -262,7 +262,7 @@
                      </div>
                   </div>
                   <div class="col-md-12 text-center  d-flex justify-content-center" >
-                     <div class="col-md-4 text-center" >
+                     <div class="col-md-6 text-center" >
                         <h5>
                            <label>  Grupo:   </label>
                            <select class="form-control b-r-xl" id="grupoU">
@@ -275,13 +275,13 @@
                            </select>
                         </h5>
                      </div>
-                     <div class="col-md-4 text-center" >
-                        <h5><label>  Acceso al sistema:   </label>
+                     <div class="col-md-3 text-center" >
+                        <h5><label>  Acceso WEB:   </label>
                            <input type="checkbox" id="accesoU" checked="true">
                         </h5>
                      </div>
-                     <div class="col-md-4 text-center " >
-                        <h5><label>  Activo/Desactivo:   </label>
+                     <div class="col-md-3 text-center " >
+                        <h5><label>  Acceso a HandHeld:   </label>
                            <input type="checkbox" id="activoDesactivoU" checked="true">
                         </h5>
                      </div>
@@ -306,7 +306,6 @@
                      </div>
                   </div>
                   <div class="col-md-12 text-center  d-flex justify-content-center" >
-                     <button class="button2 btn btn-primary cerrar b-r-xl">Cancelar</button>
                      <button class="button2 btn btn-primary b-r-xl" onclick="AgregarUsuario();">Agregar</button>
                   </div>
                </div>
@@ -340,12 +339,12 @@
                         </h5>
                      </div>
                      <div class="col-md-3 text-center  d-flex justify-content-center" >
-                        <h5><label>  Acceso al sistema:   </label>
+                        <h5><label>  Acceso WEB:   </label>
                            <input type="checkbox" id="accesoUE">
                         </h5>
                      </div>
                      <div class="col-md-3 text-center  d-flex justify-content-center" >
-                        <h5><label>  Activo/Desactivo:   </label>
+                        <h5><label>  Acceso a HandHeld:   </label>
                            <input type="checkbox" id="activoDesactivoUE">
                         </h5>
                      </div>
@@ -372,12 +371,11 @@
                   <div class="col-md-12 text-center  d-flex justify-content-center" >
                      <div class="col-md-6 text-center  d-flex justify-content-center" >
                         <h5><label>  Cambiar contraseña:   </label>
-                           <input type="checkbox" onchange='OcultarPass(this);'>
+                           <input type="checkbox" onchange='OcultarPass(this);' id="cambioPass">
                         </h5>
                      </div>
                   </div>
                   <div class="col-md-12 text-center  d-flex justify-content-center" >
-                     <button class="button2 btn btn-primary cerrar b-r-xl">Cancelar</button>
                      <button class="button2 btn btn-primary b-r-xl" onclick="GuardarEditarUsuario();">Editar</button>
                   </div>
                </div>
@@ -453,7 +451,7 @@
          }
 
          async function GuardarEditarUsuario(){
-           if(String(document.getElementById("contrasenaUE").value).length>0 && String(document.getElementById("contrasenaUE").value).length<6){
+           if(String(document.getElementById("contrasenaUE").value).length>0 && String(document.getElementById("contrasenaUE").value).length<3){
              mensajeError("La contraseña debe ser mayor o igual a 5 caracteres");
              return;
            }
@@ -476,9 +474,10 @@
          async function EditarUsuario(nombre,usuario,perfil,grupo,acceso,estado){
            $("#passw").css("visibility", "hidden");
            await CargarPerfiles("#perfilUE");
+           $('#cambioPass').prop('checked', false);
            setSelectedValue(document.getElementById("perfilUE"),perfil);
            $('#accesoUE').prop('checked', acceso==="Si");
-           $('#activoDesactivoUE').prop('checked', estado==="Activo");
+           $('#activoDesactivoUE').prop('checked', estado==="Si");
            setSelectedValue(document.getElementById("grupoUE"),grupo);
            document.getElementById("nombreUE").value=nombre;
            document.getElementById("usuarioUE").value=usuario;
@@ -487,7 +486,7 @@
 
          async function AgregarUsuario(){
            if($("#nombreU").val()!=="" && $("#usuarioU").val()!=="" && $("#contrasenaU").val()!=="" && $("#contrasenaNU").val()!==""){
-             if(String(document.getElementById("contrasenaU").value).length>0 && String(document.getElementById("contrasenaNU").value).length<6){
+             if(String(document.getElementById("contrasenaU").value).length>0 && String(document.getElementById("contrasenaNU").value).length<3){
                await mensajeError("La contraseña debe ser mayor o igual a 5 caracteres");
                return;
              }
@@ -526,7 +525,7 @@
                    {"tag":"td","html":"${Grupo}"},
                    {"tag":"td","html":"${Acceso}"},
                    {"tag":"td","html":"${Estado}"},
-                   {"tag":"td","html":'<button class=" btn btn-primary b-r-xl" id="editarU">Editar</button>'}
+                   {"tag":"td","html":'<button class=" btn btn-primary b-r-xl" id="editarU">Editar</button><button style="margin-left:5px;" class="btn btn-danger b-r-xl fa fa-trash"  id="eliminarU"></button>'}
                  ]}
                ]}
              ]};
@@ -556,7 +555,27 @@
              var data = table.row( row ).data();
              EditarUsuario(data[1],data[0],data[2],data[3],data[4],data[5]);
            });
+           $('#usuariosTabla tbody').on( 'click', '#eliminarU', function (e) {
+             var row = $(this).closest('tr');
+             var data = table.row( row ).data();
+             eliminarUsuario(data[0]);
+           });
            revisarTema();
+         }
+         async function eliminarUsuario(idUsuario){
+           if(await mensajeOpcional('¿Estas seguro de deshabilitar al usuario '+idUsuario+"?")){
+             setTimeout(async function() {
+               try{
+                 var params='borrarIdUser='+idUsuario;
+                 var url='RestApi/POST/'+postApi;
+                 var result = await conexion("POST",url,params);
+                 await mensajeSimple(result);
+                 location.reload();
+               }catch(error){
+                 mensajeError(error);
+               }
+             }, 500);
+           }
          }
          //Termina funciones de usuarios
          //Inicia Funciones de permisos

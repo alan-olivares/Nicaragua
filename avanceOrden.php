@@ -202,7 +202,7 @@
               result = await conexion("GET",url,"");
               parsed =JSON.parse(result);
               crearTablaJson(parsed,'#tabla2');
-              $('#avance').text(((countBarriles(parsed)/total)*100)+'%');
+              $('#avance').text(parseInt((countBarriles(parsed)/total)*100)+'%');
               $('#tabla2').DataTable({
                   responsive: true,
                   "bPaginate": false,

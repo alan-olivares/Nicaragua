@@ -21,7 +21,7 @@ if(strpos($permisos,',3,') !== false){
     }
   }else if(ISSET($_GET['tablaUsuarios'])){
     $users = "SELECT u.Nombre,u.Clave,g.Nombre as Grupo,CASE WHEN u.IdFacultad=1 THEN 'Si' ELSE 'No' END as Acceso,
-              CASE WHEN u.Estatus=1 THEN 'Activo' ELSE 'Desactivado' END as Estado, p.Descripcion as Perfil
+              CASE WHEN u.Estatus=1 THEN 'Si' ELSE 'No' END as Estado, p.Descripcion as Perfil
               from CM_Usuario_WEB u left join CM_Perfil p on p.IdPerfil=u.IdPerfil
               left join CM_Grupo g on u.IdGrupo=g.IdGrupo
               where u.Clave IS NOT NULL";

@@ -181,7 +181,7 @@
                <ul class="nav nav-tabs d-flex justify-content-center" role="tablist">
                   <li><a class="nav-link active" data-toggle="tab" href="#generar"> Generar órdenes</a></li>
                   <li><a class="nav-link" data-toggle="tab" onclick="ActualizarOrdenes('hoy',false);" href="#ver">Ver órdenes</a></li>
-                  <li><a class="nav-link" data-toggle="tab" href="#pendientes">Pendientes/Activas</a></li>
+                  <li><a class="nav-link" data-toggle="tab" onclick="todasOrdenes()" href="#pendientes">Pendientes/Activas</a></li>
                </ul>
                <div class="tab-content">
                   <div role="tabpanel" id="generar" class="tab-pane active">
@@ -472,7 +472,6 @@
          async function obtenerOrdenesServer(url,tabla){
            try {
              empezar();
-             $("#"+tabla+" > tbody").empty();
              var result = await conexion("GET",url,"");
              url='RestApi/GET/'+getApi+'?operador=';
              var operador = await conexion("GET",url+"3","");
@@ -482,6 +481,8 @@
              var supervisor = await conexion("GET",url+"2","");
              var supervisorJ =JSON.parse(supervisor);
              var cargarTabla =JSON.parse(result);
+             var content="";
+             $("#"+tabla).attr("hidden", cargarTabla.length==0);
              for (var i = 0; i < cargarTabla.length; i++) {
                var datos="('"+cargarTabla[i].IdOrden+"','"+cargarTabla[i].Estatus+"',this)";
                var boton=(cargarTabla[i].Estatus==='Por Asignar')?'<button class="btn btn-primary b-r-xl" onclick="Asignacion2'+datos+'" style="margin-right:5px;margin-bottom:5px;">Asignar</button>':'<button class="btn btn-primary b-r-xl" onclick="terminarOrden'+datos+'" style="margin-right:5px;margin-bottom:5px;" '+(cargarTabla[i].IdEstatus==3?'disabled':'')+'>Terminar</button>';
@@ -489,13 +490,16 @@
                var opc=(cargarTabla[i].Estatus!=='Por Asignar')?'disabled':'';
                var link=(cargarTabla[i].IdEstatus!=3)?'<td style="color:blue;text-decoration: underline;"><a onclick="javascript:abrir(\'avanceOrden.php?orden='+cargarTabla[i].IdOrden+'\')">'+cargarTabla[i].IdOrden+'</a></td>':'<td>'+cargarTabla[i].IdOrden+'</td>';
                var botonCancelar=(cargarTabla[i].Estatus==='Por Asignar')?'<button class="btn btn-danger b-r-xl fa fa-trash" onclick="cancelarOrden(\''+cargarTabla[i].IdOrden+'\')"></button>':'';
-               $("#"+tabla+" > tbody").append("<tr>"+link+"<td>"+cargarTabla[i].Bodega+"</td><td>"+cargarTabla[i].CantBarriles+"</td><td>"+cargarTabla[i].Paletas+"</td><td>"+cargarTabla[i].Alcohol+"</td><td>"+cargarTabla[i].Tanque+"</td>"+escoger(operadorJ,cargarTabla[i].Op,'operador',opc)+
-               escoger(montacaJ,cargarTabla[i].OpeMonta,'montaca',opc)+escoger(supervisorJ,cargarTabla[i].Supervidor,'supervisor',opc)+"<td class='Estatus'>"+cargarTabla[i].Estatus+"</td><td>"+boton+botonCancelar+"</td></tr>");
+               content+="<tr>"+link+"<td>"+cargarTabla[i].Bodega+"</td><td>"+cargarTabla[i].CantBarriles+"</td><td>"+cargarTabla[i].Paletas+"</td><td>"+cargarTabla[i].Alcohol+"</td><td>"+cargarTabla[i].Tanque+"</td>"+escoger(operadorJ,cargarTabla[i].Op,'operador',opc)+
+               escoger(montacaJ,cargarTabla[i].OpeMonta,'montaca',opc)+escoger(supervisorJ,cargarTabla[i].Supervidor,'supervisor',opc)+"<td class='Estatus'>"+cargarTabla[i].Estatus+"</td><td>"+boton+botonCancelar+"</td></tr>";
              }
+             $("#"+tabla+" > tbody").empty();
+             $("#"+tabla+" > tbody").append(content);
              revisarTema();
-             parar();
            } catch(error) {
              await mensajeError(error);
+           }finally{
+             parar();
            }
          }
 
@@ -525,8 +529,6 @@
                var url='RestApi/POST/'+postApi;
                var params='terminarOrdenId='+orden;
                var result=await conexion("POST", url,params);
-               ActualizarOrdenes($('#FOrdenes').val(),true);
-               todasOrdenes();
                setTimeout(async function() {
                  mensajeSimple(result);
                  ActualizarOrdenes($('#FOrdenes').val(),true);

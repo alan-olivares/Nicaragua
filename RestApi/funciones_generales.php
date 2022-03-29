@@ -71,8 +71,8 @@ function generarNotificacion($referencia,$caso,$estatus,$enviador,$receptor,$con
   $mensaje=' ha'.getMsgTipo($estatus).($caso==1?'o el lote ':'o la orden ').$referencia;
   $tsql = "if not exists(select * from ADM_Notificaciones where referencia='$referencia' and Estatus='$estatus')
   INSERT into ADM_Notificaciones(referencia,caso,Estatus,titulo,mensaje,idEnviador,idReceptor,fecha) values('$referencia','$caso',$estatus,'$titulo',
-  concat((select nombre from cm_usuario where Clave='$enviador'),'$mensaje'),ISNULL((select idusuario from cm_usuario where Clave='$enviador'),0),
-  ISNULL((select idusuario from cm_usuario where Clave='$receptor'),0),GETDATE())";
+  concat((select nombre from cm_usuario_web where Clave='$enviador'),'$mensaje'),ISNULL((select idusuario from cm_usuario_web where Clave='$enviador'),0),
+  ISNULL((select idusuario from cm_usuario_web where Clave='$receptor'),0),GETDATE())";
   return sqlsrv_query( $conn , $tsql);
 }
 function getMsgTipo($estatus){

@@ -26,9 +26,9 @@ if(strpos($permisos,',6,') !== false){
     imprimir($ordenes,$conn);
   }else if(ISSET($_GET['operador'])){//Operadores dado a un grupo
     $operador=$_GET['operador'];
-    $usuarios = "SELECT Nombre,IdUsuario as Id from CM_Usuario_WEB where IdGrupo=$operador";
+    $usuarios = "SELECT Nombre,IdUsuario as Id from CM_Usuario_WEB where IdGrupo=$operador and Estatus=1";
     imprimir($usuarios,$conn);
-  }else if(ISSET($_GET['tanques'])){//Operadores dado a un grupo
+  }else if(ISSET($_GET['tanques'])){//Tanques disponibles
     $usuarios = "SELECT IdTanque,NoSerie from WM_Tanques";
     imprimir($usuarios,$conn);
   }

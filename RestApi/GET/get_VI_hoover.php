@@ -10,7 +10,7 @@ if(strpos($permisos,',2,') !== false){
     imprimir($bodegas,$conn);
   }else if(ISSET($_GET['bodegas'])){
     $planta=$_GET["bodegas"];
-    $bodegas = "SELECT AlmacenId,Nombre from AA_Almacen where PlantaID=$planta";
+    $bodegas = "SELECT AlmacenId,Nombre from AA_Almacen where PlantaID=$planta order by Consecutivo";
     imprimir($bodegas,$conn);
   }else if(ISSET($_GET['bodega'])){
     $bodega=$_GET["bodega"];
