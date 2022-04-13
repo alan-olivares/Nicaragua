@@ -102,6 +102,7 @@
                                 <li><a href="RTrasiegoRemision.html">Remisión blending</a></li>
                            </ul>
                        </li>
+                       <li><a href="OTrasladoHoover.html">Traslado a Hoover</a></li>
                        <li><a href="OTrasiegoHoover.html">Trasiego Hoover</a></li>
                      </ul>
                   </li>
@@ -197,17 +198,19 @@
                      <thead>
                        <tr>
                          <th colspan="3">Tanque Hoover</th>
-                         <th colspan="5">Barriles vaciados</th>
+                         <th colspan="7">Barriles vaciados</th>
                        </tr>
                        <tr>
                          <th>Etiqueta</th>
                          <th>Litros</th>
                          <th>Fecha llenado</th>
                          <th>N° Orden</th>
+                         <th>Vaciado</th>
                          <th>Etiqueta</th>
                          <th>Alcohol</th>
                          <th>Año alcohol</th>
                          <th>Litros</th>
+                         <th>Tipo</th>
                        </tr>
                      </thead>
                      <tbody></tbody>
@@ -293,12 +296,10 @@
                 if(parsed[i].IdOperacion!==etiqueta){//Se encontro un nuevo tanque hoover
                   etiqueta=parsed[i].IdOperacion;
                   tanques++;
-                  content+='<tr class="colapsar" onclick="colapsar(this)"><td><span class="fa fa-angle-down" style="float:left; margin-left:5px;"></span>'+parsed[i].Etiqueta+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i].Litros)+"</td><td>"+parsed[i].FechaLLenado+"</td><td  colspan='5'></tr>";
-                  content+="<tr><td  colspan='3'></td><td>"+parsed[i].IdOrden+
-                  "</td><td>"+parsed[i].EtiquetaBarr+"</td><td>"+parsed[i].Descripcion+"</td><td>"+parsed[i].Recepcion+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i].Capacidad)+"</td></tr>";
+                  content+='<tr class="colapsar" onclick="colapsar(this)"><td><span class="fa fa-angle-down" style="float:left; margin-left:5px;"></span>'+parsed[i].Etiqueta+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i].Litros)+"</td><td>"+parsed[i].FechaLLenado+"</td><td  colspan='7'></tr>";
+                  content+=insertaNewBarril(parsed[i]);
                 }else{//Se añaden los barriles de cada tanque hoover
-                  content+="<tr><td  colspan='3'></td><td>"+parsed[i].IdOrden+
-                  "</td><td>"+parsed[i].EtiquetaBarr+"</td><td>"+parsed[i].Descripcion+"</td><td>"+parsed[i].Recepcion+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i].Capacidad)+"</td></tr>";
+                  content+=insertaNewBarril(parsed[i]);
                 }
               }
               $('#tabla1 tbody').append(content);
@@ -320,6 +321,10 @@
           }finally {
             l.ladda('stop');
           }
+        }
+        function insertaNewBarril(json){
+          return "<tr><td  colspan='3'></td><td>"+json.IdOrden+"</td><td>"+json.Vaciado+"</td><td>"+json.EtiquetaBarr+
+          "</td><td>"+json.Descripcion+"</td><td>"+json.Recepcion+"</td><td style='text-align: right;'>"+fomatoNumero(json.Capacidad)+"</td><td>"+json.Tipo+"</td></tr>";
         }
         function limpiarDatos(){
           $('#tabla1 tbody').empty();

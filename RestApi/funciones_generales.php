@@ -65,7 +65,7 @@ function isJson($string) {
 
 function generarNotificacion($referencia,$caso,$estatus,$enviador,$receptor,$conn){
   //Borramos las notificaciones pasadas si existen
-  sqlsrv_query( $conn , "delete from ADM_Notificaciones where convert(varchar,fecha,105) <>convert(varchar,GETDATE(),105)");
+  sqlsrv_query( $conn , "DELETE from ADM_Notificaciones where convert(varchar(10),fecha,105) <>convert(varchar(10),GETDATE(),105)");
   //Generamos la notificacion
   $titulo=($caso==1?'Lote de alcohol ':'Orden'.getCaso($caso)).$referencia.getMsgTipo($estatus).($caso==1?'o':'a');
   $mensaje=' ha'.getMsgTipo($estatus).($caso==1?'o el lote ':'o la orden ').$referencia;
@@ -100,6 +100,8 @@ function getCaso($caso){
     $regresar= ' de trasiego ';
   }else if($caso==4){
     $regresar= ' de trasiego hoover ';
+  }else if($caso==5){
+    $regresar= ' de traslado hoover ';
   }else{
     return ' ';
   }
@@ -114,5 +116,60 @@ function getCaso($caso){
 function terminarScript($conn,$mensaje) {
  sqlsrv_close($conn);
  exit($mensaje);
+}
+
+function terminarOrden($orden,$conn){
+  $check="SELECT Estatus from PR_Orden where IdOrden=$orden";
+  $stmtCheck = sqlsrv_query( $conn , $check);
+  $row = sqlsrv_fetch_array( $stmtCheck, SQLSRV_FETCH_NUMERIC);
+  if($row[0]!='0'){
+    $tsql = "UPDATE PR_Orden SET Estatus=3 where IdOrden=$orden";
+    $stmt = sqlsrv_query( $conn , $tsql);
+    if($stmt){
+      echo 'Orden terminada con exito';
+      return true;
+    }else{
+      echo '..Error.. Hubo un problema al terminar la orden, intenta de nuevo mas tarde';
+    }
+  }else{
+    echo '..Error.. Esta orden no puede ser terminada porque aún no se encuentra en proceso';
+  }
+  return false;
+}
+function cancelarOrden($orden,$conn){
+  $check="SELECT Estatus from PR_Orden where IdOrden=$orden";
+  $stmtCheck = sqlsrv_query( $conn , $check);
+  $row = sqlsrv_fetch_array( $stmtCheck, SQLSRV_FETCH_NUMERIC);
+  if($row[0]=='1' || $row[0]=='0'){
+    $tsql = "UPDATE PR_Orden SET Estatus=3,IdOperario=0, IdOperarioMon=0,IdSupervisor=0 where IdOrden=$orden";
+    $stmt = sqlsrv_query( $conn , $tsql);
+    if($stmt){
+      echo 'Orden cancelada con exito';
+      return true;
+    }else{
+      echo '..Error.. Hubo un problema al cancelar la orden, intenta de nuevo mas tarde';
+    }
+  }else{
+    echo '..Error.. Esta orden ya se encuentra en proceso y no puede ser cancelada';
+  }
+  return false;
+}
+function updateOrden($orden,$conn,$operador,$motaca,$supervisor){
+  $check="SELECT Estatus from PR_Orden where IdOrden=$orden";
+  $stmtCheck = sqlsrv_query( $conn , $check);
+  $row = sqlsrv_fetch_array( $stmtCheck, SQLSRV_FETCH_NUMERIC);
+  if($row[0]=='1' || $row[0]=='0'){
+    $tsql = "UPDATE PR_Orden SET Estatus=1 ,IdOperario=$operador, IdOperarioMon=$motaca,IdSupervisor=$supervisor where IdOrden=$orden";
+    $stmt = sqlsrv_query( $conn , $tsql);
+    if($stmt){
+      echo 'Orden asignada con exito';
+      return true;
+    }else{
+      echo '..Error.. Hubo un problema al asignar la orden, intenta de nuevo mas tarde';
+    }
+  }else{
+    echo '..Error.. Esta orden ya se encuentra en proceso y no puede ser modificada';
+  }
+  return false;
 }
  ?>

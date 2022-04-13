@@ -300,7 +300,7 @@ function conexion(method, url,params) {
               }else if(xhttp.response.includes("..Desautorizado..")){
                 limpiar();
               }else{
-                resolve(xhttp.response);
+                resolve(xhttp.response.trim());
               }
 
             } else {

@@ -29,57 +29,20 @@ if(strpos($permisos,',6,') !== false){//Agregar ordenes
     $operador=$_POST['operador'];
     $motaca=$_POST['motaca'];
     $supervisor=$_POST['supervisor'];
-    $check="SELECT Estatus from PR_Orden where IdOrden=$orden";
-    $stmtCheck = sqlsrv_query( $conn , $check);
-    $row = sqlsrv_fetch_array( $stmtCheck, SQLSRV_FETCH_NUMERIC);
-    if($row[0]=='1' || $row[0]=='0'){
-      $tsql = "UPDATE PR_Orden SET Estatus=1 ,IdOperario=$operador, IdOperarioMon=$motaca,IdSupervisor=$supervisor where IdOrden=$orden";
-      $stmt = sqlsrv_query( $conn , $tsql);
-      if($stmt){
-        echo 'Orden asignada con exito';
-        generarNotificacion($orden,3,1,$usuario,'-1',$conn);
-      }else{
-        echo '..Error.. Hubo un problema al asignar la orden, intenta de nuevo mas tarde';
-      }
-    }else{
-      echo '..Error.. Esta orden ya se encuentra en proceso y no puede ser modificada';
+    if(updateOrden($orden,$conn,$operador,$motaca,$supervisor)){
+      generarNotificacion($orden,3,1,$usuario,'-1',$conn);
     }
   }else if(ISSET($_POST['cancelarOrdenId'])){//Cancelar orden
     $orden=$_POST['cancelarOrdenId'];
-    $check="SELECT Estatus from PR_Orden where IdOrden=$orden";
-    $stmtCheck = sqlsrv_query( $conn , $check);
-    $row = sqlsrv_fetch_array( $stmtCheck, SQLSRV_FETCH_NUMERIC);
-    if($row[0]=='0'){
-      $tsql = "UPDATE PR_Orden SET Estatus=3,IdOperario=0, IdOperarioMon=0,IdSupervisor=0 where IdOrden=$orden";
-      $stmt = sqlsrv_query( $conn , $tsql);
-      if($stmt){
-        echo 'Orden cancelada con exito';
-        generarNotificacion($orden,3,4,$usuario,'-1',$conn);
-      }else{
-        echo '..Error.. Hubo un problema al cancelar la orden, intenta de nuevo mas tarde';
-      }
-    }else{
-      echo '..Error.. Esta orden ya se encuentra en proceso y no puede ser cancelada';
+    if(cancelarOrden($orden,$conn)){
+      generarNotificacion($orden,3,4,$usuario,'-1',$conn);
     }
   }else if(ISSET($_POST['terminarOrdenId'])){//Cancelar orden
     $orden=$_POST['terminarOrdenId'];
-    $check="SELECT Estatus from PR_Orden where IdOrden=$orden";
-    $stmtCheck = sqlsrv_query( $conn , $check);
-    $row = sqlsrv_fetch_array( $stmtCheck, SQLSRV_FETCH_NUMERIC);
-    if($row[0]!='0'){
-      $tsql = "UPDATE PR_Orden SET Estatus=3 where IdOrden=$orden";
-      $stmt = sqlsrv_query( $conn , $tsql);
-      if($stmt){
-        echo 'Orden terminada con exito';
-        generarNotificacion($orden,3,3,$usuario,'-1',$conn);
-      }else{
-        echo '..Error.. Hubo un problema al terminar la orden, intenta de nuevo mas tarde';
-      }
-    }else{
-      echo '..Error.. Esta orden no puede ser terminada porque aún no se encuentra en proceso';
+    if(terminarOrden($orden,$conn)){
+      generarNotificacion($orden,3,3,$usuario,'-1',$conn);
     }
   }
-
 }else{
   echo '..Error.. No tienes permisos para procesar cambios';
 }

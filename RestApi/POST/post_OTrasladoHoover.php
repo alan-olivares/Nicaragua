@@ -1,13 +1,13 @@
 <?php
 include '../general_connection.php';
 if(strpos($permisos,',6,') !== false){
-  if(ISSET($_POST["data"])){//Crear orden
+  if(ISSET($_POST["data"])){//Agregar ordenes
     if(isJson($_POST["data"])){
       $data = json_decode($_POST["data"], true);
       $enviar="";
       $contar=0;$contarErr=0;
       foreach($data as $campo) {
-        $query="exec sp_OrdenRelleInsert_v2 '".$usuario."','".$campo['bodega']."','".$campo['year']."','".$campo['Alcohol']."','".$campo['Uso']."','".$campo['Cantidad']."'";
+        $query="exec sp_OrdenTrasInsert_v2 '".$usuario."','".$campo['bodega']."','".$campo['year']."','".$campo['Alcohol']."','".$campo['Uso']."','".$campo['Cantidad']."','".$campo['tanque']."', 7";
         $stmtCheck = sqlsrv_query( $conn , $query);
         $row = sqlsrv_fetch_array( $stmtCheck, SQLSRV_FETCH_NUMERIC);
         if($row[0]!==""){
@@ -18,7 +18,7 @@ if(strpos($permisos,',6,') !== false){
       if($enviar===""){
         echo count($data).' órdenes registradas con exito';
       }else{
-        echo '..Error.. '.$contarErr.' órdenes tuvieron errores: '.$enviar.' No hay barriles suficientes para esta órden, alguna otra órden necesitará barriles con estas caracteristicas, intenta con un número de barriles disponibles o termina las órdenes pendientes';
+        echo '..Error.. '.$contarErr.' órdenes tuvieron errores: '.$enviar.' No hay barriles suficientes para esta órden, alguna otra órden necesitará barriles con estas caracteristicas, intenta con un número de barriles disponibles o cancela las órdenes pendientes';
       }
 
     }else{
@@ -30,21 +30,23 @@ if(strpos($permisos,',6,') !== false){
     $motaca=$_POST['motaca'];
     $supervisor=$_POST['supervisor'];
     if(updateOrden($orden,$conn,$operador,$motaca,$supervisor)){
-      generarNotificacion($orden,2,1,$usuario,'-1',$conn);
+      generarNotificacion($orden,5,1,$usuario,'-1',$conn);
     }
   }else if(ISSET($_POST['cancelarOrdenId'])){//Cancelar orden
     $orden=$_POST['cancelarOrdenId'];
     if(cancelarOrden($orden,$conn)){
-      generarNotificacion($orden,2,4,$usuario,'-1',$conn);
+      generarNotificacion($orden,5,4,$usuario,'-1',$conn);
     }
-  }else if(ISSET($_POST['terminarOrdenId'])){//Terminar orden
+  }else if(ISSET($_POST['terminarOrdenId'])){//Cancelar orden
     $orden=$_POST['terminarOrdenId'];
     if(terminarOrden($orden,$conn)){
-      generarNotificacion($orden,2,3,$usuario,'-1',$conn);
+      generarNotificacion($orden,5,3,$usuario,'-1',$conn);
     }
   }
+
 }else{
   echo '..Error.. No tienes permisos para procesar cambios';
 }
 sqlsrv_close($conn); //Close the connnectiokn first
+
 ?>

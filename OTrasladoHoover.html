@@ -4,7 +4,7 @@
    <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Orden de relleno</title>
+      <title>Orden de traslado a tanques hoover</title>
       <link href="css/jquery.dataTables.min.css" rel="stylesheet">
       <link href="css/bootstrap.min.css" rel="stylesheet">
       <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
@@ -89,10 +89,10 @@
                                <li><a href="RLlenadoRevisado.html">Reporte de Revisado</a></li>
                            </ul>
                        </li>
-                       <li class="active">
+                       <li>
                            <a href="#">Relleno<span class="fa arrow"></span></a>
                            <ul class="nav nav-third-level">
-                               <li class="active"><a href="ORelleno.html">Orden Relleno</a></li>
+                               <li><a href="ORelleno.html">Orden Relleno</a></li>
                                <li><a href="RRellenoOperacion.html">Reporte de Operación</a></li>
                            </ul>
                        </li>
@@ -106,7 +106,7 @@
                                 <li><a href="RTrasiegoRemision.html">Remisión blending</a></li>
                            </ul>
                        </li>
-                       <li><a href="OTrasladoHoover.html">Traslado a Hoover</a></li>
+                       <li class="active"><a href="OTrasladoHoover.html">Traslado a Hoover</a></li>
                        <li><a href="OTrasiegoHoover.html">Trasiego Hoover</a></li>
                      </ul>
                   </li>
@@ -154,7 +154,7 @@
                   <div class="navbar-header">
                      <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
                   </div>
-                  <h2 class="nav navbar-top-links welcome-message" style="margin-left:120px; margin-right:10px;">Órdenes de relleno</h2>
+                  <h2 class="nav navbar-top-links welcome-message" style="margin-left:120px; margin-right:10px;">Órdenes de traslado a tanques hoover</h2>
                   <ul class="nav navbar-top-links navbar-right">
                      <li class="dropdown uno">
                         <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
@@ -237,6 +237,8 @@
                                        <th>Bodega</th>
                                        <th>Cantidad</th>
                                        <th>Paletas</th>
+                                       <th>Alcohol</th>
+                                       <th>Tanque</th>
                                        <th>Operador</th>
                                        <th>Montacarguista</th>
                                        <th>Supervisor</th>
@@ -262,15 +264,17 @@
                               <table class="table table-bordered cell-border" style="margin-top:50px;" id="lotesOrdenTodas">
                                  <thead>
                                     <tr>
-                                      <th>Orden</th>
-                                      <th>Bodega</th>
-                                      <th>Cantidad</th>
-                                      <th>Paletas</th>
-                                      <th>Operador</th>
-                                      <th>Montacarguista</th>
-                                      <th>Supervisor</th>
-                                      <th>Estatus</th>
-                                      <th>Opción</th>
+                                       <th>Orden</th>
+                                       <th>Bodega</th>
+                                       <th>Cantidad</th>
+                                       <th>Paletas</th>
+                                       <th>Alcohol</th>
+                                       <th>Tanque</th>
+                                       <th>Operador</th>
+                                       <th>Montacarguista</th>
+                                       <th>Supervisor</th>
+                                       <th>Estatus</th>
+                                       <th>Opción</th>
                                     </tr>
                                  </thead>
                                  <tbody></tbody>
@@ -303,6 +307,7 @@
                                  <th>Alcohol</th>
                                  <th>Uso</th>
                                  <th>Cantidad</th>
+                                 <th>Tanque</th>
                               </tr>
                            </thead>
                            <tbody></tbody>
@@ -344,8 +349,8 @@
       <script src="js/funciones_generales.js"></script>
       <script src="js/abrir_ventana.js"></script>
       <script>
-         const getApi="get_ORelleno.php";
-         const postApi="post_ORelleno.php";
+         const getApi="get_OTrasladoHoover.php";
+         const postApi="post_OTrasladoHoover.php";
          $( function() {
            var options={
              open: function() {
@@ -366,7 +371,7 @@
                duration: 800
              },
              maxHeight: 570,
-             minWidth: 550,
+             minWidth: 570,
            };
 
            generarOrdenes = $( "#Dialog" ).dialog(options);
@@ -412,16 +417,34 @@
          async function CargarDialogo(){
            $("#generarOrdenes > tbody").empty();
            var elements = document.getElementsByClassName("selected");
-           if(elements.length>0){
-             for (var i = 0; i < elements.length; i++) {
-               var eee=elements[i].querySelectorAll('td');
-               $('#generarOrdenes').find('tbody').append("<tr><td>"+eee[1].innerHTML+"</td><td>"+eee[2].innerHTML+"</td><td>"+eee[3].innerHTML+"</td><td>"+eee[4].innerHTML+"</td><td><input onchange='maximo(this,"+eee[5].innerHTML+");' type='number' style='max-width: 80px;' value='"+eee[5].innerHTML+"'></input></td></tr>");
+           try {
+             var url='RestApi/GET/'+getApi+'?tanques=true';
+             var result = await conexion("GET",url,"");
+             var tanques =JSON.parse(result);
+             var opciones=opcionTanques(tanques);
+             if(elements.length>0){
+               for (var i = 0; i < elements.length; i++) {
+                 var eee=elements[i].querySelectorAll('td');
+                 $('#generarOrdenes').find('tbody').append("<tr><td>"+eee[1].innerHTML+"</td><td>"+eee[2].innerHTML+"</td><td>"+eee[3].innerHTML+"</td><td>"+eee[4].innerHTML+"</td><td><input onchange='maximo(this,"+eee[5].innerHTML+");' type='number' style='max-width: 80px;' value='1'></input></td>"+opciones+"</tr>");
+               }
+               revisarTema();
+               generarOrdenes.dialog( "open" );
+             }else{
+               mensajeError('Selecciona al menos una opción');
              }
-             revisarTema();
-             generarOrdenes.dialog( "open" );
-           }else{
-             mensajeError('Selecciona al menos una opción');
+           } catch (e) {
+             mensajeError(e);
            }
+
+         }
+
+         function opcionTanques(tanques){
+           var content='<td><select class="form-control">';
+           for (var i = 0; i < tanques.length; i++) {
+             content+='<option value="'+tanques[i].IdTanque+'" selected>'+tanques[i].NoSerie+'</option>';
+           }
+           content+='</select></td>';
+           return content;
          }
 
          function maximo(valor,max){
@@ -433,8 +456,9 @@
              valor.value=1;
            }
          }
+
          var fechaU;
-         function ActualizarOrdenes(valor,actualizar){
+         async function ActualizarOrdenes(valor,actualizar){
            if((fechaU!=='' && fechaU!==$('#FOrdenes').val() && $('#FOrdenes').val()!=="") || (valor==='hoy' && $('#FOrdenes').val()!=="") || actualizar){
              fechaU=$('#FOrdenes').val();
              var url='RestApi/GET/'+getApi+'?fechaOrdenes='+fechaU;
@@ -445,16 +469,17 @@
            var url='RestApi/GET/'+getApi+'?todasOrdenes=true';
            obtenerOrdenesServer(url,"lotesOrdenTodas")
          }
+
          async function obtenerOrdenesServer(url,tabla){
            try {
              empezar();
              var result = await conexion("GET",url,"");
              url='RestApi/GET/'+getApi+'?operador=';
-             var operador = await conexion("GET",url+"3","");//3 son los operadores
+             var operador = await conexion("GET",url+"3","");
              var operadorJ =JSON.parse(operador);
-             var montaca = await conexion("GET",url+"4","");//4 son los montacarguistas
+             var montaca = await conexion("GET",url+"4","");
              var montacaJ =JSON.parse(montaca);
-             var supervisor = await conexion("GET",url+"2","");//2 son los supervisores
+             var supervisor = await conexion("GET",url+"2","");
              var supervisorJ =JSON.parse(supervisor);
              var cargarTabla =JSON.parse(result);
              var content="";
@@ -466,8 +491,8 @@
                var opc=(cargarTabla[i].Estatus!=='Por Asignar')?'disabled':'';
                var link=(cargarTabla[i].IdEstatus!=3)?'<td style="color:blue;text-decoration: underline;"><a onclick="javascript:abrir(\'avanceOrden.php?orden='+cargarTabla[i].IdOrden+'\')">'+cargarTabla[i].IdOrden+'</a></td>':'<td>'+cargarTabla[i].IdOrden+'</td>';
                var botonCancelar=(cargarTabla[i].Estatus==='Por Asignar')?'<button class="btn btn-danger b-r-xl fa fa-trash" onclick="cancelarOrden(\''+cargarTabla[i].IdOrden+'\')"></button>':'';
-               content+='<tr>'+link+'<td>'+cargarTabla[i].Bodega+"</td><td>"+cargarTabla[i].CantBarriles+"</td><td>"+cargarTabla[i].Paletas+"</td>"+escoger(operadorJ,cargarTabla[i].Op,'operador',opc)+escoger(montacaJ,cargarTabla[i].OpeMonta,'montaca',opc)+
-               escoger(supervisorJ,cargarTabla[i].Supervidor,'supervisor',opc)+"<td class='Estatus'>"+cargarTabla[i].Estatus+"</td><td>"+boton+botonCancelar+"</td></tr>";
+               content+="<tr>"+link+"<td>"+cargarTabla[i].Bodega+"</td><td>"+cargarTabla[i].CantBarriles+"</td><td>"+cargarTabla[i].Paletas+"</td><td>"+cargarTabla[i].Alcohol+"</td><td>"+cargarTabla[i].Tanque+"</td>"+escoger(operadorJ,cargarTabla[i].Op,'operador',opc)+
+               escoger(montacaJ,cargarTabla[i].OpeMonta,'montaca',opc)+escoger(supervisorJ,cargarTabla[i].Supervidor,'supervisor',opc)+"<td class='Estatus'>"+cargarTabla[i].Estatus+"</td><td>"+boton+botonCancelar+"</td></tr>";
              }
              $("#"+tabla+" > tbody").empty();
              $("#"+tabla+" > tbody").append(content);
@@ -491,6 +516,7 @@
                  todasOrdenes();
                }, 500);
              }
+
            } catch (e) {
              setTimeout(async function() {
                mensajeError(e);
@@ -558,15 +584,16 @@
              $("#generarOrdenes > tbody > tr").each(async function () {
                envio+='{"bodega":"'+$(this).find('td').eq(0).text()+'","year":"'+$(this).find('td').eq(1).text()+
                '","Alcohol":"'+$(this).find('td').eq(2).text()+'","Uso":"'+$(this).find('td').eq(3).text()+
-               '","Cantidad":"'+$(this).find("td:eq(4) input[type='number']").val()+'"},';
+               '","Cantidad":"'+$(this).find("td:eq(4) input[type='number']").val()+'","tanque":"'+$(this).find("td:eq(5) select").val()+'"},';
+
              });
              envio=envio.slice(0,-1);
              envio+="]";
              var url='RestApi/POST/'+postApi;
              var result=await conexion("POST", url,envio);
              await mensajeSimple(result);
-             generarOrdenes.dialog( "close" );
              todasOrdenes();
+             generarOrdenes.dialog( "close" );
            } catch (e) {
              mensajeError(e);
            }finally{
@@ -602,11 +629,12 @@
            });
          }
 
+
          $(document).ready(function(){
-           ActualizarFechasLotes('RestApi/GET/'+getApi+'?fechasLotes=true');
            permisos(["6"]);
+           ActualizarFechasLotes('RestApi/GET/'+getApi+'?fechasLotes=true');
            CargarTabla();
-           //todasOrdenes();
+           todasOrdenes();
          });
       </script>
    </body>
