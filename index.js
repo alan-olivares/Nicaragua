@@ -683,13 +683,6 @@ function RowRevisado(hoja,inicio,json){
   hoja.cell('G'+inicio).value(json.Capacidad).style({border:true,"borderColor": "F5F5F6","numberFormat": "#,##0.00"});
 }
 
-function borrarFilas(inicio,cantidad,hoja){
-  for (var i = inicio; i <= cantidad; i++) {
-    hoja.row(i).hidden(true);
-  }
-}
-
-
 function llenarRGerencia(archivo,res,tipo,id){
   XlsxPopulate.fromFileAsync('archivos/'+archivo+'.xlsx')
     .then(async workbook => {
@@ -1098,31 +1091,47 @@ function llenarTanquesTrasiego(archivo,res,fecha,fecha2,tipo,id){
         var etiqueta="";
         var pos=9,tanques=0;
         for (var i = 0; i < parsed.length; i++) {
+          hoja.cell("F"+(pos++)).value([[parsed[i].Fecha,parsed[i].Tanque,parsed[i].Alcohol,parsed[i].Año,parsed[i].Uso,parsed[i].Tipo,parsed[i].Barriles,parsed[i].Litros]]);
+        }
+        borrarFilas(pos,198,hoja);
+        pos=202;
+        url=servidor+'RestApi/GET/get_Reportes.php?trasiegoHooverDet=true&fecha1='+fecha+'&fecha2='+fecha2;
+        result = await conexion(url);
+        parsed =JSON.parse(result);
+        for (var i = 0; i < parsed.length; i++) {
           if(parsed[i].Etiqueta!==etiqueta){//Se encontro un nuevo tanque hoover
             tanques++;
             etiqueta=parsed[i].Etiqueta;
-            hoja.cell("E"+(i+pos)).value([[parsed[i].Etiqueta,parseFloat(parsed[i].Litros),parsed[i].FechaLLenado,'','','','','']]).style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
+            hoja.cell("E"+(i+pos)).value([[parsed[i].Etiqueta,parseFloat(parsed[i].Litros),parsed[i].FechaLLenado,'','','','','','','','']]).style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
             pos++;
-            hoja.cell("E"+(i+pos)).value([['','','',parsed[i].IdOrden,parsed[i].EtiquetaBarr,parsed[i].Descripcion,parsed[i].Recepcion,parseFloat(parsed[i].Capacidad)]]).style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
-          }else{//Se añaden los barriles de cada tanque hoover
-            hoja.cell("E"+(i+pos)).value([['','','',parsed[i].IdOrden,parsed[i].EtiquetaBarr,parsed[i].Descripcion,parsed[i].Recepcion,parseFloat(parsed[i].Capacidad)]]).style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
           }
+          hoja.cell("E"+(i+pos)).value([['','','',parsed[i].IdOrden,parsed[i].Vaciado,parsed[i].EtiquetaBarr,parsed[i].Descripcion,parsed[i].Recepcion,parsed[i].Uso,parsed[i].NoTapa,parseFloat(parsed[i].Capacidad),parsed[i].Tipo]]).style({border:true,"borderColor": "F5F5F6","horizontalAlignment":"center"});
         }
         var posFinal=(parsed.length+pos)+2;
-        hoja.range("E"+posFinal+":F"+posFinal).merged(true);
-        hoja.cell("E"+posFinal).value('Total tanques llenados').style({border:true,"borderColor": "000000","horizontalAlignment":"center"});
-        hoja.range("I"+posFinal+":J"+posFinal).merged(true);
-        hoja.cell("I"+posFinal).value('Total barriles vacíados').style({border:true,"borderColor": "000000","horizontalAlignment":"center"});
+        hoja.range("E"+posFinal+":F"+posFinal).style({border:true,"borderColor": "000000","horizontalAlignment":"center"}).merged(true);
+        hoja.range("I"+posFinal+":J"+posFinal).style({border:true,"borderColor": "000000","horizontalAlignment":"center"}).merged(true);
+        hoja.range("M"+posFinal+":O"+posFinal).style({border:true,"borderColor": "000000","horizontalAlignment":"center"}).merged(true);
+        hoja.cell("E"+posFinal).value('Total tanques llenados');
+        hoja.cell("I"+posFinal).value('Total barriles completos');
+        hoja.cell("M"+posFinal).value('Total barriles parciales');
         hoja.cell("G"+posFinal).value(tanques).style({border:true,"borderColor": "000000","horizontalAlignment":"right","numberFormat": "#,##0"});
-        hoja.cell("K"+posFinal).value(parsed.length).style({border:true,"borderColor": "000000","horizontalAlignment":"right","numberFormat": "#,##0"});
+        hoja.cell("K"+posFinal).value(countBarril(parsed,'Completo')).style({border:true,"borderColor": "000000","horizontalAlignment":"right","numberFormat": "#,##0"});
+        hoja.cell("P"+posFinal).value(countBarril(parsed,'Parcial')).style({border:true,"borderColor": "000000","horizontalAlignment":"right","numberFormat": "#,##0"});
         await exportar(archivo,id,tipo,workbook,res);
       } catch (e) {
         console.log(e);
         res.send('..Error.. Hubo un problema al procesar la solicitud, intenta de nuevo más tarde');
       }
-
     });
 
+}
+function countBarril(json,tipo){
+  var total=0;
+  for(var x=0;x<json.length;x++){
+    if(json[x].Tipo===tipo)
+      total++;
+  }
+  return total;
 }
 //Termina reporte en trasiegoHoover.html
 //Incia reporte en descripcion.php
@@ -1218,6 +1227,11 @@ function llenarDetalleTanquePlantel(archivo,res,almacen,area,tipo,id){
 function convinarCeldas(hoja,convinaciones){
   for (var i = 0; i < convinaciones.length; i++) {
     hoja.range(convinaciones[i]).merged(true);
+  }
+}
+function borrarFilas(inicio,cantidad,hoja){
+  for (var i = inicio; i <= cantidad; i++) {
+    hoja.row(i).hidden(true);
   }
 }
 

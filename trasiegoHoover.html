@@ -193,12 +193,14 @@
                       <div class="sk-bounce2"></div>
                       <div class="sk-bounce3"></div>
                    </div>
-
+                   <table class=" table-bordered" style="width:100%; margin-top:10px;margin-bottom:30px;" id="tabla">
+                     <thead></thead><tbody></tbody>
+                   </table>
                    <table class=" table-bordered tablaSeleccion" style="width:100%;" id="tabla1">
                      <thead>
                        <tr>
                          <th colspan="3">Tanque Hoover</th>
-                         <th colspan="7">Barriles vaciados</th>
+                         <th colspan="9">Barriles vaciados</th>
                        </tr>
                        <tr>
                          <th>Etiqueta</th>
@@ -208,14 +210,16 @@
                          <th>Vaciado</th>
                          <th>Etiqueta</th>
                          <th>Alcohol</th>
-                         <th>Año alcohol</th>
+                         <th>Año</th>
+                         <th>Uso</th>
+                         <th>Tapa</th>
                          <th>Litros</th>
                          <th>Tipo</th>
                        </tr>
                      </thead>
                      <tbody></tbody>
                    </table>
-                   <table class=" table-bordered" style="width:100%; margin-top:40px;" id="tabla2">
+                   <table class=" table-bordered" style="width:100%; margin-top:40px;margin-bottom:80px;" id="tabla2">
                      <tbody></tbody>
                    </table>
                  </div>
@@ -274,7 +278,6 @@
       <script src="js/abrir_ventana.js"></script>
       <script>
         const getApi="get_Reportes.php";
-
         async function cargarDatos(){
           var l = $('#cargando').ladda();
           try {
@@ -286,7 +289,11 @@
             var url='RestApi/GET/'+getApi+'?trasiegoHoover=true&fecha1='+$('#date1').val()+'&fecha2='+$('#date2').val();
             var result = await conexion("GET",url,"");
             var parsed =JSON.parse(result);
-            var content="";
+            crearTablaJson(parsed,'#tabla');
+            url='RestApi/GET/'+getApi+'?trasiegoHooverDet=true&fecha1='+$('#date1').val()+'&fecha2='+$('#date2').val();
+            result = await conexion("GET",url,"");
+            parsed =JSON.parse(result);
+            content="";
             l.ladda('start');
             if(parsed.length>0){
               mostrarDatos();
@@ -296,20 +303,15 @@
                 if(parsed[i].IdOperacion!==etiqueta){//Se encontro un nuevo tanque hoover
                   etiqueta=parsed[i].IdOperacion;
                   tanques++;
-                  content+='<tr class="colapsar" onclick="colapsar(this)"><td><span class="fa fa-angle-down" style="float:left; margin-left:5px;"></span>'+parsed[i].Etiqueta+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i].Litros)+"</td><td>"+parsed[i].FechaLLenado+"</td><td  colspan='7'></tr>";
-                  content+=insertaNewBarril(parsed[i]);
-                }else{//Se añaden los barriles de cada tanque hoover
-                  content+=insertaNewBarril(parsed[i]);
+                  content+='<tr class="colapsar" onclick="colapsar(this)"><td><span class="fa fa-angle-down" style="float:left; margin-left:5px;"></span>'+parsed[i].Etiqueta+"</td><td style='text-align: right;'>"+fomatoNumero(parsed[i].Litros)+"</td><td>"+parsed[i].FechaLLenado+"</td><td  colspan='9'></tr>";
                 }
+                content+=insertaNewBarril(parsed[i]);
               }
               $('#tabla1 tbody').append(content);
-              $('#tabla2 tbody').append('<tr><td>Total tanques llenados: </td><td style="text-align: right;">'+tanques+'</td><td>Total barriles vacíados: </td><td style="text-align: right;">'+parsed.length+'</td></tr>');
+              $('#tabla2 tbody').append('<tr><td>Total tanques llenados: </td><td style="text-align: right;">'+tanques+'</td><td>Total barriles completos: </td><td style="text-align: right;">'+countBarril(parsed,'Completo')+'</td><td>Total barriles parciales: </td><td style="text-align: right;">'+countBarril(parsed,'Parcial')+'</td></tr>');
               $('.colapsar').each(function(i, obj) {
                 colapsar(obj);
               });
-              setTimeout(function() {
-                //recargarTablas(parsed.length);
-              }, 500);
 
             }else{
               limpiarDatos();
@@ -322,9 +324,17 @@
             l.ladda('stop');
           }
         }
+        function countBarril(json,tipo){
+          var total=0;
+          for(var x=0;x<json.length;x++){
+            if(json[x].Tipo===tipo)
+              total++;
+          }
+          return total;
+        }
         function insertaNewBarril(json){
           return "<tr><td  colspan='3'></td><td>"+json.IdOrden+"</td><td>"+json.Vaciado+"</td><td>"+json.EtiquetaBarr+
-          "</td><td>"+json.Descripcion+"</td><td>"+json.Recepcion+"</td><td style='text-align: right;'>"+fomatoNumero(json.Capacidad)+"</td><td>"+json.Tipo+"</td></tr>";
+          "</td><td>"+json.Descripcion+"</td><td>"+json.Recepcion+"</td><td>"+json.Uso+"</td><td>"+json.NoTapa+"</td><td style='text-align: right;'>"+fomatoNumero(json.Capacidad)+"</td><td>"+json.Tipo+"</td></tr>";
         }
         function limpiarDatos(){
           $('#tabla1 tbody').empty();
