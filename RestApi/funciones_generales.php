@@ -45,6 +45,13 @@ function ObtenerCantidad($queryCons,$conn){
     return -1;
   }
 }
+/**
+ * Obtiene un valor entero de una consulta que recibe como parametro
+ *
+ * @param type $conn - Variable de la conexión activa a la base de datos
+ * @param type $queryCons - Query de la consulta
+ * @return value true si se ejecutó correctamente
+ */
 function ejecutarDato($conn,$queryCons){
   try {
     return sqlsrv_query( $conn , $queryCons);
